@@ -5,6 +5,10 @@ metadata:
   description: >
     A base model to use for eks addons
 constants:
+    - name: PACKAGE_NAME
+      value: "###ZARF_PKG_TMPL_PACKAGE_NAME###"
+    - name: NAMESPACE
+      value: "###ZARF_PKG_TMPL_NAMESPACE###"
     - name: CHART_REPO
       value: "###ZARF_PKG_TMPL_CHART_REPO###"
     - name: CHART_VERSION
@@ -17,8 +21,8 @@ components:
   - name: model
     required: true
     charts:
-      - name: cluster-autoscaler
-        namespace: kube-system
+      - name: "###ZARF_PKG_TMPL_PACKAGE_NAME###"
+        namespace: "###ZARF_PKG_TMPL_NAMESPACE###"
         url: "###ZARF_PKG_TMPL_CHART_REPO###"
         version: "###ZARF_PKG_TMPL_CHART_VERSION###"
         valuesFiles:
