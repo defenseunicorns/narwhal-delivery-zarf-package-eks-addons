@@ -1,0 +1,8 @@
+metrics-server:
+  image:
+    repository: "###ZARF_REGISTRY###/ironbank/opensource/kubernetes-sigs/metrics-server"
+    # Overrides the image tag whose default is v{{ .Chart.AppVersion }}
+    tag: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+    pullPolicy: IfNotPresent
+  imagePullSecrets: 
+    -name: private-registry

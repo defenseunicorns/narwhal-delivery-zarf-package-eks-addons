@@ -1,0 +1,13 @@
+  kind: ZarfPackageConfig
+  metadata:
+    name: metrics-server
+    description: Zarf package of metrics-server
+    version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
+  components:
+    - name: metrics-server-import-model
+      description: "Chart component for metrics-server"
+      import:
+        name: model
+        path: ../skeleton
+## use oci registry once skeleton is published
+#       url: oci://🦄/dos-games:1.0.0-skeleton

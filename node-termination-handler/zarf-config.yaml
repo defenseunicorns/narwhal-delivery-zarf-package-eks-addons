@@ -1,0 +1,9 @@
+package:
+  create:
+    set:
+      package_version: 0.0.1
+      # not sure this is correct
+      chart_repo: https://aws.github.io/eks-charts
+      chart_version: 0.21.0
+      image_repo: registry1.dso.mil/ironbank/opensource/aws/aws-node-termination-handler
+      image_version: v1.13.3

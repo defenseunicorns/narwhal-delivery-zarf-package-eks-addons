@@ -1,0 +1,8 @@
+package:
+  create:
+    set:
+      package_version: 0.0.1
+      chart_repo: https://kubernetes.github.io/autoscaler
+      chart_version: 9.29.1
+      image_repo: registry1.dso.mil/ironbank/opensource/kubernetes/autoscaler
+      image_version: v1.28.1

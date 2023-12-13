@@ -1,0 +1,27 @@
+kind: ZarfPackageConfig
+metadata:
+  name: addons-model
+  version: 0.0.1
+  description: >
+    A base model to use for eks addons
+constants:
+    - name: CHART_REPO
+      value: "###ZARF_PKG_TMPL_CHART_REPO###"
+    - name: CHART_VERSION
+      value: "###ZARF_PKG_TMPL_CHART_VERSION###"
+    - name: IMAGE_REPO
+      value: "###ZARF_PKG_TMPL_IMAGE_REPO###"
+    - name: IMAGE_VERSION
+      value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+components:
+  - name: model
+    required: true
+    charts:
+      - name: cluster-autoscaler
+        namespace: kube-system
+        url: "###ZARF_PKG_TMPL_CHART_REPO###"
+        version: "###ZARF_PKG_TMPL_CHART_VERSION###"
+        valuesFiles:
+          - values.yaml
+    images:
+        - "###ZARF_PKG_TMPL_IMAGE_REPO###:###ZARF_PKG_TMPL_IMAGE_VERSION###"

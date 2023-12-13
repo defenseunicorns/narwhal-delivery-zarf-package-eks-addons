@@ -1,0 +1,7 @@
+image:
+  repository: "###ZARF_REGISTRY###/ironbank/opensource/aws/aws-node-termination-handler"
+  # Overrides the image tag whose default is {{ printf "v%s" .Chart.AppVersion }}
+  tag: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  pullPolicy: IfNotPresent
+  pullSecrets: 
+    - private-registry

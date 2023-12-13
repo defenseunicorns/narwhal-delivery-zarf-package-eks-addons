@@ -1,0 +1,13 @@
+  kind: ZarfPackageConfig
+  metadata:
+    name: cluster-autoscaler
+    description: Zarf package of cluster-autoscaler
+    version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
+  components:
+    - name: cluster-autoscaler-import-model
+      description: "Chart component for cluster-autoscaler"
+      import:
+        name: model
+        path: ../skeleton
+## use oci registry once skeleton is published
+#       url: oci://🦄/dos-games:1.0.0-skeleton
