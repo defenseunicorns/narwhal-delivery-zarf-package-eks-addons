@@ -5,18 +5,18 @@ metadata:
   description: >
     A base model to use for eks addons
 constants:
-    - name: PACKAGE_NAME
-      value: "###ZARF_PKG_TMPL_PACKAGE_NAME###"
-    - name: NAMESPACE
-      value: "###ZARF_PKG_TMPL_NAMESPACE###"
-    - name: CHART_REPO
-      value: "###ZARF_PKG_TMPL_CHART_REPO###"
-    - name: CHART_VERSION
-      value: "###ZARF_PKG_TMPL_CHART_VERSION###"
-    - name: IMAGE_REPO
-      value: "###ZARF_PKG_TMPL_IMAGE_REPO###"
-    - name: IMAGE_VERSION
-      value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  - name: PACKAGE_NAME
+    value: "###ZARF_PKG_TMPL_PACKAGE_NAME###"
+  - name: NAMESPACE
+    value: "###ZARF_PKG_TMPL_NAMESPACE###"
+  - name: CHART_REPO
+    value: "###ZARF_PKG_TMPL_CHART_REPO###"
+  - name: CHART_VERSION
+    value: "###ZARF_PKG_TMPL_CHART_VERSION###"
+  - name: IMAGE_REPO
+    value: "###ZARF_PKG_TMPL_IMAGE_REPO###"
+  - name: IMAGE_VERSION
+    value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
 components:
   - name: model
     required: true
@@ -26,6 +26,6 @@ components:
         url: "###ZARF_PKG_TMPL_CHART_REPO###"
         version: "###ZARF_PKG_TMPL_CHART_VERSION###"
         valuesFiles:
-          - values.yaml
+          - "###ZARF_PKG_TMPL_VALUES_FILE###"
     images:
-        - "###ZARF_PKG_TMPL_IMAGE_REPO###:###ZARF_PKG_TMPL_IMAGE_VERSION###"
+      - "###ZARF_PKG_TMPL_IMAGE_REPO###:###ZARF_PKG_TMPL_IMAGE_VERSION###"

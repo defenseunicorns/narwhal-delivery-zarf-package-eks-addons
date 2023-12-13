@@ -1,12 +1,15 @@
+image:
+  repository: "###ZARF_REGISTRY###/ironbank/opensource/kubernetes/autoscaler"
+  tag: "###ZARF_CONST_IMAGE_VERSION###"
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    - private-registry
 
-cluster-autoscaler:
-  image:
-    repository: "###ZARF_REGISTRY###/ironbank/opensource/kubernetes/autoscaler"
-    tag: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
-    pullPolicy: IfNotPresent
-    pullSecrets: 
-      - private-registry
+autoDiscovery:
+  clusterName: "###ZARF_VAR_CLUSTER_NAME###"
+  enabled: true
 
-  autoDiscovery:
-    clusterName: "###ZARF_VAR_NAME###"
-    enabled: true
+rbac:
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: "###ZARF_VAR_IAM_ROLE_ARN###"
