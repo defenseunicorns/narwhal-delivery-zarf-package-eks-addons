@@ -1,7 +1,9 @@
 package:
   create:
     set:
+      # x-release-please-start-version
       package_version: 0.0.1
+      # x-release-please-end
       package_name: cluster-autoscaler
       namespace: kube-system
       chart_repo: https://kubernetes.github.io/autoscaler
@@ -9,3 +11,8 @@ package:
       image_repo: registry1.dso.mil/ironbank/opensource/kubernetes/autoscaler
       image_version: v1.27.3
       values_file: values.yaml
+  deploy:
+    set:
+      cluster_name: "test"
+      iam_role_arn: "arn:aws:iam::123456789012:role/test"
+      service_account: "test"

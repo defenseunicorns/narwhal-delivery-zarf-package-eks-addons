@@ -13,8 +13,23 @@ constants:
     value: "###ZARF_PKG_TMPL_IMAGE_REPO###"
   - name: IMAGE_VERSION
     value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+
+variables:
+  - name: CLUSTER_NAME
+    type: raw
+    prompt: false
+    default: ""
+  - name: IAM_ROLE_ARN
+    type: raw
+    prompt: false
+    default: ""
+  - name: SERVICE_ACCOUNT
+    type: raw
+    prompt: false
+    default: ""
 components:
-  - name: cluster-autoscaler-import-model
+  - name: fetch-vars
+    required: false
     description: "Chart component for cluster-autoscaler"
     actions:
       onDeploy:
@@ -23,7 +38,7 @@ components:
           - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
             setVariables:
               - name: CLUSTER_NAME
-          - cmd: aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/cluster_autoscaler_helm_input_values"
+          - cmd: aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/cluster_autoscaler_helm_input_values" --with-decryption
             setVariables:
               - name: CLUSTER_AUTOSCALER_HELM_INPUT_VALUES
           - cmd: jq -r '.Parameter.Value | fromjson | .iam_role_arn' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
@@ -32,6 +47,9 @@ components:
           - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
             setVariables:
               - name: SERVICE_ACCOUNT
+
+  - name: cluster-autoscaler-chart-deployment
+    required: false
     charts:
       - name: "###ZARF_PKG_TMPL_PACKAGE_NAME###"
         namespace: "###ZARF_PKG_TMPL_NAMESPACE###"
@@ -41,5 +59,3 @@ components:
           - "###ZARF_PKG_TMPL_VALUES_FILE###"
     images:
       - "###ZARF_PKG_TMPL_IMAGE_REPO###:###ZARF_PKG_TMPL_IMAGE_VERSION###"
-## use oci registry once skeleton is published
-#       url: oci://🦄/dos-games:1.0.0-skeleton
