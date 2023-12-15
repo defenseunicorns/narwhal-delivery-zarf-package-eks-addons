@@ -1,3 +1,9 @@
+.cache/
+.idea/
+.DS_Store
+.vscode
+**/ignore
+
 # Local .terraform directories
 **/.terraform/*
 

@@ -4,6 +4,7 @@ metadata:
   description: Zarf package of cluster-autoscaler
   version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
   architecture: amd64
+
 constants:
   - name: CHART_VERSION
     value: "###ZARF_PKG_TMPL_CHART_VERSION###"
@@ -12,6 +13,14 @@ variables:
     type: raw
     prompt: false
     default: ""
+  - name: NAMESPACE
+    type: raw
+    prompt: false
+    default: "kube-system"
+  - name: CLUSTER_AUTOSCALER_HELM_INPUT_VALUES
+    type: raw
+    prompt: false
+    default: "cluster_autoscaler_helm_input_values"
   - name: IAM_ROLE_ARN
     type: raw
     prompt: false
@@ -20,12 +29,11 @@ variables:
     type: raw
     prompt: false
     default: ""
+
 components:
-  - name: fetch-vars
-    required: true
-    only:
-      flavor: eks
-    description: "Chart component for cluster-autoscaler"
+  - name: fetch-staged-aws-ssm-vars
+    required: false
+    description: "Fetch staged json object from AWS SSM Parameter Store and extract values for zarf variables"
     actions:
       onDeploy:
         before:
@@ -33,7 +41,7 @@ components:
           - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
             setVariables:
               - name: CLUSTER_NAME
-          - cmd: aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/cluster_autoscaler_helm_input_values" --with-decryption
+          - cmd: aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES}" --with-decryption
             setVariables:
               - name: CLUSTER_AUTOSCALER_HELM_INPUT_VALUES
           - cmd: jq -r '.Parameter.Value | fromjson | .iam_role_arn' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
