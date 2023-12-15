@@ -4,16 +4,6 @@ metadata:
   description: Zarf package of cluster-autoscaler
   version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
   architecture: amd64
-constants:
-  - name: CHART_REPO
-    value: "###ZARF_PKG_TMPL_CHART_REPO###"
-  - name: CHART_VERSION
-    value: "###ZARF_PKG_TMPL_CHART_VERSION###"
-  - name: IMAGE_REPO
-    value: "###ZARF_PKG_TMPL_IMAGE_REPO###"
-  - name: IMAGE_VERSION
-    value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
-
 variables:
   - name: CLUSTER_NAME
     type: raw
@@ -47,7 +37,6 @@ components:
           - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
             setVariables:
               - name: SERVICE_ACCOUNT
-
   - name: cluster-autoscaler-chart-deployment
     required: false
     charts:
@@ -57,5 +46,14 @@ components:
         version: "###ZARF_PKG_TMPL_CHART_VERSION###"
         valuesFiles:
           - "###ZARF_PKG_TMPL_VALUES_FILE###"
+    actions:
+      onDeploy:
+        before:
+           # either set this here or in zarf-config.yaml under deploy.set.image_version,
+           # but alternatively/ideally? just provide a values file at package deploy time (above with ZARF_PKG_TMPL_VALUES_FILE)
+           # and use the values you want inside it instead of templating values.yaml with vars
+           - cmd: "echo ###ZARF_PKG_TMPL_IMAGE_VERSION###"
+             setVariables:
+               - name: IMAGE_VERSION
     images:
       - "###ZARF_PKG_TMPL_IMAGE_REPO###:###ZARF_PKG_TMPL_IMAGE_VERSION###"

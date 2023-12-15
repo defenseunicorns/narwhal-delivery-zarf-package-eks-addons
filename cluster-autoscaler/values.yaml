@@ -1,6 +1,6 @@
 image:
   repository: "###ZARF_REGISTRY###/ironbank/opensource/kubernetes/autoscaler"
-  tag: "###ZARF_CONST_IMAGE_VERSION###"
+  tag: "###ZARF_VAR_IMAGE_VERSION###"
   pullPolicy: IfNotPresent
   pullSecrets:
     - private-registry
