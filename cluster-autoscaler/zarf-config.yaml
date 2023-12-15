@@ -10,6 +10,8 @@ package:
       chart_version: 9.29.1
       image_repo: registry1.dso.mil/ironbank/opensource/kubernetes/autoscaler
       image_version: v1.27.3
+      values_file: values/values.yaml
+      overrides_file: values/overrides.yaml
 
   deploy:
     set:

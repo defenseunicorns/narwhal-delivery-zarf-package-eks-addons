@@ -8,6 +8,8 @@ metadata:
 constants:
   - name: CHART_VERSION
     value: "###ZARF_PKG_TMPL_CHART_VERSION###"
+  - name: IMAGE_VERSION
+    value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
 variables:
   - name: CLUSTER_NAME
     type: raw
@@ -29,6 +31,10 @@ variables:
     type: raw
     prompt: false
     default: ""
+  - name: VALUES_OVERRIDES
+    type: file
+    prompt: false
+    default: "deploy-values-override.yaml"
 
 components:
   - name: fetch-staged-aws-ssm-vars
@@ -51,7 +57,7 @@ components:
             setVariables:
               - name: SERVICE_ACCOUNT
   - name: cluster-autoscaler-chart-deployment
-    required: false
+    required: true
     import:
       path: ../skeleton
       name: helm-chart-model
