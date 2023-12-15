@@ -1,7 +1,7 @@
 kind: ZarfPackageConfig
 metadata:
-  name: cluster-autoscaler
-  description: Zarf package of cluster-autoscaler
+  name: aws-node-termination-handler
+  description: Zarf package of aws-node-termination-handler
   version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
   architecture: amd64
 
@@ -20,19 +20,23 @@ variables:
     type: raw
     prompt: false
     default: ""
-  - name: NAMESPACE
+  - name: AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES_PATH
     type: raw
     prompt: false
-    default: "kube-system"
-  - name: CLUSTER_AUTOSCALER_HELM_INPUT_VALUES_PATH
-    type: raw
-    prompt: false
-    default: "cluster_autoscaler_helm_input_values"
+    default: "aws_node_termination_handler_helm_input_values"
   - name: IAM_ROLE_ARN
     type: raw
     prompt: false
     default: ""
   - name: SERVICE_ACCOUNT
+    type: raw
+    prompt: false
+    default: ""
+  - name: SQS_QUEUE_URL
+    type: raw
+    prompt: false
+    default: ""
+  - name: AWS_REGION
     type: raw
     prompt: false
     default: ""
@@ -52,17 +56,24 @@ components:
           - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
             setVariables:
               - name: CLUSTER_NAME
-          - cmd: aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES_PATH}" --with-decryption
+          - cmd: set -x; aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES_PATH}" --with-decryption; set +x
             setVariables:
-              - name: CLUSTER_AUTOSCALER_HELM_INPUT_VALUES
-          - cmd: jq -r '.Parameter.Value | fromjson | .iam_role_arn' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
+              - name: AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES
+          - cmd: jq -r '.Parameter.Value | fromjson | .iam_role_arn' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
             setVariables:
               - name: IAM_ROLE_ARN
-          - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
+          - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
             setVariables:
               - name: SERVICE_ACCOUNT
-  - name: cluster-autoscaler-chart-deployment
+          - cmd: jq -r '.Parameter.Value | fromjson | .sqs_queue_url' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
+            setVariables:
+              - name: SQS_QUEUE_URL
+          - cmd: aws configure get region
+            setVariables:
+              - name: AWS_REGION
+  - name: aws-node-termination-handler-chart-deployment
+    description: "Chart component for aws-node-termination-handler"
     required: true
     import:
-      path: ../skeleton
       name: helm-chart-skeleton
+      path: ../skeleton

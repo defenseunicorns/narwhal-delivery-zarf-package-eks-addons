@@ -10,6 +10,11 @@ constants:
     value: "###ZARF_PKG_TMPL_CHART_VERSION###"
   - name: IMAGE_VERSION
     value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  - name: IMAGE_REGISTRY_REPO
+    value: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_REPO###"
+  - name: IMAGE_REGISTRY_PATH
+    value: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
+
 variables:
   - name: VALUES_OVERRIDES
     type: file
@@ -21,4 +26,4 @@ components:
     required: true
     import:
       path: ../skeleton
-      name: helm-chart-model
+      name: helm-chart-skeleton

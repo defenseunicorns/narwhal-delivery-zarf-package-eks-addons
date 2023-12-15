@@ -8,7 +8,8 @@ package:
       namespace: kube-system
       chart_repo: https://kubernetes.github.io/autoscaler
       chart_version: 9.29.1
-      image_repo: registry1.dso.mil/ironbank/opensource/kubernetes/autoscaler
+      image_registry_repo: registry1.dso.mil
+      image_registry_path: ironbank/opensource/kubernetes/autoscaler
       image_version: v1.27.3
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml

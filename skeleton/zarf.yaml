@@ -1,11 +1,11 @@
 kind: ZarfPackageConfig
 metadata:
-  name: addons-models
+  name: helm-chart-skeleton
   version: 0.0.1
   description: >
-    Set of models for addons
+    Zarf package Helm chart skeleton
 components:
-  - name: helm-chart-model
+  - name: helm-chart-skeleton
     required: true
     charts:
       - name: "###ZARF_PKG_TMPL_PACKAGE_NAME###"
@@ -16,4 +16,4 @@ components:
           - "../###ZARF_PKG_TMPL_PACKAGE_NAME###/###ZARF_PKG_TMPL_VALUES_FILE###"
           - "../###ZARF_PKG_TMPL_PACKAGE_NAME###/###ZARF_PKG_TMPL_OVERRIDES_FILE###"
     images:
-      - "###ZARF_PKG_TMPL_IMAGE_REPO###:###ZARF_PKG_TMPL_IMAGE_VERSION###"
+      - "###ZARF_PKG_TMPL_IMAGE_REGISTRY_REPO###/###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###:###ZARF_PKG_TMPL_IMAGE_VERSION###"
