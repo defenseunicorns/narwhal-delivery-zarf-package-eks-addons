@@ -1,0 +1,19 @@
+kind: ZarfPackageConfig
+metadata:
+  name: helm-chart-skeleton
+  version: 0.0.1
+  description: >
+    Zarf package Helm chart skeleton
+components:
+  - name: helm-chart-skeleton
+    required: true
+    charts:
+      - name: "###ZARF_PKG_TMPL_PACKAGE_NAME###"
+        namespace: "###ZARF_PKG_TMPL_NAMESPACE###"
+        url: "###ZARF_PKG_TMPL_CHART_REPO###"
+        version: "###ZARF_PKG_TMPL_CHART_VERSION###"
+        valuesFiles:
+          - "../###ZARF_PKG_TMPL_PACKAGE_NAME###/###ZARF_PKG_TMPL_VALUES_FILE###"
+          - "../###ZARF_PKG_TMPL_PACKAGE_NAME###/###ZARF_PKG_TMPL_OVERRIDES_FILE###"
+    images:
+      - "###ZARF_PKG_TMPL_IMAGE_REGISTRY_REPO###/###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###:###ZARF_PKG_TMPL_IMAGE_VERSION###"
