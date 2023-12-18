@@ -1,14 +1,5 @@
-.cache/
-.idea/
-.DS_Store
-.vscode
-**/ignore
-
 # Local .terraform directories
 **/.terraform/*
-
-# Editor setings and other personal things
-.vscode
 
 # .tfstate files
 *.tfstate
@@ -41,6 +32,3 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
-
-#zarf
-zarf-package*.tar.zst
