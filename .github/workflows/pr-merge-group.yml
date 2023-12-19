@@ -7,15 +7,14 @@ on:
     types: [checks_requested]
   pull_request:
   push:
-
 defaults:
   run:
     shell: bash -eo pipefail {0}
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Run Build and Publish Target
         run: make zarf-build-and-publish-all
