@@ -5,20 +5,23 @@ Handles zarf packaging of multiple add-ons for EKS
 To create the cluster-autoscaler zarf package
 
 ``` shell
-cd cluster-autoscaler
-zarf package create .
+make zarf-build-cluster-autoscaler
 ```
 
 To create the metrics-server zarf package
 
 ``` shell
-cd metrics-server
-zarf package create .
+make zarf-build-metrics-server
 ```
 
 To create the aws-node-termination-handler zarf package
 
 ``` shell
-cd aws-node-termination-handler
-zarf package create .
+make zarf-build-aws-node-termination-handler
+```
+
+To create all the packages in this repo
+
+``` shell
+make zarf-build-all
 ```

@@ -116,8 +116,8 @@ endif
 			&& cd $(PACKAGE_NAME) \
 			&& zarf package create --confirm'
 
-.PHONY: build-all
-build-all: ## Build all Zarf Packages
+.PHONY: zarf-build-all
+zarf-build-all: ## Build all Zarf Packages
 	$(MAKE) zarf-build-aws-node-termination-handler
 	$(MAKE) zarf-build-cluster-autoscaler
 	$(MAKE) zarf-build-metrics-server
