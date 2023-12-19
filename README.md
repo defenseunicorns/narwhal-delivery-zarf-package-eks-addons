@@ -53,3 +53,8 @@ To publish all the packages in this repo
 ``` shell
 make zarf-publish-all
 ```
+
+### Build and Publish New Packages at Once
+``` shell
+make zarf-build-and-publish-all
+```

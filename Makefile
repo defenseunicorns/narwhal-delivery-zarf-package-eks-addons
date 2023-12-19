@@ -136,3 +136,8 @@ zarf-publish-metrics-server:
 .PHONY: zarf-publish-aws-node-termination-handler
 zarf-publish-aws-node-termination-handler:
 	$(MAKE) publish-zarf-package PACKAGE_NAME="aws-node-termination-handler"
+
+.PHONY: zarf-build-and-publish-all
+zarf-build-and-publish-all: ## Build and Publish all Zarf Packages
+	$(MAKE) zarf-build-all
+	$(MAKE) zarf-publish-all
