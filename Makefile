@@ -113,7 +113,26 @@ ifndef REGISTRY1_PASSWORD
 endif
 	docker run ${ALL_THE_DOCKER_ARGS} \
 		bash -c 'zarf tools registry login registry1.dso.mil -u ${REGISTRY1_USERNAME} -p ${REGISTRY1_PASSWORD} \
+			&& cd $(PACKAGE_NAME) \
 			&& zarf package create --confirm'
+
+.PHONY: build-all
+build-all: ## Build all Zarf Packages
+	$(MAKE) zarf-build-aws-node-termination-handler
+	$(MAKE) zarf-build-cluster-autoscaler
+	$(MAKE) zarf-build-metrics-server
+	
+zarf-build-cluster-autoscaler:
+	$(MAKE) build-zarf-package PACKAGE_NAME="cluster-autoscaler"
+
+.PHONY: zarf-build-metrics-server
+zarf-build-metrics-server:
+	$(MAKE) build-zarf-package PACKAGE_NAME="metrics-server"
+
+.PHONY: zarf-build-aws-node-termination-handler
+zarf-build-aws-node-termination-handler:
+	$(MAKE) build-zarf-package PACKAGE_NAME="aws-node-termination-handler"
+
 
 .PHONY: publish-zarf-package
 publish-zarf-package: ## Publish the Zarf Package
