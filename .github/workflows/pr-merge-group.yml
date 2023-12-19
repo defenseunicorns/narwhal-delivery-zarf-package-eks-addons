@@ -15,6 +15,7 @@ permissions:
   id-token: write # needed for oidc auth for AWS creds
   contents: read
 
+# TODO - Modify this to use a new merge-group test for zarf packaging once it is available in delivery-github-actions-workflows
 jobs:
   pr-merge-group-test:
     uses: defenseunicorns/delivery-github-actions-workflows/.github/workflows/pr-merge-group-test.yml@main

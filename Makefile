@@ -15,25 +15,10 @@ ALL_THE_DOCKER_ARGS := $(TTY_ARG) --rm \
 	-v "${PWD}:/app" \
 	-v "${PWD}/.cache/tmp:/tmp" \
 	-v "${PWD}/.cache/go:/root/go" \
-	-v "${PWD}/.cache/go-build:/root/.cache/go-build" \
-	-v "${PWD}/.cache/.terraform.d/plugin-cache:/root/.terraform.d/plugin-cache" \
 	-v "${PWD}/.cache/.zarf-cache:/root/.zarf-cache" \
 	--workdir "/app" \
-	-e TF_LOG_PATH \
-	-e TF_LOG \
-	-e GOPATH=/root/go \
-	-e GOCACHE=/root/.cache/go-build \
-	-e TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE=true \
-	-e TF_PLUGIN_CACHE_DIR=/root/.terraform.d/plugin-cache \
 	-e "SKIP=$(SKIP)" \
 	-e "PRE_COMMIT_HOME=/app/.cache/pre-commit" \
-	-e AWS_REGION \
-	-e AWS_DEFAULT_REGION \
-	-e AWS_ACCESS_KEY_ID \
-	-e AWS_SECRET_ACCESS_KEY \
-	-e AWS_SESSION_TOKEN \
-	-e AWS_SECURITY_TOKEN \
-	-e AWS_SESSION_EXPIRATION \
 	${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION}
 
 # Silent mode by default. Run `make VERBOSE=1` to turn off silent mode.
@@ -54,10 +39,7 @@ help: ## Show a list of all targets
 _create-folders:
 	mkdir -p .cache/docker
 	mkdir -p .cache/pre-commit
-	mkdir -p .cache/go
-	mkdir -p .cache/go-build
 	mkdir -p .cache/tmp
-	mkdir -p .cache/.terraform.d/plugin-cache
 	mkdir -p .cache/.zarf-cache
 
 .PHONY: docker-save-build-harness
@@ -78,14 +60,6 @@ _runhooks: _create-folders
 .PHONY: pre-commit-all
 pre-commit-all: ## Run all pre-commit hooks. Returns nonzero exit code if any hooks fail. Uses Docker for maximum compatibility
 	$(MAKE) _runhooks HOOK="" SKIP=""
-
-.PHONY: pre-commit-terraform
-pre-commit-terraform: ## Run the terraform pre-commit hooks. Returns nonzero exit code if any hooks fail. Uses Docker for maximum compatibility
-	$(MAKE) _runhooks HOOK="" SKIP="check-added-large-files,check-merge-conflict,detect-aws-credentials,detect-private-key,end-of-file-fixer,fix-byte-order-marker,trailing-whitespace,check-yaml,fix-smartquotes,go-fmt,golangci-lint,renovate-config-validator"
-
-.PHONY: pre-commit-golang
-pre-commit-golang: ## Run the golang pre-commit hooks. Returns nonzero exit code if any hooks fail. Uses Docker for maximum compatibility
-	$(MAKE) _runhooks HOOK="" SKIP="check-added-large-files,check-merge-conflict,detect-aws-credentials,detect-private-key,end-of-file-fixer,fix-byte-order-marker,trailing-whitespace,check-yaml,fix-smartquotes,terraform_fmt,terraform_docs,terraform_checkov,terraform_tflint,renovate-config-validator"
 
 .PHONY: pre-commit-renovate
 pre-commit-renovate: ## Run the renovate pre-commit hooks. Returns nonzero exit code if any hooks fail. Uses Docker for maximum compatibility
@@ -113,7 +87,27 @@ ifndef REGISTRY1_PASSWORD
 endif
 	docker run ${ALL_THE_DOCKER_ARGS} \
 		bash -c 'zarf tools registry login registry1.dso.mil -u ${REGISTRY1_USERNAME} -p ${REGISTRY1_PASSWORD} \
+			&& cd $(PACKAGE_NAME) \
 			&& zarf package create --confirm'
+
+.PHONY: zarf-build-all
+zarf-build-all: ## Build all Zarf Packages
+	$(MAKE) zarf-build-aws-node-termination-handler
+	$(MAKE) zarf-build-cluster-autoscaler
+	$(MAKE) zarf-build-metrics-server
+
+.PHONY: zarf-build-cluster-autoscaler
+zarf-build-cluster-autoscaler:
+	$(MAKE) build-zarf-package PACKAGE_NAME="cluster-autoscaler"
+
+.PHONY: zarf-build-metrics-server
+zarf-build-metrics-server:
+	$(MAKE) build-zarf-package PACKAGE_NAME="metrics-server"
+
+.PHONY: zarf-build-aws-node-termination-handler
+zarf-build-aws-node-termination-handler:
+	$(MAKE) build-zarf-package PACKAGE_NAME="aws-node-termination-handler"
+
 
 .PHONY: publish-zarf-package
 publish-zarf-package: ## Publish the Zarf Package
@@ -122,4 +116,28 @@ ifndef GITHUB_TOKEN
 endif
 	docker run ${ALL_THE_DOCKER_ARGS} \
 		bash -c 'zarf tools registry login ghcr.io -u dummy -p ${GITHUB_TOKEN} \
-			&& zarf package publish zarf-package-*.tar.zst oci://ghcr.io/defenseunicorns/narwhal-delivery-zarf-package-eks-addons'
+			&& cd $(PACKAGE_NAME) \
+			&& zarf package publish zarf-package-${PACKAGE_NAME}-*.tar.zst oci://ghcr.io/defenseunicorns/narwhal-delivery-zarf-package-eks-addons'
+
+.PHONY: zarf-publish-all
+zarf-publish-all: ## Build all Zarf Packages
+	$(MAKE) zarf-publish-aws-node-termination-handler
+	$(MAKE) zarf-publish-cluster-autoscaler
+	$(MAKE) zarf-publish-metrics-server
+
+.PHONY: zarf-publish-cluster-autoscaler	
+zarf-publish-cluster-autoscaler:
+	$(MAKE) publish-zarf-package PACKAGE_NAME="cluster-autoscaler"
+
+.PHONY: zarf-publish-metrics-server
+zarf-publish-metrics-server:
+	$(MAKE) publish-zarf-package PACKAGE_NAME="metrics-server"
+
+.PHONY: zarf-publish-aws-node-termination-handler
+zarf-publish-aws-node-termination-handler:
+	$(MAKE) publish-zarf-package PACKAGE_NAME="aws-node-termination-handler"
+
+.PHONY: zarf-build-and-publish-all
+zarf-build-and-publish-all: ## Build and Publish all Zarf Packages
+	$(MAKE) zarf-build-all
+	$(MAKE) zarf-publish-all
