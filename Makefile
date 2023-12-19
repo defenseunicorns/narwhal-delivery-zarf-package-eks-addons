@@ -121,7 +121,8 @@ zarf-build-all: ## Build all Zarf Packages
 	$(MAKE) zarf-build-aws-node-termination-handler
 	$(MAKE) zarf-build-cluster-autoscaler
 	$(MAKE) zarf-build-metrics-server
-	
+
+.PHONY: zarf-build-cluster-autoscaler
 zarf-build-cluster-autoscaler:
 	$(MAKE) build-zarf-package PACKAGE_NAME="cluster-autoscaler"
 
@@ -141,4 +142,23 @@ ifndef GITHUB_TOKEN
 endif
 	docker run ${ALL_THE_DOCKER_ARGS} \
 		bash -c 'zarf tools registry login ghcr.io -u dummy -p ${GITHUB_TOKEN} \
-			&& zarf package publish zarf-package-*.tar.zst oci://ghcr.io/defenseunicorns/narwhal-delivery-zarf-package-eks-addons'
+			&& cd $(PACKAGE_NAME) \
+			&& zarf package publish zarf-package-${PACKAGE_NAME}-*.tar.zst oci://ghcr.io/defenseunicorns/narwhal-delivery-zarf-package-eks-addons'
+
+.PHONY: zarf-publish-all
+zarf-publish-all: ## Build all Zarf Packages
+	$(MAKE) zarf-publish-aws-node-termination-handler
+	$(MAKE) zarf-publish-cluster-autoscaler
+	$(MAKE) zarf-publish-metrics-server
+
+.PHONY: zarf-publish-cluster-autoscaler	
+zarf-publish-cluster-autoscaler:
+	$(MAKE) publish-zarf-package PACKAGE_NAME="cluster-autoscaler"
+
+.PHONY: zarf-publish-metrics-server
+zarf-publish-metrics-server:
+	$(MAKE) publish-zarf-package PACKAGE_NAME="metrics-server"
+
+.PHONY: zarf-publish-aws-node-termination-handler
+zarf-publish-aws-node-termination-handler:
+	$(MAKE) publish-zarf-package PACKAGE_NAME="aws-node-termination-handler"
