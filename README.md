@@ -58,3 +58,6 @@ make zarf-publish-all
 ``` shell
 make zarf-build-and-publish-all
 ```
+
+### CI and Workflows
+TBD. Might need to extend workflows in https://github.com/defenseunicorns/delivery-github-actions-workflows .
