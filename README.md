@@ -3,6 +3,12 @@ Handles zarf packaging of multiple add-ons for EKS
 
 ## Getting Started
 
+### Required Environment Variables
+
+- REGISTRY1_USERNAME
+- REGISTRY1_PASSWORD
+- GITHUB_TOKEN
+
 ### Building Packages
 
 To create the cluster-autoscaler zarf package
