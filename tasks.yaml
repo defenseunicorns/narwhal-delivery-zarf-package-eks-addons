@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/uds-cli/main/tasks.schema.json
+includes:
+  - create: ./tasks/create.yaml
+  - deploy: ./tasks/deploy.yaml
+
+tasks:
+  - name: zarf-create-all-packages
+    actions:
+      - task: create:zarf-create-all-packages
+
+  - name: deploy-single-package
+    actions:
+      - task: deploy:deploy-single-package
+
+  - name: deploy-all-packages
+    actions:
+      - task: deploy:deploy-all-packages
+
+  - name: create-eks-addons-uds-bundle
+    actions:
+      - task: create:create-eks-addons-uds-bundle

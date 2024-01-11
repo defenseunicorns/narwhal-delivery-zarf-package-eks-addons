@@ -1,0 +1,21 @@
+kind: UDSBundle
+metadata:
+  name: eks-addons
+  description: UDS bundle of eks-addons
+  # x-release-please-start-version
+  version: 0.0.1
+  # x-release-please-end-version
+  architecture: amd64
+
+packages:
+  - name: aws-node-termination-handler
+    ref: 0.0.1
+    path: ../../packages/aws-node-termination-handler
+
+  - name: cluster-autoscaler
+    ref: 0.0.1
+    path: ../../packages/cluster-autoscaler
+
+  - name: metrics-server
+    ref: 0.0.1
+    path: ../../packages/metrics-server

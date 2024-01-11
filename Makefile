@@ -87,7 +87,7 @@ ifndef REGISTRY1_PASSWORD
 endif
 	docker run ${ALL_THE_DOCKER_ARGS} \
 		bash -c 'zarf tools registry login registry1.dso.mil -u ${REGISTRY1_USERNAME} -p ${REGISTRY1_PASSWORD} \
-			&& cd $(PACKAGE_NAME) \
+			&& cd packages/$(PACKAGE_NAME) \
 			&& zarf package create --confirm'
 
 .PHONY: zarf-build-all
@@ -125,7 +125,7 @@ zarf-publish-all: ## Build all Zarf Packages
 	$(MAKE) zarf-publish-cluster-autoscaler
 	$(MAKE) zarf-publish-metrics-server
 
-.PHONY: zarf-publish-cluster-autoscaler	
+.PHONY: zarf-publish-cluster-autoscaler
 zarf-publish-cluster-autoscaler:
 	$(MAKE) publish-zarf-package PACKAGE_NAME="cluster-autoscaler"
 

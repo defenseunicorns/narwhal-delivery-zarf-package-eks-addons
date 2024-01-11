@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/uds-cli/main/tasks.schema.json
+tasks:
+  - name: zarf-build-aws-node-termination-handler
+    description: "Create aws-node-termination-handler zarf package"
+    actions:
+      - description: "run the make target for zarf-build-aws-node-termination-handler"
+        cmd: make zarf-build-aws-node-termination-handler
+
+  - name: zarf-build-cluster-autoscaler
+    description: "Create cluster-autoscaler zarf package"
+    actions:
+      - description: "run the make target for zarf-build-cluster-autoscaler"
+        cmd: make zarf-build-cluster-autoscaler
+
+  - name: zarf-build-metrics-server
+    description: "Create metrics-server zarf package"
+    actions:
+      - description: "run the make target for zarf-build-metrics-server"
+        cmd: make zarf-build-metrics-server
+
+  - name: zarf-create-all-packages
+    description: "Create all zarf packages"
+    actions:
+      - description: "run the make target for zarf-build-all"
+        cmd: "make zarf-build-all"
+
+  - name: create-eks-addons-uds-bundle
+    description: "Create all uds packages"
+    actions:
+      - description: "create the uds bundle"
+        cmd: "uds create bundles/eks-addons --confirm --no-progress --architecture=${ZARF_ARCHITECTURE}"

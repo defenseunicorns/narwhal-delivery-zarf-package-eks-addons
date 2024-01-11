@@ -1,0 +1,20 @@
+variables:
+  - name: VERSION
+    description: "The version of the package to deploy"
+    # x-release-please-start-version
+    default: "0.0.1"
+    # x-release-please-end-version
+
+tasks:
+  - name: all-packages
+    actions:
+      - description: "Deploy all EKS addon Packages"
+        cmd: |
+          uds deploy
+
+  - name: single-package
+    actions:
+      - description: "Deploy the requested Zarf Package (must set UDS_PKG environment variable)"
+        cmd: |
+          set -e
+          zarf package deploy packages/zarf-package-${UDS_PKG}-${UDS_ARCH}.tar.zst --confirm
