@@ -5,17 +5,18 @@ metadata:
   # x-release-please-start-version
   version: 0.0.1
   # x-release-please-end-version
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
   architecture: amd64
 
 packages:
   - name: aws-node-termination-handler
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/aws-node-termination-handler
     ref: 0.0.1
-    path: ../../packages/aws-node-termination-handler
 
   - name: cluster-autoscaler
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/cluster-autoscaler
     ref: 0.0.1
-    path: ../../packages/cluster-autoscaler
 
   - name: metrics-server
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/metrics-server
     ref: 0.0.1
-    path: ../../packages/metrics-server

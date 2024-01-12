@@ -25,7 +25,7 @@ tasks:
         cmd: "make zarf-build-all"
 
   - name: create-eks-addons-uds-bundle
-    description: "Create all uds packages"
+    description: "Create eks-addons uds bundle"
     actions:
-      - description: "create the uds bundle"
-        cmd: "uds create bundles/eks-addons --confirm --no-progress --architecture=${ZARF_ARCHITECTURE}"
+      - description: "Create eks-addons uds bundle"
+        cmd: "uds create bundles/eks-addons --confirm --architecture=${UDS_ARCH}"

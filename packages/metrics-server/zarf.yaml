@@ -3,6 +3,7 @@ metadata:
   name: metrics-server
   description: Zarf package of metrics-server
   version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
   architecture: amd64
 
 constants:

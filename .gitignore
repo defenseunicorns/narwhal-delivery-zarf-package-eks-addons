@@ -42,6 +42,8 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+build/
+
 #zarf
 zarf-package*.tar.zst
 #uds

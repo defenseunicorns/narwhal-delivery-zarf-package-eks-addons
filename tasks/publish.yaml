@@ -1,0 +1,68 @@
+variables:
+  - name: TARGET_REPO
+    default: oci://ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons
+
+  - name: VERSION
+    description: "The version of the packages to build"
+    # x-release-please-start-version
+    default: "0.0.1"
+    # x-release-please-end
+  - name: PACKAGE_DIR
+    description: "The directory to build the packages in"
+    default: "build"
+
+tasks:
+  - name: packages
+    description: "Build and publish the zarf packages"
+    actions:
+      - description: "Create zarf aws-node-termination-handler package"
+        cmd: |
+          set -e
+          uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
+
+      - description: "Create zarf cluster-autoscaler package"
+        cmd: |
+          set -e
+          uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
+
+      - description: "Create zarf metrics-server package"
+        cmd: |
+          set -e
+          uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
+
+      - description: "Publish the packages"
+        cmd: |
+          set -e
+          zarf package publish ${PACKAGE_DIR}/zarf-package-aws-node-termination-handler-amd64-${VERSION}.tar.zst ${TARGET_REPO}
+          zarf package publish ${PACKAGE_DIR}/zarf-package-cluster-autoscaler-amd64-${VERSION}.tar.zst ${TARGET_REPO}
+          zarf package publish ${PACKAGE_DIR}/zarf-package-metrics-server-amd64-${VERSION}.tar.zst ${TARGET_REPO}
+
+  - name: bundles
+    description: "Build and publish UDS bundles"
+    actions:
+      - description: "Create the UDS Core Standard Bundle"
+        cmd: |
+          set -e
+          ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml k3d-standard-bundle --no-progress
+          ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml k3d-standard-bundle --no-progress
+
+      - description: Create the UDS Core Istio Only Bundle
+        cmd: |
+          set -e
+          ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml k3d-istio-bundle --no-progress
+          ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml k3d-istio-bundle --no-progress
+
+      - description: "Publish the bundles"
+        cmd: |
+          set -e
+          uds publish bundles/k3d-standard/uds-bundle-k3d-core-amd64-${VERSION}.tar.zst ${TARGET_REPO}/bundles --no-progress
+          uds publish bundles/k3d-standard/uds-bundle-k3d-core-arm64-${VERSION}.tar.zst ${TARGET_REPO}/bundles --no-progress
+          uds publish bundles/k3d-istio/uds-bundle-k3d-core-istio-amd64-${VERSION}.tar.zst ${TARGET_REPO}/bundles --no-progress
+          uds publish bundles/k3d-istio/uds-bundle-k3d-core-istio-arm64-${VERSION}.tar.zst ${TARGET_REPO}/bundles --no-progress
+
+      - description: "Tag the latest bundles"
+        cmd: |
+          set -e
+          pkgPath="ghcr.io/defenseunicorns/packages/uds/bundles/k3d-core"
+          zarf tools registry copy ${pkgPath}:${VERSION}-arm64 ${pkgPath}:arm64
+          zarf tools registry copy ${pkgPath}:${VERSION}-amd64 ${pkgPath}:amd64

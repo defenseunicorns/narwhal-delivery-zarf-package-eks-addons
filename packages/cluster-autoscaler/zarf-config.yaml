@@ -1,5 +1,6 @@
 package:
   create:
+    output: ../../build
     set:
       # x-release-please-start-version
       package_version: 0.0.1
