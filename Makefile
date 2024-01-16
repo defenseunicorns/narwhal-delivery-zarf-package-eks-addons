@@ -8,18 +8,41 @@ ifndef CI
 	TTY_ARG := -it
 endif
 
-# DRY is good.
-ALL_THE_DOCKER_ARGS := $(TTY_ARG) --rm \
+ALL_THE_DOCKER_ARGS := -it --rm \
 	--cap-add=NET_ADMIN \
 	--cap-add=NET_RAW \
 	-v "${PWD}:/app" \
+	-v "${PWD}/.cache/pre-commit:/root/.cache/pre-commit" \
 	-v "${PWD}/.cache/tmp:/tmp" \
 	-v "${PWD}/.cache/go:/root/go" \
+	-v "${PWD}/.cache/go-build:/root/.cache/go-build" \
+	-v "${PWD}/.cache/.terraform.d/plugin-cache:/root/.terraform.d/plugin-cache" \
 	-v "${PWD}/.cache/.zarf-cache:/root/.zarf-cache" \
+	-v "${HOME}/.uds-cache:/root/.uds-cache" \
 	--workdir "/app" \
-	-e "SKIP=$(SKIP)" \
-	-e "PRE_COMMIT_HOME=/app/.cache/pre-commit" \
+	-e TF_LOG_PATH \
+	-e TF_LOG \
+	-e GOPATH=/root/go \
+	-e GOCACHE=/root/.cache/go-build \
+	-e TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE=true \
+	-e TF_PLUGIN_CACHE_DIR=/root/.terraform.d/plugin-cache \
+	-e AWS_REGION \
+	-e AWS_DEFAULT_REGION \
+	-e AWS_ACCESS_KEY_ID \
+	-e AWS_SECRET_ACCESS_KEY \
+	-e AWS_SESSION_TOKEN \
+	-e AWS_SECURITY_TOKEN \
+	-e AWS_SESSION_EXPIRATION \
 	${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION}
+
+ZARF := zarf -l debug --no-progress --no-log-file
+
+# The repo clone url
+REPO := $(shell git remote get-url origin)
+# The current branch name
+BRANCH := $(shell git symbolic-ref --short HEAD)
+# The "primary" directory
+PRIMARY_DIR := $(shell pwd)
 
 # Silent mode by default. Run `make VERBOSE=1` to turn off silent mode.
 ifndef VERBOSE
@@ -30,9 +53,21 @@ endif
 FORCE:
 
 .PHONY: help
-help: ## Show a list of all targets
+help: ## Show available user-facing targets
 	grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	| sed -n 's/^\(.*\): \(.*\)##\(.*\)/\1:\3/p' \
+	| column -t -s ":"
+
+.PHONY: help-dev
+help-dev: ## Show available dev-facing targets
+	grep -E '^_[a-zA-Z0-9_-]+:.*?#_# .*$$' $(MAKEFILE_LIST) \
+	| sed -n 's/^\(.*\): \(.*\)#_#\(.*\)/\1:\3/p' \
+	| column -t -s ":"
+
+.PHONY: help-internal
+help-internal: ## Show available internal targets
+	grep -E '^\+[a-zA-Z0-9_-]+:.*?#\+# .*$$' $(MAKEFILE_LIST) \
+	| sed -n 's/^\(.*\): \(.*\)#\+#\(.*\)/\1:\3/p' \
 	| column -t -s ":"
 
 .PHONY: _create-folders
@@ -141,3 +176,127 @@ zarf-publish-aws-node-termination-handler:
 zarf-build-and-publish-all: ## Build and Publish all Zarf Packages
 	$(MAKE) zarf-build-all
 	$(MAKE) zarf-publish-all
+
+.PHONY: _test-infra-up
+_test-infra-up: #_# Use Terraform to bring up the test server and prepare it for use
+	cd test/iac && terraform init && terraform apply --auto-approve
+	$(MAKE) _test-wait-for-zarf _test-install-dod-ca _test-clone _test-update-etc-hosts
+
+.PHONY: _test-all
+_test-all: #_# Run the whole test end-to-end. Uses Docker. Requires access to AWS account. Costs real money. Handles cleanup by itself assuming it is able to run all the way through.
+	docker run ${ALL_THE_DOCKER_ARGS} \
+		bash -c 'git config --global --add safe.directory /app && ./test/test-all.sh'
+
+.PHONY: _test-wait-for-zarf
+_test-wait-for-zarf: #_# Wait for Zarf to be installed in the test server
+	START_TIME=$$(date +%s); \
+	REGION=$$(cd test/iac && terraform output -raw region); \
+	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
+	while true; do \
+		if aws ssm start-session \
+				--region $$REGION \
+				--target $$SERVER_ID \
+				--document-name AWS-StartInteractiveCommand \
+				--parameters command='["whoami"]'; then \
+			break; \
+		fi; \
+		CURRENT_TIME=$$(date +%s); \
+		ELAPSED_TIME=$$((CURRENT_TIME - START_TIME)); \
+		if [[ $$ELAPSED_TIME -ge 300 ]]; then \
+			echo "Timed out waiting for instance to be available"; \
+			exit 1; \
+		fi; \
+		echo "Instance is not available yet. Retrying in 10 seconds"; \
+		sleep 10; \
+	done; \
+	aws ssm start-session \
+		--region $$REGION \
+		--target $$SERVER_ID \
+		--document-name AWS-StartInteractiveCommand \
+		--parameters command='[" \
+			START_TIME=$$(date +%s); \
+			while true; do \
+				if $(ZARF) version; then \
+					echo \"EXITCODE: 0\"; \
+					exit 0; \
+				fi; \
+				CURRENT_TIME=$$(date +%s); \
+				ELAPSED_TIME=$$((CURRENT_TIME - START_TIME)); \
+				if [[ $$ELAPSED_TIME -ge 300 ]]; then \
+					echo \"Timed out waiting for Zarf to be installed\"; \
+					echo \"EXITCODE: 1\"; \
+					exit 1; \
+				fi; \
+				echo \" Zarf is not installed yet. Retrying in 10 seconds\"; \
+				sleep 10; \
+			done; \
+		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+.PHONY: _test-install-dod-ca
+_test-install-dod-ca: #_# Install the DOD CA in the test server
+	REGION=$$(cd test/iac && terraform output -raw region); \
+	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
+	aws ssm start-session \
+		--region $$REGION \
+		--target $$SERVER_ID \
+		--document-name AWS-StartInteractiveCommand \
+		--parameters command='[" \
+			sudo yum install -y -q git \
+			&& cd ~ \
+			&& wget https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_DoD.zip \
+			&& unzip -o unclass-certificates_pkcs7_DoD.zip \
+			&& cd certificates_pkcs7_*_dod/ \
+			&& sudo cp -f ./dod_pke_chain.pem /etc/pki/ca-trust/source/anchors/ \
+			&& sudo update-ca-trust \
+			&& echo \"EXITCODE: 0\" \
+		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+.PHONY: _test-clone
+_test-clone: #_# Clone the repo in the test instance so we can use it
+	aws ssm start-session \
+		--region $$(cd test/iac && terraform output -raw region) \
+		--target $$(cd test/iac && terraform output -raw server_id) \
+		--document-name AWS-StartInteractiveCommand \
+		--parameters command='[" \
+			sudo rm -rf ~/narwhal-delivery-reference-deployment \
+			&& git clone -b $(BRANCH) $(REPO) ~/narwhal-delivery-reference-deployment \
+			&& echo \"EXITCODE: 0\" \
+		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+.PHONY: _test-update-etc-hosts
+_test-update-etc-hosts: #_# Update /etc/hosts on the test instance
+	aws ssm start-session \
+		--region $$(cd test/iac && terraform output -raw region) \
+		--target $$(cd test/iac && terraform output -raw server_id) \
+		--document-name AWS-StartInteractiveCommand \
+		--parameters command='[" \
+			cd ~/narwhal-delivery-reference-deployment/test \
+			&& chmod +x ./update-local-etc-hosts.sh \
+			&& sudo ./update-local-etc-hosts.sh \
+			&& echo \"EXITCODE: 0\" \
+		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+.PHONY: zarf-init
+zarf-init: ## Run 'zarf init' on the local machine. Will create a K3s cluster since the "k3s" component is selected.
+ifneq ($(shell id -u), 0)
+	$(error "This target must be run as root")
+endif
+	$(ZARF) init \
+		--components=k3s,git-server \
+		--set K3S_ARGS="--disable traefik,servicelb" \
+		--confirm
+
+.PHONY: _test-platform-up
+_test-platform-up: #_# On the test server, set up the k8s cluster and UDS platform
+	REGION=$$(cd test/iac && terraform output -raw region); \
+	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
+	aws ssm start-session \
+		--region $$REGION \
+		--target $$SERVER_ID \
+		--document-name AWS-StartInteractiveCommand \
+		--parameters command='[" \
+			cd ~/narwhal-delivery-reference-deployment \
+			&& git pull \
+			&& sudo make zarf-init \
+			&& echo \"EXITCODE: 0\" \
+		"]' | tee /dev/tty | grep -q "EXITCODE: 0"

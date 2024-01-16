@@ -1,10 +1,40 @@
+variables:
+  - name: K3D_CLUSTER_NAME
+    description: "The name of the cluster to create"
+    default: "uds"
+  - name: K3D_IMAGE
+    description: "K3d image to use"
+    default: "rancher/k3s:v1.27.9-rc1-k3s1-amd64" # force amd64 lol
+
 tasks:
-  - name: k3d-test-cluster
+  - name: k3d-setup-cluster
     actions:
       - description: "Create the K3d cluster"
         # renovate: datasource=github-tags depName=defenseunicorns/uds-k3d versioning=semver
-        cmd: "zarf package deploy oci://defenseunicorns/uds-k3d:0.2.1-multi --confirm"
+        cmd: |
+          set -x;
+          k3d cluster create \
+          --k3s-arg "--disable=traefik@server:*" \
+          --k3s-arg "--disable=servicelb@server:*" \
+          --image ${K3D_IMAGE} \
+          ${K3D_CLUSTER_NAME} \
+          ;
+          set +x
 
-      - description: "Initialize the cluster with Zarf"
-        # renovate: datasource=github-tags depName=defenseunicorns/init versioning=semver
-        cmd: "zarf package deploy oci://defenseunicorns/init:v0.32.1-${UDS_ARCH} --confirm"
+  # - name: k3d-setup-cluster
+  #   actions:
+  #     - description: "Create the K3d cluster"
+  #       # renovate: datasource=github-tags depName=defenseunicorns/uds-k3d versioning=semver
+  #       cmd: |
+  #         set -x;
+  #         k3d cluster create \
+  #         --k3s-arg "--disable=traefik@server:*" \
+  #         --k3s-arg "--disable=servicelb@server:*" \
+  #         --image ${K3D_IMAGE} \
+  #         ${K3D_CLUSTER_NAME} \
+  #         ;
+  #         set +x
+
+  # - description: "Initialize the cluster with Zarf"
+  #   # renovate: datasource=github-tags depName=defenseunicorns/init versioning=semver
+  #   cmd: "zarf package deploy -a amd64 oci://defenseunicorns/init:v0.32.1 --confirm"

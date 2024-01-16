@@ -12,11 +12,11 @@ tasks:
       - description: "run the make target for zarf-build-cluster-autoscaler"
         cmd: make zarf-build-cluster-autoscaler
 
-  - name: zarf-build-metrics-server
-    description: "Create metrics-server zarf package"
+  - name: zarf-create-single-package
+    description: "Create single zarf package matching name of 'zarf-build-${ZARF_PACKAGE_NAME}' in the makefile"
     actions:
       - description: "run the make target for zarf-build-metrics-server"
-        cmd: make zarf-build-metrics-server
+        cmd: "make zarf-build-${ZARF_PACKAGE_NAME}"
 
   - name: zarf-create-all-packages
     description: "Create all zarf packages"
@@ -28,4 +28,4 @@ tasks:
     description: "Create eks-addons uds bundle"
     actions:
       - description: "Create eks-addons uds bundle"
-        cmd: "uds create bundles/eks-addons --confirm --architecture=${UDS_ARCH}"
+        cmd: "uds create bundles/eks-addons --confirm --architecture amd64"

@@ -1,9 +1,20 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/uds-cli/main/tasks.schema.json
 includes:
   - create: ./tasks/create.yaml
+  - setup: ./tasks/setup.yaml
   - deploy: ./tasks/deploy.yaml
+  - delete: ./tasks/delete.yaml
+  - publish: ./tasks/publish.yaml
 
 tasks:
+  - name: setup-cluster
+    actions:
+      - task: setup:k3d-setup-cluster
+
+  - name: zarf-create-single-package
+    actions:
+      - task: create:zarf-create-single-package
+
   - name: zarf-create-all-packages
     actions:
       - task: create:zarf-create-all-packages
@@ -19,3 +30,15 @@ tasks:
   - name: create-eks-addons-uds-bundle
     actions:
       - task: create:create-eks-addons-uds-bundle
+
+  - name: delete-cluster
+    actions:
+      - task: delete:k3d-delete-cluster
+
+  - name: publish-packages
+    actions:
+      - task: publish:packages
+
+  - name: publish-bundles
+    actions:
+      - task: publish:bundles
