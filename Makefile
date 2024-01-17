@@ -42,7 +42,11 @@ REPO := $(shell git remote get-url origin)
 # The current branch name
 BRANCH := $(shell git symbolic-ref --short HEAD)
 # The "primary" directory
-PRIMARY_DIR := $(shell pwd)
+PRIMARY_DIR := $(shell basename $$(pwd))
+
+.PHONY: _check-env-vars
+_check-env-vars:
+	echo $(PRIMARY_DIR)
 
 # Silent mode by default. Run `make VERBOSE=1` to turn off silent mode.
 ifndef VERBOSE
@@ -179,7 +183,7 @@ zarf-build-and-publish-all: ## Build and Publish all Zarf Packages
 
 .PHONY: _test-infra-up
 _test-infra-up: #_# Use Terraform to bring up the test server and prepare it for use
-	cd test/iac && terraform init && terraform apply --auto-approve
+	cd test/iac && terraform init && TF_LOG_PATH=./tf_wtf.log TF_LOG=debug terraform apply --auto-approve
 	$(MAKE) _test-wait-for-zarf _test-install-dod-ca _test-clone _test-update-etc-hosts
 
 .PHONY: _test-all
@@ -258,8 +262,8 @@ _test-clone: #_# Clone the repo in the test instance so we can use it
 		--target $$(cd test/iac && terraform output -raw server_id) \
 		--document-name AWS-StartInteractiveCommand \
 		--parameters command='[" \
-			sudo rm -rf ~/narwhal-delivery-reference-deployment \
-			&& git clone -b $(BRANCH) $(REPO) ~/narwhal-delivery-reference-deployment \
+			sudo rm -rf ~/$(PRIMARY_DIR) \
+			&& git clone -b $(BRANCH) $(REPO) ~/$(PRIMARY_DIR) \
 			&& echo \"EXITCODE: 0\" \
 		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
 
@@ -270,7 +274,7 @@ _test-update-etc-hosts: #_# Update /etc/hosts on the test instance
 		--target $$(cd test/iac && terraform output -raw server_id) \
 		--document-name AWS-StartInteractiveCommand \
 		--parameters command='[" \
-			cd ~/narwhal-delivery-reference-deployment/test \
+			cd ~/$(PRIMARY_DIR)/test \
 			&& chmod +x ./update-local-etc-hosts.sh \
 			&& sudo ./update-local-etc-hosts.sh \
 			&& echo \"EXITCODE: 0\" \
@@ -295,7 +299,7 @@ _test-platform-up: #_# On the test server, set up the k8s cluster and UDS platfo
 		--target $$SERVER_ID \
 		--document-name AWS-StartInteractiveCommand \
 		--parameters command='[" \
-			cd ~/narwhal-delivery-reference-deployment \
+			cd ~/$(PRIMARY_DIR) \
 			&& git pull \
 			&& sudo make zarf-init \
 			&& echo \"EXITCODE: 0\" \
