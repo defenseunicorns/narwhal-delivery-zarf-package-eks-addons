@@ -35,6 +35,14 @@ ALL_THE_DOCKER_ARGS := -it --rm \
 	-e AWS_SESSION_EXPIRATION \
 	${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION}
 
+SSM_SESSION_ARGS := \
+	REGION=$$(cd test/iac && terraform output -raw region); \
+	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
+	aws ssm start-session \
+		--region $$REGION \
+		--target $$SERVER_ID \
+		--document-name AWS-StartInteractiveCommand
+
 ZARF := zarf -l debug --no-progress --no-log-file
 
 # The repo clone url
@@ -47,6 +55,7 @@ PRIMARY_DIR := $(shell basename $$(pwd))
 .PHONY: _check-env-vars
 _check-env-vars:
 	echo $(PRIMARY_DIR)
+	echo $(SSM_SESSION_ARGS)
 
 # Silent mode by default. Run `make VERBOSE=1` to turn off silent mode.
 ifndef VERBOSE
@@ -183,8 +192,21 @@ zarf-build-and-publish-all: ## Build and Publish all Zarf Packages
 
 .PHONY: _test-infra-up
 _test-infra-up: #_# Use Terraform to bring up the test server and prepare it for use
-	cd test/iac && terraform init && TF_LOG_PATH=./tf_wtf.log TF_LOG=debug terraform apply --auto-approve
-	$(MAKE) _test-wait-for-zarf _test-install-dod-ca _test-clone _test-update-etc-hosts
+	$(MAKE) _test-terraform-apply _test-wait-for-zarf _test-install-dod-ca _test-clone _test-update-etc-hosts
+
+.PHONY: _test-platform-up
+_test-platform-up: #_# On the test server, set up the k8s cluster and UDS platform
+	$(SSM_SESSION_ARGS) \
+		--parameters command='[" \
+			cd ~/$(PRIMARY_DIR) \
+			&& git pull \
+			&& sudo make install-uds-cli \
+			&& echo \"EXITCODE: 0\" \
+		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+.PHONY: _test-terraform-apply
+_test-terraform-apply: #_# Use Terraform to apply the test server changes
+	cd test/iac && terraform init && terraform apply --auto-approve
 
 .PHONY: _test-all
 _test-all: #_# Run the whole test end-to-end. Uses Docker. Requires access to AWS account. Costs real money. Handles cleanup by itself assuming it is able to run all the way through.
@@ -213,10 +235,7 @@ _test-wait-for-zarf: #_# Wait for Zarf to be installed in the test server
 		echo "Instance is not available yet. Retrying in 10 seconds"; \
 		sleep 10; \
 	done; \
-	aws ssm start-session \
-		--region $$REGION \
-		--target $$SERVER_ID \
-		--document-name AWS-StartInteractiveCommand \
+		$(SSM_SESSION_ARGS) \
 		--parameters command='[" \
 			START_TIME=$$(date +%s); \
 			while true; do \
@@ -238,12 +257,7 @@ _test-wait-for-zarf: #_# Wait for Zarf to be installed in the test server
 
 .PHONY: _test-install-dod-ca
 _test-install-dod-ca: #_# Install the DOD CA in the test server
-	REGION=$$(cd test/iac && terraform output -raw region); \
-	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
-	aws ssm start-session \
-		--region $$REGION \
-		--target $$SERVER_ID \
-		--document-name AWS-StartInteractiveCommand \
+	$(SSM_SESSION_ARGS) \
 		--parameters command='[" \
 			sudo yum install -y -q git \
 			&& cd ~ \
@@ -257,10 +271,7 @@ _test-install-dod-ca: #_# Install the DOD CA in the test server
 
 .PHONY: _test-clone
 _test-clone: #_# Clone the repo in the test instance so we can use it
-	aws ssm start-session \
-		--region $$(cd test/iac && terraform output -raw region) \
-		--target $$(cd test/iac && terraform output -raw server_id) \
-		--document-name AWS-StartInteractiveCommand \
+	$(SSM_SESSION_ARGS) \
 		--parameters command='[" \
 			sudo rm -rf ~/$(PRIMARY_DIR) \
 			&& git clone -b $(BRANCH) $(REPO) ~/$(PRIMARY_DIR) \
@@ -269,10 +280,7 @@ _test-clone: #_# Clone the repo in the test instance so we can use it
 
 .PHONY: _test-update-etc-hosts
 _test-update-etc-hosts: #_# Update /etc/hosts on the test instance
-	aws ssm start-session \
-		--region $$(cd test/iac && terraform output -raw region) \
-		--target $$(cd test/iac && terraform output -raw server_id) \
-		--document-name AWS-StartInteractiveCommand \
+	$(SSM_SESSION_ARGS) \
 		--parameters command='[" \
 			cd ~/$(PRIMARY_DIR)/test \
 			&& chmod +x ./update-local-etc-hosts.sh \
@@ -287,20 +295,57 @@ ifneq ($(shell id -u), 0)
 endif
 	$(ZARF) init \
 		--components=k3s,git-server \
-		--set K3S_ARGS="--disable traefik,servicelb" \
+		--set K3S_ARGS="--disable traefik,servicelb,metrics-server" \
 		--confirm
 
-.PHONY: _test-platform-up
-_test-platform-up: #_# On the test server, set up the k8s cluster and UDS platform
+.PHONY: install-uds-cli
+install-uds-cli: ## Install the uds-cli on the bastion host
+		ARCH=$$(uname -m | sed 's/x86_64/amd64/'); \
+			sudo curl -L $(UDS_CLI_REPO)/releases/download/v$(UDS_CLI_VERSION)/uds-cli_v$(UDS_CLI_VERSION)_Linux_$${ARCH} -o /usr/local/bin/uds \
+			&& sudo chmod +x /usr/local/bin/uds \
+			&& which uds \
+			&& echo \"uds version: $$(uds version)
+
+
+.PHONY: ssm-install-uds-cli
+ssm-install-uds-cli: ## Install the uds-cli on the bastion host
+	$(SSM_SESSION_ARGS) \
+		--parameters command='[" \
+			ARCH=$$(uname -m | sed 's/x86_64/amd64/'); \
+			sudo curl -L $(UDS_CLI_REPO)/releases/download/v$(UDS_CLI_VERSION)/uds-cli_v$(UDS_CLI_VERSION)_Linux_$${ARCH} -o /usr/local/bin/uds \
+			&& sudo chmod +x /usr/local/bin/uds \
+			&& which uds \
+			&& echo \"uds version: $$(uds version)\" \
+			&& echo \"EXITCODE: 0\" \
+		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+
+###############################################################
+###### interactive ############################################
+###############################################################
+
+.PHONY: connect-to-bastion-host-interactivly
+connect-to-bastion-host-interactive: ## Connect to the bastion host
 	REGION=$$(cd test/iac && terraform output -raw region); \
 	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
 	aws ssm start-session \
 		--region $$REGION \
-		--target $$SERVER_ID \
-		--document-name AWS-StartInteractiveCommand \
+		--target $$SERVER_ID
+
+
+###############################################################
+###### Cleanup ################################################
+###############################################################
+
+.PHONY: _test-platform-down
+_test-platform-down: #_# On the test server, tear down the UDS platform and k8s cluster
+	$(SSM_SESSION_ARGS) \
 		--parameters command='[" \
-			cd ~/$(PRIMARY_DIR) \
-			&& git pull \
-			&& sudo make zarf-init \
+			sudo zarf destroy --confirm --remove-components \
 			&& echo \"EXITCODE: 0\" \
 		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+# Runs destroy again if the first one fails to complete.
+.PHONY: _test-infra-down
+_test-infra-down: #_# Use Terraform to bring down the test server
+	cd test/iac && terraform init && terraform destroy --auto-approve || terraform destroy -auto-approve
