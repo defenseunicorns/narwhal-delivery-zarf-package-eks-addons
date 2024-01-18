@@ -209,8 +209,8 @@ _test-platform-up: #_# On the test server, set up the k8s cluster and UDS platfo
 _test-terraform-apply: #_# Use Terraform to apply the test server changes
 	cd test/iac && terraform init && terraform apply --auto-approve
 
-.PHONY: _test-uds-package-deployment
-_test-uds-package-deployment: #_# On the test server, deploy the UDS package
+.PHONY: _test-uds-deploy-bundle
+_test-uds-package-deploy-bundle: #_# On the test server, deploy the UDS package
 	$(SSM_SESSION_ARGS) \
 		--parameters command='[" \
 			cd ~/$(PRIMARY_DIR) \
@@ -343,7 +343,6 @@ connect-to-bastion-host-interactive: ## Connect to the bastion host
 	aws ssm start-session \
 		--region $$REGION \
 		--target $$SERVER_ID
-
 
 ###############################################################
 ###### Cleanup ################################################
