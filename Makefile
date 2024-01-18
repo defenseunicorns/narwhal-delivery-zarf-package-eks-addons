@@ -201,6 +201,7 @@ _test-platform-up: #_# On the test server, set up the k8s cluster and UDS platfo
 			cd ~/$(PRIMARY_DIR) \
 			&& git pull \
 			&& sudo make install-uds-cli VERBOSE=1 \
+			&& sudo make zarf-init \
 			&& echo \"EXITCODE: 0\" \
 		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
 
@@ -304,7 +305,7 @@ install-uds-cli: ## Install the uds-cli on the bastion host
 		sudo curl -L $(UDS_CLI_REPO)/releases/download/v$(UDS_CLI_VERSION)/uds-cli_v$(UDS_CLI_VERSION)_Linux_$${ARCH} -o /usr/bin/uds \
 		&& sudo chmod +x /usr/bin/uds \
 		&& which uds \
-		&& echo \"uds version: $$(uds version)
+		&& echo "uds version: $$(uds version) $${ARCH}"
 
 
 .PHONY: ssm-install-uds-cli
