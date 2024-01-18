@@ -214,8 +214,10 @@ _test-uds-package-deployment: #_# On the test server, deploy the UDS package
 	$(SSM_SESSION_ARGS) \
 		--parameters command='[" \
 			cd ~/$(PRIMARY_DIR) \
+			&& ls -lahrt \
 			&& git pull \
-			&& sudo ./test/deploy-uds-package.sh \
+			&& chmod +x ~/$(PRIMARY_DIR)/test/deploy-uds-package.sh \
+			&& sudo ~/$(PRIMARY_DIR)/test/deploy-uds-package.sh \
 		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
 
 .PHONY: _test-all
