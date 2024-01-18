@@ -200,7 +200,7 @@ _test-platform-up: #_# On the test server, set up the k8s cluster and UDS platfo
 		--parameters command='[" \
 			cd ~/$(PRIMARY_DIR) \
 			&& git pull \
-			&& sudo make install-uds-cli \
+			&& sudo make install-uds-cli VERBOSE=1 \
 			&& echo \"EXITCODE: 0\" \
 		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
 
