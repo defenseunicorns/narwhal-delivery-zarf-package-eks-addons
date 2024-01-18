@@ -209,6 +209,15 @@ _test-platform-up: #_# On the test server, set up the k8s cluster and UDS platfo
 _test-terraform-apply: #_# Use Terraform to apply the test server changes
 	cd test/iac && terraform init && terraform apply --auto-approve
 
+.PHONY: _test-uds-package-deployment
+_test-uds-package-deployment: #_# On the test server, deploy the UDS package
+	$(SSM_SESSION_ARGS) \
+		--parameters command='[" \
+			cd ~/$(PRIMARY_DIR) \
+			&& git pull \
+			&& sudo ./test/deploy-uds-package.sh \
+		"]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
 .PHONY: _test-all
 _test-all: #_# Run the whole test end-to-end. Uses Docker. Requires access to AWS account. Costs real money. Handles cleanup by itself assuming it is able to run all the way through.
 	docker run ${ALL_THE_DOCKER_ARGS} \
