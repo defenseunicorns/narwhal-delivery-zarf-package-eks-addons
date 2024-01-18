@@ -302,8 +302,8 @@ endif
 install-uds-cli: ## Install the uds-cli on the bastion host
 		set -x;
 		ARCH=$$(uname -m | sed 's/x86_64/amd64/'); \
-			sudo curl -L $(UDS_CLI_REPO)/releases/download/v$(UDS_CLI_VERSION)/uds-cli_v$(UDS_CLI_VERSION)_Linux_$${ARCH} -o /usr/local/bin/uds \
-			&& sudo chmod +x /usr/local/bin/uds \
+			sudo curl -L $(UDS_CLI_REPO)/releases/download/v$(UDS_CLI_VERSION)/uds-cli_v$(UDS_CLI_VERSION)_Linux_$${ARCH} -o /usr/bin/uds \
+			&& sudo chmod +x /usr/bin/uds \
 			&& which uds \
 			&& echo \"uds version: $$(uds version);
 		set +x;
