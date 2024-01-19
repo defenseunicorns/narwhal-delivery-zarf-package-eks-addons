@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Source the .env file from the script's directory
 source "$SCRIPT_DIR/../.env"
 
-# stage uds configs for values overrides patterns
+# stage uds config.yaml for values overrides patterns
 cat << 'EOF' > uds-config.yaml
 variables:
   cluster-autoscaler:
@@ -17,24 +17,22 @@ variables:
     values_overrides: "aws-node-termination-handler-values-overrides-demo.yaml"
 EOF
 
-# adding extra labels with helm is fun
-
+# staging values overrides per component
+# adding extra labels with helm chart values overrides
 cat << EOF > cluster-autoscaler-values-overrides-demo.yaml
 podLabels:
   extraLabel: "whatever"
 EOF
 
-# https://github.com/kubernetes-sigs/metrics-server/blob/master/charts/metrics-server/templates/deployment.yaml#L24-L30
 cat << EOF > metrics-server-values-overrides-demo.yaml
 podLabels:
   extraLabel: "whatever"
 EOF
 
-# https://github.com/aws/aws-node-termination-handler/blob/main/config/helm/aws-node-termination-handler/templates/daemonset.linux.yaml#L19-L26
 cat << EOF > aws-node-termination-handler-values-overrides-demo.yaml
 podLabels:
   extraLabel: "whatever"
 EOF
 
-
+# deploy the uds bundle of eks addons
 uds deploy "oci://${UDS_EKS_ADDONS_REPO}:${UDS_EKS_ADDONS_VERSION}-amd64" --confirm
