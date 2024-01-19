@@ -5,27 +5,52 @@ includes:
   - deploy: ./tasks/deploy.yaml
   - delete: ./tasks/delete.yaml
   - publish: ./tasks/publish.yaml
+  - vars: ./tasks/vars.yaml
+
+variables:
+  - name: ENV_VAR_FILE
+    default: .env
+    type: file
 
 tasks:
+  - name: set-preflight-env-vars
+    description: "Set environment variables"
+    actions:
+      - task: vars:convenience-vars
+      - task: vars:source-env-vars
+      - task: vars:set-runner-vars
+
   - name: setup-cluster
+    description: "Setup the cluster"
     actions:
       - task: setup:k3d-setup-cluster
 
+  - name: infra-up
+    description: "Deploy VPC and Bastion for the k3s cluster"
+    actions:
+      - task: set-preflight-env-vars
+      - task: setup:infra-up
+
   - name: zarf-create-single-package
+    description: "Create single zarf package matching name of 'zarf-build-${ZARF_PACKAGE_NAME}' in the makefile"
     actions:
       - task: create:zarf-create-single-package
 
   - name: zarf-create-all-packages
+    description: "Create all zarf packages"
     actions:
       - task: create:zarf-create-all-packages
 
-  - name: deploy-single-package
+  - name: deploy-single-package-from-bundle
+    description: |
+      Deploy single zarf package from UDS bundle.
+      Use the environment variables ${UDS_BUNDLE} and ${ZARF_PACKAGE_NAME} to specify the bundle and package from the bundle to deploy.
     actions:
-      - task: deploy:deploy-single-package
+      - task: deploy:deploy-single-package-from-bundle
 
-  - name: deploy-all-packages
+  - name: deploy-bundle
     actions:
-      - task: deploy:deploy-all-packages
+      - task: deploy:deploy-bundle
 
   - name: create-eks-addons-uds-bundle
     actions:

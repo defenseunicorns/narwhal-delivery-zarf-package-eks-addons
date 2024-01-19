@@ -6,15 +6,8 @@ variables:
     # x-release-please-end-version
 
 tasks:
-  - name: all-packages
+  - name: deploy-all-packages
     actions:
-      - description: "Deploy all EKS addon Packages"
+      - description: "Deploy the uds"
         cmd: |
           uds deploy
-
-  - name: single-package
-    actions:
-      - description: "Deploy the requested Zarf Package (must set UDS_PKG environment variable)"
-        cmd: |
-          set -e
-          zarf package deploy packages/zarf-package-${UDS_PKG}-${UDS_ARCH}.tar.zst --confirm

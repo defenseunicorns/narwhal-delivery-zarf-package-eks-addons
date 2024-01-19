@@ -9,7 +9,7 @@ ifndef CI
 endif
 
 ALL_THE_DOCKER_ARGS := TF_VARS=$$(env | grep '^TF_VAR_' | awk -F= '{printf "-e %s ", $$1}'); \
-	docker run $(TTY_ARG) --rm \-it --rm \
+	docker run $(TTY_ARG) --rm \
 	--platform=linux/amd64 \
 	--cap-add=NET_ADMIN \
 	--cap-add=NET_RAW \

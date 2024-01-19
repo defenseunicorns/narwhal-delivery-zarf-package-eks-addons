@@ -1,26 +1,19 @@
+includes:
+  - vars: ./tasks/vars.yaml
+
 variables:
   - name: K3D_CLUSTER_NAME
     description: "The name of the cluster to create"
     default: "uds"
   - name: K3D_IMAGE
     description: "K3d image to use"
-    default: "rancher/k3s:v1.27.9-rc1-k3s1-amd64" # force amd64 lol
+    type: file
+    default: rancher/k3s:v1.21.2-k3s1
+  - name: UDS_DEPLOY_DIR
+    description: "The directory to deploy from"
+    default: "/tmp/uds"
 
 tasks:
-  - name: k3d-setup-cluster
-    actions:
-      - description: "Create the K3d cluster"
-        # renovate: datasource=github-tags depName=defenseunicorns/uds-k3d versioning=semver
-        cmd: |
-          set -x;
-          k3d cluster create \
-          --k3s-arg "--disable=traefik@server:*" \
-          --k3s-arg "--disable=servicelb@server:*" \
-          --image ${K3D_IMAGE} \
-          ${K3D_CLUSTER_NAME} \
-          ;
-          set +x
-
   # - name: k3d-setup-cluster
   #   actions:
   #     - description: "Create the K3d cluster"
@@ -34,7 +27,148 @@ tasks:
   #         ${K3D_CLUSTER_NAME} \
   #         ;
   #         set +x
+  - name: infra-up
+    description: "Main entrypoint for setting up aws IaC"
+    actions:
+      # - task: apply-terraform-aws-iac
+      - task: set-terraform-outputs
+      - task: vars:set-ssm-session-args
+      # - task: wait-for-zarf
+      # - task: make-temp-directory
+      # - task: install-dod-ca
+      - task: clone
+      # - task: update-etc-hosts
 
-  # - description: "Initialize the cluster with Zarf"
-  #   # renovate: datasource=github-tags depName=defenseunicorns/init versioning=semver
-  #   cmd: "zarf package deploy -a amd64 oci://defenseunicorns/init:v0.32.1 --confirm"
+  - name: debug
+    actions:
+      - cmd: |
+          set +x
+          # echo "DEBUG"
+          # echo ${REGION}
+          # echo ${SERVER_ID}
+          # echo ${UDS_DEPLOY_DIR}
+          # echo ${PRIMARY_DIR}
+          # echo ${BRANCH}
+          # echo ${REPO}
+          # ${SSM_SESSION_ARGS} --parameters command='["whoami"]'
+
+          echo "again we are doing the thing"
+          aws ssm start-session --region us-gov-west-1 --target i-01044f1468f561691 --document-name AWS-StartInteractiveCommand --parameters command='["whoami"]'  | tee /dev/tty | grep -q "ssm-user"
+
+  - name: apply-terraform-aws-iac
+    description: "Deploy VPC and Bastion for the k3s cluster"
+    actions:
+      - description: "Deploy VPC and Bastion for the k3s cluster"
+        cmd: |
+          ${BUILD_HARNESS_RUN} \
+            bash -c 'cd test/iac && terraform init && terraform apply -auto-approve'
+
+  - name: set-terraform-outputs
+    description: "Set terraform outputs as environment variables"
+    actions:
+      - task: vars:set-terraform-outputs
+
+  - name: wait-for-zarf
+    description: "Wait for zarf to be available on the bastion"
+    actions:
+      - cmd: |
+          set -x
+          echo "WAIT-FOR-ZARF"
+
+          START_TIME=$(date +%s)
+          echo ${REGION}
+          echo ${SERVER_ID}
+
+          while true; do \
+            if aws ssm start-session \
+                --region ${REGION} \
+                --target ${SERVER_ID} \
+                --document-name AWS-StartInteractiveCommand \
+                --parameters command='["whoami"]'; then \
+              break; \
+            fi;
+            CURRENT_TIME=$(date +%s)
+            ELAPSED_TIME=$((CURRENT_TIME - START_TIME))
+            if [[ $ELAPSED_TIME -ge 300 ]]; then \
+              echo "Timed out waiting for instance to be available"; \
+              exit 1; \
+            fi;
+            echo "Instance is not available yet. Retrying in 10 seconds"
+            sleep 10
+          done
+
+          aws ssm start-session --region ${REGION} --target ${SERVER_ID} --document-name AWS-StartInteractiveCommand \
+            --parameters command='[" \
+              START_TIME=$(date +%s); \
+              while true; do \
+                if zarf version; then \
+                  echo \"EXITCODE: 0\"; \
+                  exit 0; \
+                fi; \
+                CURRENT_TIME=$(date +%s); \
+                ELAPSED_TIME=$((CURRENT_TIME - START_TIME)); \
+                if [[ $ELAPSED_TIME -ge 300 ]]; then \
+                  echo \"Timed out waiting for Zarf to be installed\"; \
+                  echo \"EXITCODE: 1\"; \
+                  exit 1; \
+                fi; \
+                echo \" Zarf is not installed yet. Retrying in 10 seconds\"; \
+                sleep 10; \
+              done; \
+            "]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+  - name: make-temp-directory
+    description: "Make a temp directory on the bastion"
+    actions:
+      - cmd: |
+          ${SSM_SESSION_ARGS} \
+            --parameters command='[" \
+              sudo mkdir -p ${UDS_DEPLOY_DIR} \
+              && sudo chown ssm-user:ssm-user ${UDS_DEPLOY_DIR} \
+              && echo \"EXITCODE: 0\"
+            "]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+  - name: install-dod-ca
+    description: "Install DoD CAs on the bastion"
+    actions:
+      - cmd: |
+          ${SSM_SESSION_ARGS} \
+            --parameters command='[" \
+              sudo yum install -y -q git \
+              && cd ${UDS_DEPLOY_DIR} \
+              && wget https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_DoD.zip \
+              && unzip -o unclass-certificates_pkcs7_DoD.zip \
+              && cd certificates_pkcs7_*_dod/ \
+              && sudo cp -f ./dod_pke_chain.pem /etc/pki/ca-trust/source/anchors/ \
+              && sudo update-ca-trust \
+              && echo \"EXITCODE: 0\" \
+            "]' | tee /dev/tty | grep -q "EXITCODE: 0"
+
+  - name: clone
+    description: "Clone the repo"
+    actions:
+      - cmd: |
+          echo "CLONE THE REPO"
+          unbuffer ${SSM_SESSION_ARGS} \
+            --parameters command='[" \
+              set -x \
+              && rm -rf ${UDS_DEPLOY_DIR}/${PRIMARY_DIR} \
+              && (git clone -b ${BRANCH} ${REPO} ${UDS_DEPLOY_DIR}/${PRIMARY_DIR} || true) \
+              && echo \"EXITCODE: 0\" \
+            "]' | tee /dev/tty | grep -q "EXITCODE: 0"
+        maxRetries: 10
+
+  - name: update-etc-hosts
+    description: "Update /etc/hosts on the bastion"
+    actions:
+      - cmd: |
+          echo "UPDATE /etc/hosts"
+          unbuffer ${SSM_SESSION_ARGS} \
+            --parameters command='[" \
+              cd ${UDS_DEPLOY_DIR}/${PRIMARY_DIR}/test \
+              && chmod +x ./update-local-etc-hosts.sh \
+              && sudo ./update-local-etc-hosts.sh \
+              && echo \"EXITCODE: 0\" \
+            "]' | tee /dev/tty | grep -q "EXITCODE: 0"
+        maxRetries: 10
+        description: "Update /etc/hosts on the bastion"
