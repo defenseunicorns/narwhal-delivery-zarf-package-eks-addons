@@ -38,12 +38,13 @@ ALL_THE_DOCKER_ARGS := TF_VARS=$$(env | grep '^TF_VAR_' | awk -F= '{printf "-e %
 	$${TF_VARS} \
 	${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION}
 
+REGION := $(shell $(ALL_THE_DOCKER_ARGS) bash -c 'cd test/iac && terraform output -raw region')
+SERVER_ID := $(shell $(ALL_THE_DOCKER_ARGS) bash -c 'cd test/iac && terraform output -raw server_id')
+
 SSM_SESSION_ARGS := \
-	REGION=$$(cd test/iac && terraform output -raw region); \
-	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
 	aws ssm start-session \
-		--region $$REGION \
-		--target $$SERVER_ID \
+		--region $(REGION) \
+		--target $(SERVER_ID) \
 		--document-name AWS-StartInteractiveCommand
 
 ZARF := zarf -l debug --no-progress --no-log-file
@@ -55,10 +56,16 @@ BRANCH := $(shell git symbolic-ref --short HEAD)
 # The "primary" directory
 PRIMARY_DIR := $(shell basename $$(pwd))
 
+.PHONY: arbitrary-container-command
+arbitrary-container-command: ## Run an arbitrary command in a container. Example: make arbitrary-container-command COMMAND="ls -lahrt"
+	${ALL_THE_DOCKER_ARGS} \
+		bash -c '$(COMMAND)'
+
 .PHONY: _check-env-vars
 _check-env-vars:
 	echo $(PRIMARY_DIR)
 	echo $(SSM_SESSION_ARGS)
+	echo $(REGION)
 
 # Silent mode by default. Run `make VERBOSE=1` to turn off silent mode.
 ifndef VERBOSE
@@ -230,15 +237,27 @@ _test-all: #_# Run the whole test end-to-end. Uses Docker. Requires access to AW
 	echo "Test complete. Cleaning up..."
 	# $(MAKE) _test-infra-down
 
+# .PHONY: _test-set-env-var _test-env-var-silly
+
+# _test-set-env-var:
+# 	@echo "$(shell $(ALL_THE_DOCKER_ARGS) bash -c 'cd test/iac && terraform output -raw region')"
+# 	@echo "$(shell $(ALL_THE_DOCKER_ARGS) bash -c 'cd test/iac && terraform output -raw server_id')"
+
+# _test-env-var-silly:
+# 	$(eval REGION := $(shell $(MAKE) _test-set-env-var | head -n 1))
+# 	$(eval SERVER_ID := $(shell $(MAKE) _test-set-env-var | tail -n 1))
+# 	@echo "REGION: $(REGION)"
+# 	@echo "SERVER_ID: $(SERVER_ID)"
+
 .PHONY: _test-wait-for-zarf
 _test-wait-for-zarf: #_# Wait for Zarf to be installed in the test server
 	START_TIME=$$(date +%s); \
-	REGION=$$(cd test/iac && terraform output -raw region); \
-	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
+	echo $(REGION); \
+	echo $(SERVER_ID); \
 	while true; do \
 		if aws ssm start-session \
-				--region $$REGION \
-				--target $$SERVER_ID \
+				--region $(REGION) \
+				--target $(SERVER_ID) \
 				--document-name AWS-StartInteractiveCommand \
 				--parameters command='["whoami"]'; then \
 			break; \
@@ -342,12 +361,10 @@ ssm-install-uds-cli: ## Install the uds-cli on the bastion host
 ###############################################################
 
 .PHONY: connect-to-bastion-host-interactivly
-connect-to-bastion-host-interactive: ## Connect to the bastion host
-	REGION=$$(cd test/iac && terraform output -raw region); \
-	SERVER_ID=$$(cd test/iac && terraform output -raw server_id); \
+connect-to-bastion-host-interactive: ## Connect to the bastion host interactively
 	aws ssm start-session \
-		--region $$REGION \
-		--target $$SERVER_ID
+		--region $(REGION) \
+		--target $(SERVER_ID)
 
 ###############################################################
 ###### Cleanup ################################################

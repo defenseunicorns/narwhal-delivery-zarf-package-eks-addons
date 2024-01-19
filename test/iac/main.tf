@@ -84,6 +84,7 @@ module "vpc" {
   instance_tenancy             = "default"
   enable_nat_gateway           = true
   single_nat_gateway           = true
+  create_default_vpc_endpoints = false
 }
 
 data "aws_iam_policy_document" "kms_access" {

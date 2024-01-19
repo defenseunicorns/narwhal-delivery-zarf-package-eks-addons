@@ -19,7 +19,8 @@ variables:
     default: "deploy-values-override.yaml"
 
 components:
-  - name: cluster-autoscaler-chart-deployment
+  - name: metrics-server-chart-deployment
+    description: "Deploy metrics-server helm chart"
     required: true
     import:
       path: ../skeleton
