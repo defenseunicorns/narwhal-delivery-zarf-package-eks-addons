@@ -4,6 +4,7 @@ metadata:
   version: 0.0.1
   description: >
     Zarf package Helm chart skeleton
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 components:
   - name: helm-chart-skeleton
     required: true
