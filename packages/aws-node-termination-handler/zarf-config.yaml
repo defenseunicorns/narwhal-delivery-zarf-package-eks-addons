@@ -19,4 +19,4 @@ package:
       iam_role_arn: "arn:aws:iam::123456789012:role/test"
       service_account: "test"
       sqs_queue_url: "https://sqs.us-east-2.amazonaws.com/123456789012/test"
-      aws_region: "us-east-2"
+      cluster_aws_region: "us-east-2"

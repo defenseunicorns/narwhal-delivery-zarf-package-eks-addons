@@ -31,6 +31,12 @@ tasks:
       - task: set-preflight-env-vars
       - task: setup:infra-up
 
+  - name: k3d-up
+    description: "Deploy k3d cluster"
+    actions:
+      - task: set-preflight-env-vars
+      - task: setup:k3d-up
+
   - name: zarf-create-single-package
     description: "Create single zarf package matching name of 'zarf-build-${ZARF_PACKAGE_NAME}' in the makefile"
     actions:

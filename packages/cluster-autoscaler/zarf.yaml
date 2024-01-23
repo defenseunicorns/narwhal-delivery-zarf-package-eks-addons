@@ -33,6 +33,10 @@ variables:
     type: raw
     prompt: false
     default: ""
+  - name: CLUSTER_AWS_REGION
+    type: raw
+    prompt: false
+    default: ""
   - name: VALUES_OVERRIDES
     type: file
     prompt: false
@@ -58,6 +62,9 @@ components:
           - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
             setVariables:
               - name: SERVICE_ACCOUNT
+          - cmd: jq -r '.Parameter.Value | fromjson | .cluster_aws_region' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
+            setVariables:
+              - name: CLUSTER_AWS_REGION
   - name: cluster-autoscaler-chart-deployment
     required: true
     import:

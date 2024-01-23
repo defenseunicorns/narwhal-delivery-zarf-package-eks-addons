@@ -3,13 +3,13 @@ include .env
 .DEFAULT_GOAL := help
 
 # Optionally add the "-it" flag for docker run commands if the env var "CI" is not set (meaning we are on a local machine and not in github actions)
-TTY_ARG :=
-ifndef CI
-	TTY_ARG := -it
-endif
+# TTY_ARG :=
+# ifndef CI
+# 	TTY_ARG := -it
+# endif
 
 ALL_THE_DOCKER_ARGS := TF_VARS=$$(env | grep '^TF_VAR_' | awk -F= '{printf "-e %s ", $$1}'); \
-	docker run $(TTY_ARG) --rm \
+	docker run --rm \
 	--platform=linux/amd64 \
 	--cap-add=NET_ADMIN \
 	--cap-add=NET_RAW \

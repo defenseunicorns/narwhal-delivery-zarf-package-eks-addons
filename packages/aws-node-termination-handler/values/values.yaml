@@ -10,6 +10,8 @@ serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: "###ZARF_VAR_IAM_ROLE_ARN###"
 
-awsRegion: "###ZARF_VAR_AWS_REGION###"
+awsRegion: "###ZARF_VAR_CLUSTER_AWS_REGION###"
+
 queueURL: "###ZARF_VAR_SQS_QUEUE_URL###"
-enable_SqSTerminationDraining: true
+
+enableSqsTerminationDraining: true

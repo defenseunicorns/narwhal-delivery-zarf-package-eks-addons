@@ -51,3 +51,6 @@ zarf-package*.tar.zst
 uds-bundle*.tar.zst
 
 zarf-sbom
+
+*demo.yaml
+uds-config.yaml

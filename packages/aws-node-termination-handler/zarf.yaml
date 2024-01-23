@@ -33,7 +33,7 @@ variables:
     type: raw
     prompt: false
     default: ""
-  - name: AWS_REGION
+  - name: CLUSTER_AWS_REGION
     type: raw
     prompt: false
     default: ""
@@ -65,9 +65,9 @@ components:
           - cmd: jq -r '.Parameter.Value | fromjson | .sqs_queue_url' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
             setVariables:
               - name: SQS_QUEUE_URL
-          - cmd: aws configure get region
+          - cmd: jq -r '.Parameter.Value | fromjson | .aws_region' <<< "$ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES"
             setVariables:
-              - name: AWS_REGION
+              - name: CLUSTER_AWS_REGION
   - name: aws-node-termination-handler-chart-deployment
     description: "Chart component for aws-node-termination-handler"
     required: true

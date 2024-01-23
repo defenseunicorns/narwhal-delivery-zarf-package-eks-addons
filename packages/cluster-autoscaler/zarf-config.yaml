@@ -20,3 +20,4 @@ package:
       cluster_name: "test"
       iam_role_arn: "arn:aws:iam::123456789012:role/test"
       service_account: "test"
+      cluster_aws_region: "us-east-2"
