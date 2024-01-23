@@ -53,6 +53,9 @@ components:
           - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
             setVariables:
               - name: CLUSTER_NAME
+          - cmd: aws eks describe-cluster --name ${ZARF_VAR_CLUSTER_NAME} --query 'cluster.endpoint' --output text | cut -d . -f3
+            setVariables:
+              - name: CLUSTER_AWS_REGION
           - cmd: set -x; aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES_PATH}" --with-decryption; set +x
             setVariables:
               - name: AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES
@@ -65,9 +68,6 @@ components:
           - cmd: jq -r '.Parameter.Value | fromjson | .sqs_queue_url' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
             setVariables:
               - name: SQS_QUEUE_URL
-          - cmd: jq -r '.Parameter.Value | fromjson | .aws_region' <<< "$ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES"
-            setVariables:
-              - name: CLUSTER_AWS_REGION
   - name: aws-node-termination-handler-chart-deployment
     description: "Chart component for aws-node-termination-handler"
     required: true

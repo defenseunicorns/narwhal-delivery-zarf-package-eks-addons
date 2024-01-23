@@ -53,6 +53,9 @@ components:
           - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
             setVariables:
               - name: CLUSTER_NAME
+          - cmd: aws eks describe-cluster --name ${ZARF_VAR_CLUSTER_NAME} --query 'cluster.endpoint' --output text | cut -d . -f3
+            setVariables:
+              - name: CLUSTER_AWS_REGION
           - cmd: aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES_PATH}" --with-decryption
             setVariables:
               - name: CLUSTER_AUTOSCALER_HELM_INPUT_VALUES
@@ -62,9 +65,6 @@ components:
           - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
             setVariables:
               - name: SERVICE_ACCOUNT
-          - cmd: jq -r '.Parameter.Value | fromjson | .cluster_aws_region' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
-            setVariables:
-              - name: CLUSTER_AWS_REGION
   - name: cluster-autoscaler-chart-deployment
     required: true
     import:
