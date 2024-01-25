@@ -14,7 +14,7 @@ components:
         url: "###ZARF_PKG_TMPL_CHART_REPO###"
         version: "###ZARF_PKG_TMPL_CHART_VERSION###"
         valuesFiles:
-          - "../###ZARF_PKG_TMPL_PACKAGE_NAME###/###ZARF_PKG_TMPL_VALUES_FILE###"
-          - "../###ZARF_PKG_TMPL_PACKAGE_NAME###/###ZARF_PKG_TMPL_OVERRIDES_FILE###"
+          - "../../###ZARF_PKG_TMPL_PACKAGE_NAME###/###ZARF_PKG_TMPL_VALUES_FILE###"
+          - "../../###ZARF_PKG_TMPL_PACKAGE_NAME###/###ZARF_PKG_TMPL_OVERRIDES_FILE###"
     images:
       - "###ZARF_PKG_TMPL_IMAGE_REGISTRY_REPO###/###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###:###ZARF_PKG_TMPL_IMAGE_VERSION###"

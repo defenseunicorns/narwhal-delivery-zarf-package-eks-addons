@@ -74,5 +74,5 @@ components:
       flavor: upstream
     required: true
     import:
-      name: helm-chart-skeleton
-      path: ../skeleton
+      path: ../templates/chart
+      name: zarf-helm-chart-template

@@ -22,5 +22,5 @@ components:
     description: "Deploy metrics-server helm chart"
     required: true
     import:
-      path: ../skeleton
-      name: helm-chart-skeleton
+      path: ../templates/chart
+      name: zarf-helm-chart-template

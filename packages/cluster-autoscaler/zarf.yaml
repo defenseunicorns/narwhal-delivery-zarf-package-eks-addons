@@ -68,5 +68,5 @@ components:
   - name: cluster-autoscaler-chart-deployment
     required: true
     import:
-      path: ../skeleton
-      name: helm-chart-skeleton
+      path: ../templates/chart
+      name: zarf-helm-chart-template
