@@ -3,6 +3,7 @@ package:
     output: ../../build
     set:
       package_version: 0.0.1
+      package_tag_suffix: ""
       package_name: aws-node-termination-handler
       namespace: aws-node-termination-handler
       chart_repo: https://aws.github.io/eks-charts

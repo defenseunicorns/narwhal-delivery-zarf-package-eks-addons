@@ -2,7 +2,7 @@ kind: ZarfPackageConfig
 metadata:
   name: cluster-autoscaler
   description: Zarf package of cluster-autoscaler
-  version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
+  version: "###ZARF_PKG_TMPL_PACKAGE_VERSION######ZARF_PKG_TMPL_PACKAGE_TAG_SUFFIX###"
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
 constants:

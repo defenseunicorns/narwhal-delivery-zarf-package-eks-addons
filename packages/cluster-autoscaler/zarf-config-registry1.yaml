@@ -5,6 +5,7 @@ package:
       # x-release-please-start-version
       package_version: 0.0.1
       # x-release-please-end
+      package_tag_suffix: -registry1
       package_name: cluster-autoscaler
       namespace: kube-system
       chart_repo: https://kubernetes.github.io/autoscaler

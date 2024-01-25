@@ -34,16 +34,16 @@ tasks:
         cmd: |
           set -e
           export TARGET_REPO=${TARGET_REPO}
-          ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress -o ${TARGET_REPO}
-          ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress -o ${TARGET_REPO}
-          ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress -o ${TARGET_REPO}
+          ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
+          ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
+          ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
 
-      - description: "Publish the packages"
-        cmd: |
-          set -e
-          zarf package publish ${PACKAGE_DIR}/zarf-package-aws-node-termination-handler-amd64-${VERSION}.tar.zst ${TARGET_REPO}
-          zarf package publish ${PACKAGE_DIR}/zarf-package-cluster-autoscaler-amd64-${VERSION}.tar.zst ${TARGET_REPO}
-          zarf package publish ${PACKAGE_DIR}/zarf-package-metrics-server-amd64-${VERSION}.tar.zst ${TARGET_REPO}
+      # - description: "Publish the packages"
+      #   cmd: |
+      #     set -e
+      #     zarf package publish ${PACKAGE_DIR}/zarf-package-aws-node-termination-handler-amd64-${VERSION}.tar.zst ${TARGET_REPO}
+      #     zarf package publish ${PACKAGE_DIR}/zarf-package-cluster-autoscaler-amd64-${VERSION}.tar.zst ${TARGET_REPO}
+      #     zarf package publish ${PACKAGE_DIR}/zarf-package-metrics-server-amd64-${VERSION}.tar.zst ${TARGET_REPO}
 
   - name: bundles
     description: "Build and publish UDS bundles"
