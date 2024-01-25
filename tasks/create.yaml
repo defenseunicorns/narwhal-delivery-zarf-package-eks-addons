@@ -1,30 +1,30 @@
+variables:
+  - name: TARGET_REPO
+    default: oci://ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons
+
 tasks:
   - name: zarf-build-aws-node-termination-handler
     description: "Create aws-node-termination-handler zarf package"
     actions:
       - description: run the make target for zarf-build-aws-node-termination-handler
-        cmd: "cd packages/aws-node-termination-handler && zarf package create --confirm --flavor ${FLAVOR}"
+        cmd: "cd packages/aws-node-termination-handler && zarf package create --confirm -o ${TARGET_REPO}"
 
   - name: zarf-build-cluster-autoscaler
     description: "Create cluster-autoscaler zarf package"
     actions:
       - description: run the make target for zarf-build-cluster-autoscaler
-        cmd: "cd packages/cluster-autoscaler && zarf package create --confirm  --flavor ${FLAVOR}"
+        cmd: "cd packages/cluster-autoscaler && zarf package create --confirm -o ${TARGET_REPO}"
 
   - name: zarf-build-metrics-server
     description: "Create metrics-server zarf package"
     actions:
       - description: "Create metrics-server zarf package"
-        cmd: |
-          set -x
-          cd packages/metrics-server
-          zarf package create --confirm -o "${TARGET_REPO}"
-          set +x
+        cmd: "cd packages/metrics-server && zarf package create --confirm -o ${TARGET_REPO}"
 
   - name: zarf-create-single-package
     description: "Create single zarf package zarf-build-${ZARF_PACKAGE_NAME} using nested uds run command"
     actions:
-      - cmd: "uds run -f tasks/create/main.yaml zarf-build-${ZARF_PACKAGE_NAME} --no-progress --flavor ${FLAVOR}"
+      - cmd: "uds run -f tasks/create/main.yaml zarf-build-${ZARF_PACKAGE_NAME} --no-progress"
 
   - name: zarf-create-all-packages
     description: "Create all zarf packages"

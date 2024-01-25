@@ -11,23 +11,13 @@ variables:
     default: "build"
 
 tasks:
-  - name: just-metrics-server
-    description: "Build and publish the zarf packages"
-    actions:
-      - description: "Create zarf metrics-server package"
-        cmd: |
-          # set -e
-          export TARGET_REPO=${TARGET_REPO}
-          ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
-          ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
-          FLAVOR=registry1 ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
-
   - name: packages
     description: "Build and publish the zarf packages"
     actions:
       - description: "Create zarf aws-node-termination-handler package"
         cmd: |
           set -e
+          export TARGET_REPO=${TARGET_REPO}
           ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
           ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
           ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
@@ -35,6 +25,7 @@ tasks:
       - description: "Create zarf cluster-autoscaler package"
         cmd: |
           set -e
+          export TARGET_REPO=${TARGET_REPO}
           ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
           ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
           ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
@@ -42,6 +33,7 @@ tasks:
       - description: "Create zarf metrics-server package"
         cmd: |
           set -e
+          export TARGET_REPO=${TARGET_REPO}
           ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress -o ${TARGET_REPO}
           ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress -o ${TARGET_REPO}
           ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress -o ${TARGET_REPO}
