@@ -237,18 +237,6 @@ _test-all: #_# Run the whole test end-to-end. Uses Docker. Requires access to AW
 	echo "Test complete. Cleaning up..."
 	# $(MAKE) _test-infra-down
 
-# .PHONY: _test-set-env-var _test-env-var-silly
-
-# _test-set-env-var:
-# 	@echo "$(shell $(ALL_THE_DOCKER_ARGS) bash -c 'cd test/iac && terraform output -raw region')"
-# 	@echo "$(shell $(ALL_THE_DOCKER_ARGS) bash -c 'cd test/iac && terraform output -raw server_id')"
-
-# _test-env-var-silly:
-# 	$(eval REGION := $(shell $(MAKE) _test-set-env-var | head -n 1))
-# 	$(eval SERVER_ID := $(shell $(MAKE) _test-set-env-var | tail -n 1))
-# 	@echo "REGION: $(REGION)"
-# 	@echo "SERVER_ID: $(SERVER_ID)"
-
 .PHONY: _test-wait-for-zarf
 _test-wait-for-zarf: #_# Wait for Zarf to be installed in the test server
 	START_TIME=$$(date +%s); \

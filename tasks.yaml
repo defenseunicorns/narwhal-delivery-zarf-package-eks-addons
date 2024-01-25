@@ -1,11 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/uds-cli/main/tasks.schema.json
 includes:
   - create: ./tasks/create.yaml
-  - setup: ./tasks/setup.yaml
+  - k3d: ./tasks/setup/k3d.yaml
+  - infra: ./tasks/setup/infra.yaml
   - deploy: ./tasks/deploy.yaml
   - delete: ./tasks/delete.yaml
   - publish: ./tasks/publish.yaml
-  - vars: ./tasks/vars.yaml
+  - vars: ./tasks/setup/vars.yaml
 
 variables:
   - name: ENV_VAR_FILE
@@ -20,56 +21,66 @@ tasks:
       - task: vars:source-env-vars
       - task: vars:set-runner-vars
 
+  # setup environment for deployment
+  ## k3d
   - name: setup-cluster
     description: "Setup the cluster"
     actions:
       - task: setup:k3d-setup-cluster
 
-  - name: infra-up
+  - name: delete-cluster
+    actions:
+      - task: delete:k3d-delete-cluster
+
+  ## aws
+  - name: aws-infra-up # this is unfinished from converting to tasks from the makefile
     description: "Deploy VPC and Bastion for the k3s cluster"
     actions:
       - task: set-preflight-env-vars
-      - task: setup:infra-up
+      - task: infra:aws-infra-up
 
-  - name: k3d-up
-    description: "Deploy k3d cluster"
+  # Packages and bundles
+  ## zarf packages
+  ### create packages
+  - name: zarf-create-single-package
+    description: "Create single zarf with nested uds run command, specify the package name with the environment variable ${ZARF_PACKAGE_NAME}"
     actions:
       - task: set-preflight-env-vars
-      - task: setup:k3d-up
-
-  - name: zarf-create-single-package
-    description: "Create single zarf package matching name of 'zarf-build-${ZARF_PACKAGE_NAME}' in the makefile"
-    actions:
       - task: create:zarf-create-single-package
 
   - name: zarf-create-all-packages
     description: "Create all zarf packages"
     actions:
+      - task: set-preflight-env-vars
       - task: create:zarf-create-all-packages
 
-  - name: deploy-single-package-from-bundle
-    description: |
-      Deploy single zarf package from UDS bundle.
-      Use the environment variables ${UDS_BUNDLE} and ${ZARF_PACKAGE_NAME} to specify the bundle and package from the bundle to deploy.
-    actions:
-      - task: deploy:deploy-single-package-from-bundle
-
-  - name: deploy-bundle
-    actions:
-      - task: deploy:deploy-bundle
-
+  ## uds bundles
+  ### create bundles
   - name: create-eks-addons-uds-bundle
+    description: "Create eks-addons uds bundle"
     actions:
       - task: create:create-eks-addons-uds-bundle
 
-  - name: delete-cluster
+  ### deploy bundles
+  - name: deploy-single-package-from-bundle
+    description: Deploy single zarf package from UDS bundle. Use the environment variables ${UDS_BUNDLE} and ${ZARF_PACKAGE_NAME} to specify the bundle and package from the bundle to deploy.
     actions:
-      - task: delete:k3d-delete-cluster
+      - task: set-preflight-env-vars
+      - task: deploy:deploy-single-package-from-bundle
 
+  - name: deploy-bundle
+    description: "Deploy the uds bundle"
+    actions:
+      - task: set-preflight-env-vars
+      - task: deploy:deploy-bundle
+
+  ## publish packages and bundles
   - name: publish-packages
+    description: "Builds and publish the zarf packages"
     actions:
       - task: publish:packages
 
   - name: publish-bundles
+    description: "Builds and publish UDS bundles"
     actions:
       - task: publish:bundles

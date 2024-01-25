@@ -4,7 +4,6 @@ metadata:
   description: Zarf package of aws-node-termination-handler
   version: "###ZARF_PKG_TMPL_PACKAGE_VERSION###"
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
-  architecture: amd64
 
 constants:
   - name: IMAGE_VERSION
@@ -68,8 +67,11 @@ components:
           - cmd: jq -r '.Parameter.Value | fromjson | .sqs_queue_url' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
             setVariables:
               - name: SQS_QUEUE_URL
+
   - name: aws-node-termination-handler-chart-deployment
     description: "Chart component for aws-node-termination-handler"
+    only:
+      flavor: upstream
     required: true
     import:
       name: helm-chart-skeleton

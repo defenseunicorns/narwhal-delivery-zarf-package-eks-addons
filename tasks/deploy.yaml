@@ -6,8 +6,15 @@ variables:
     # x-release-please-end-version
 
 tasks:
-  - name: deploy-all-packages
+  - name: deploy-bundle
     actions:
-      - description: "Deploy the uds"
+      - description: "Deploy the uds bundle"
         cmd: |
-          uds deploy
+          uds deploy "oci://${UDS_EKS_ADDONS_REPO}:${UDS_EKS_ADDONS_VERSION}-amd64" --confirm
+
+  - name: deploy-single-package-from-bundle
+    actions:
+      - description: "Deploy the uds bundle"
+        cmd: |
+          PACKAGE=${PACKAGE:-${UDS_PACKAGE_COMPONENT:-${ZARF_PACKAGE_NAME}}} # if PACKAGE is not set, use UDS_PACKAGE_COMPONENT, if that is not set, use ZARF_PACKAGE_NAME
+          uds deploy "oci://${UDS_EKS_ADDONS_REPO}:${UDS_EKS_ADDONS_VERSION}-amd64" --confirm --package ${PACKAGE}
