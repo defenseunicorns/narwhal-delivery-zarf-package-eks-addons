@@ -1,12 +1,13 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/uds-cli/main/tasks.schema.json
 includes:
   - create: ./tasks/create.yaml
-  - k3d: ./tasks/setup/k3d.yaml
-  - infra: ./tasks/setup/infra.yaml
   - deploy: ./tasks/deploy.yaml
   - delete: ./tasks/delete.yaml
   - publish: ./tasks/publish.yaml
+  - setup: ./tasks/setup/main.yaml
   - vars: ./tasks/setup/vars.yaml
+  # - infra: ./tasks/setup/infra.yaml
+  # - letssee: ./tasks/setup/why.yaml
 
 variables:
   - name: ENV_VAR_FILE
@@ -23,10 +24,11 @@ tasks:
 
   # setup environment for deployment
   ## k3d
-  - name: setup-cluster
+  - name: setup-k3d-cluster
     description: "Setup the cluster"
     actions:
-      - task: setup:k3d-setup-cluster
+      - task: set-preflight-env-vars
+      - task: setup:k3d-istio-bundle
 
   - name: delete-cluster
     actions:
@@ -37,22 +39,22 @@ tasks:
     description: "Deploy VPC and Bastion for the k3s cluster"
     actions:
       - task: set-preflight-env-vars
-      - task: infra:aws-infra-up
+      - task: setup:aws-infra-up
 
   # Packages and bundles
   ## zarf packages
   ### create packages
-  - name: zarf-create-single-package
+  - name: create-single-zarf-package
     description: "Create single zarf with nested uds run command, specify the package name with the environment variable ${ZARF_PACKAGE_NAME}"
     actions:
       - task: set-preflight-env-vars
-      - task: create:zarf-create-single-package
+      - task: create:create-single-zarf-package
 
-  - name: zarf-create-all-packages
+  - name: create-all-zarf-packages
     description: "Create all zarf packages"
     actions:
       - task: set-preflight-env-vars
-      - task: create:zarf-create-all-packages
+      - task: create:create-all-zarf-packages
 
   ## uds bundles
   ### create bundles
@@ -84,3 +86,9 @@ tasks:
     description: "Builds and publish UDS bundles"
     actions:
       - task: publish:bundles
+
+  - name: test-bundle
+    description: "Test the uds bundle"
+    actions:
+      - task: setup-k3d-cluster
+      - task: deploy-bundle

@@ -6,8 +6,8 @@ package:
       package_tag_suffix: -registry1
       package_name: aws-node-termination-handler
       namespace: aws-node-termination-handler
-      chart_repo: https://aws.github.io/eks-charts
-      chart_version: 0.21.0
+      chart_repo: oci://public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
+      chart_version: 0.22.0
       image_registry_repo: registry1.dso.mil
       image_registry_path: ironbank/opensource/aws/aws-node-termination-handler
       image_version: v1.13.3

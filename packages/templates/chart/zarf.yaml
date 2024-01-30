@@ -1,12 +1,12 @@
 kind: ZarfPackageConfig
 metadata:
-  name: helm-chart-skeleton
+  name: helm-chart-template
   version: 0.0.1
   description: >
     Zarf package Helm chart skeleton
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 components:
-  - name: helm-chart-skeleton
+  - name: helm-chart-template
     required: true
     charts:
       - name: "###ZARF_PKG_TMPL_PACKAGE_NAME###"

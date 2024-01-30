@@ -55,7 +55,8 @@ components:
           - cmd: aws eks describe-cluster --name ${ZARF_VAR_CLUSTER_NAME} --query 'cluster.endpoint' --output text | cut -d . -f3
             setVariables:
               - name: CLUSTER_AWS_REGION
-          - cmd: set -x; aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES_PATH}" --with-decryption; set +x
+          - cmd: |
+              aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES_PATH}" --with-decryption
             setVariables:
               - name: AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES
           - cmd: jq -r '.Parameter.Value | fromjson | .iam_role_arn' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
@@ -70,9 +71,7 @@ components:
 
   - name: aws-node-termination-handler-chart-deployment
     description: "Chart component for aws-node-termination-handler"
-    only:
-      flavor: upstream
     required: true
     import:
       path: ../templates/chart
-      name: zarf-helm-chart-template
+      name: helm-chart-template

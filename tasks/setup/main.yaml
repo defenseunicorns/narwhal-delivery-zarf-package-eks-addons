@@ -1,0 +1,13 @@
+includes:
+  - infra: ./infra.yaml
+
+tasks:
+  - name: k3d-istio-bundle
+    actions:
+      - description: "Deploy the UDS Core Istio Only Bundle"
+        cmd: uds deploy oci://ghcr.io/defenseunicorns/packages/uds/bundles/k3d-core-istio-dev:${UDS_K3D_CORE_ISTIO_VERSION}-${UDS_ARCH} --confirm --no-progress
+
+  - name: aws-infra-up
+    description: "Main entrypoint for setting up aws IaC"
+    actions:
+      - task: infra:aws-infra-up

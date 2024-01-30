@@ -23,4 +23,4 @@ components:
     required: true
     import:
       path: ../templates/chart
-      name: zarf-helm-chart-template
+      name: helm-chart-template

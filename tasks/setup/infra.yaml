@@ -1,7 +1,7 @@
 includes:
-  - vars: ./tasks/vars.yaml
+  - vars: ./vars.yaml
 
-vars:
+variables:
   - name: UDS_DEPLOY_DIR
     description: "The directory to deploy from"
     default: "/tmp/uds"
@@ -21,17 +21,17 @@ tasks:
 
   # - name: debug
   #   actions:
+  #     - task: vars:set-ssm-session-args
   #     - cmd: |
   #         set +x
-  #         # echo "DEBUG"
+  #         echo "DEBUG"
   #         # echo ${REGION}
   #         # echo ${SERVER_ID}
-  #         # echo ${UDS_DEPLOY_DIR}
-  #         # echo ${PRIMARY_DIR}
+  #         echo ${UDS_DEPLOY_DIR}
+  #         echo ${PRIMARY_DIR}
   #         # echo ${BRANCH}
   #         # echo ${REPO}
   #         # ${SSM_SESSION_ARGS} --parameters command='["whoami"]'
-
   - name: apply-terraform-aws-iac
     description: "Deploy VPC and Bastion for the k3s cluster"
     actions:

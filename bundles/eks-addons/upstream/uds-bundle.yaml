@@ -10,16 +10,16 @@ metadata:
 packages:
   - name: aws-node-termination-handler
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/aws-node-termination-handler
-    ref: 0.0.1-upstream
+    ref: 0.0.1
     optional-components:
       - fetch-staged-aws-ssm-vars
 
   - name: cluster-autoscaler
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/cluster-autoscaler
-    ref: 0.0.1-upstream
+    ref: 0.0.1
     optional-components:
       - fetch-staged-aws-ssm-vars
 
   - name: metrics-server
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/metrics-server
-    ref: 0.0.1-upstream
+    ref: 0.0.1

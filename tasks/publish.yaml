@@ -14,7 +14,7 @@ tasks:
   - name: packages
     description: "Build and publish the zarf packages"
     actions:
-      - description: "Create zarf aws-node-termination-handler package"
+      - description: "Create zarf aws-node-termination-handler packages"
         cmd: |
           set -e
           export TARGET_REPO=${TARGET_REPO}
@@ -22,7 +22,7 @@ tasks:
           ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
           ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
 
-      - description: "Create zarf cluster-autoscaler package"
+      - description: "Create zarf cluster-autoscaler packages"
         cmd: |
           set -e
           export TARGET_REPO=${TARGET_REPO}
@@ -30,7 +30,7 @@ tasks:
           ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
           ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
 
-      - description: "Create zarf metrics-server package"
+      - description: "Create zarf metrics-server packages"
         cmd: |
           set -e
           export TARGET_REPO=${TARGET_REPO}
@@ -38,12 +38,12 @@ tasks:
           ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
           ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
 
-      # - description: "Publish the packages"
-      #   cmd: |
-      #     set -e
-      #     zarf package publish ${PACKAGE_DIR}/zarf-package-aws-node-termination-handler-amd64-${VERSION}.tar.zst ${TARGET_REPO}
-      #     zarf package publish ${PACKAGE_DIR}/zarf-package-cluster-autoscaler-amd64-${VERSION}.tar.zst ${TARGET_REPO}
-      #     zarf package publish ${PACKAGE_DIR}/zarf-package-metrics-server-amd64-${VERSION}.tar.zst ${TARGET_REPO}
+      - description: "Publish the packages"
+        cmd: |
+          set -e
+          for package in ${PACKAGE_DIR}/zarf-package*${VERSION}*.tar.zst; do
+            zarf package publish ${package} ${TARGET_REPO}
+          done
 
   - name: bundles
     description: "Build and publish UDS bundles"
@@ -51,15 +51,26 @@ tasks:
       - description: "Create the UDS Core Standard Bundle"
         cmd: |
           set -e
-          uds run -f tasks/create.yaml create-eks-addons-uds-bundle --no-progress
+          uds run -f tasks/create.yaml create-eks-addons-uds-bundles --no-progress
+      - task: publish-bundles
+      - task: tag-latest-upstream-bundles
 
-      - description: "Publish the bundles"
-        cmd: |
+  - name: publish-bundles
+    description: "publish the bundles"
+    actions:
+      - cmd: |
           set -e
-          uds publish bundles/eks-addons/uds-bundle-eks-addons-amd64-${VERSION}.tar.zst ${TARGET_REPO}/bundles --no-progress
+          for bundle in $(find ./bundles -name "uds-bundle*${VERSION}*.tar.zst"); do
+            uds publish ${bundle} ${TARGET_REPO}/bundles
+          done
 
-      - description: "Tag the latest bundles"
+  - name: tag-latest-upstream-bundles
+    description: "Tag the latest upstream bundles"
+    actions:
+      - description: "Tag the latest upstream bundles"
         cmd: |
           set -e
           pkgPath="ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/bundles/eks-addons"
-          zarf tools registry copy ${pkgPath}:${VERSION}-amd64 ${pkgPath}:amd64
+          for arch in amd64 arm64; do
+            zarf tools registry copy ${pkgPath}:${VERSION} ${pkgPath}:${arch}
+          done

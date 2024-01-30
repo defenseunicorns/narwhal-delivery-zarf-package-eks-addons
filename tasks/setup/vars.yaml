@@ -1,7 +1,7 @@
 # source all ur vars here lol?
 variables:
   - name: ENV_VAR_FILE
-    default: .env
+    default: ../../.env
     type: file
 
 tasks:
