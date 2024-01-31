@@ -6,8 +6,7 @@ includes:
   - publish: ./tasks/publish.yaml
   - setup: ./tasks/setup/main.yaml
   - vars: ./tasks/setup/vars.yaml
-  # - infra: ./tasks/setup/infra.yaml
-  # - letssee: ./tasks/setup/why.yaml
+  # - infra: ./tasks/setup/infra.yaml # this is unfinished from converting to tasks from the makefile
 
 variables:
   - name: ENV_VAR_FILE
@@ -35,11 +34,11 @@ tasks:
       - task: delete:k3d-delete-cluster
 
   ## aws
-  - name: aws-infra-up # this is unfinished from converting to tasks from the makefile
-    description: "Deploy VPC and Bastion for the k3s cluster"
-    actions:
-      - task: set-preflight-env-vars
-      - task: setup:aws-infra-up
+  # - name: aws-infra-up # this is unfinished from converting to tasks from the makefile
+  #   description: "Deploy VPC and Bastion for the k3s cluster"
+  #   actions:
+  #     - task: set-preflight-env-vars
+  #     - task: setup:aws-infra-up
 
   # Packages and bundles
   ## zarf packages

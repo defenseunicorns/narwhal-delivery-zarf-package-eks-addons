@@ -13,7 +13,7 @@ This package includes:
 - `zarf.yaml`: The main configuration file for the Zarf package.
 - `zarf-config.yaml`: Additional configuration for the Zarf package.
 - `values/values.yaml`: The Helm chart values file for the AWS Node Termination Handler Helm chart. These are default values that can be configured at package create time and deploy time.
-- `values/values-override.yaml`: Additional values to override the Helm chart values file. These settings are configurable and can be changed at deploy time. These settings are last in the helm chart values file and will override any settings set previously in other values files.
+- `values/overrides.yaml`: Additional values to override the Helm chart values file. These settings are configurable and can be changed at deploy time. These settings are last in the helm chart values file and will override any settings set previously in other values files. To include these settings use the `deploy-values-override.yaml` file which templates into the `values/overrides.yaml` file.
 
 ## How to Use
 

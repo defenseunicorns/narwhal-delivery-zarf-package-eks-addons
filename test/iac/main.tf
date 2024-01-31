@@ -39,23 +39,6 @@ data "aws_ami" "amazonlinux2" {
   owners = ["amazon"]
 }
 
-#data "aws_ami" "rhel" {
-#  most_recent = true
-#  owners = ["679593333241"] # Foundation Security
-#  filter {
-#    name = "name"
-#    values = ["foundation-h-*-rhel8-cislevel2-*"] # CIS Level 2 Hardened Red Hat Enterprise Linux 8
-#  }
-#  filter {
-#    name = "virtualization-type"
-#    values = ["hvm"]
-#  }
-#  filter {
-#    name = "architecture"
-#    values = ["x86_64"]
-#  }
-#}
-
 resource "random_id" "default" {
   count       = var.use_unique_names ? 1 : 0
   byte_length = 2

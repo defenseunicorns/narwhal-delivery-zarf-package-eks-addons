@@ -8,7 +8,7 @@ include .env
 # 	TTY_ARG := -it
 # endif
 
-ALL_THE_DOCKER_ARGS := TF_VARS=$$(env | grep '^TF_VAR_' | awk -F= '{printf "-e %s ", $$1}'); \
+BUILD_HARNESS_RUN := TF_VARS=$$(env | grep '^TF_VAR_' | awk -F= '{printf "-e %s ", $$1}'); \
 	docker run --rm \
 	--platform=linux/amd64 \
 	--cap-add=NET_ADMIN \
@@ -38,8 +38,8 @@ ALL_THE_DOCKER_ARGS := TF_VARS=$$(env | grep '^TF_VAR_' | awk -F= '{printf "-e %
 	$${TF_VARS} \
 	${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION}
 
-REGION := $(shell $(ALL_THE_DOCKER_ARGS) bash -c 'cd test/iac && terraform output -raw region')
-SERVER_ID := $(shell $(ALL_THE_DOCKER_ARGS) bash -c 'cd test/iac && terraform output -raw server_id')
+REGION := $(shell $(BUILD_HARNESS_RUN) bash -c 'cd test/iac && terraform output -raw region')
+SERVER_ID := $(shell $(BUILD_HARNESS_RUN) bash -c 'cd test/iac && terraform output -raw server_id')
 
 SSM_SESSION_ARGS := \
 	aws ssm start-session \
@@ -58,7 +58,7 @@ PRIMARY_DIR := $(shell basename $$(pwd))
 
 .PHONY: arbitrary-container-command
 arbitrary-container-command: ## Run an arbitrary command in a container. Example: make arbitrary-container-command COMMAND="ls -lahrt"
-	${ALL_THE_DOCKER_ARGS} \
+	${BUILD_HARNESS_RUN} \
 		bash -c '$(COMMAND)'
 
 .PHONY: _check-env-vars
@@ -111,7 +111,7 @@ docker-load-build-harness: ## Loads the saved build harness docker image
 
 .PHONY: _runhooks
 _runhooks: _create-folders
-	${ALL_THE_DOCKER_ARGS} \
+	${BUILD_HARNESS_RUN} \
 	bash -c 'git config --global --add safe.directory /app \
 		&& pre-commit run -a --show-diff-on-failure $(HOOK)'
 
@@ -143,7 +143,7 @@ endif
 ifndef REGISTRY1_PASSWORD
 	$(error environment variable REGISTRY1_PASSWORD is not set)
 endif
-	${ALL_THE_DOCKER_ARGS} \
+	${BUILD_HARNESS_RUN} \
 		bash -c 'zarf tools registry login registry1.dso.mil -u ${REGISTRY1_USERNAME} -p ${REGISTRY1_PASSWORD} \
 			&& cd packages/$(PACKAGE_NAME) \
 			&& zarf package create --confirm'
@@ -172,7 +172,7 @@ publish-zarf-package: ## Publish the Zarf Package
 ifndef GITHUB_TOKEN
 	$(error environment variable GITHUB_TOKEN is not set)
 endif
-	${ALL_THE_DOCKER_ARGS} \
+	${BUILD_HARNESS_RUN} \
 		bash -c 'zarf tools registry login ghcr.io -u dummy -p ${GITHUB_TOKEN} \
 			&& cd $(PACKAGE_NAME) \
 			&& zarf package publish zarf-package-${PACKAGE_NAME}-*.tar.zst oci://ghcr.io/defenseunicorns/narwhal-delivery-zarf-package-eks-addons'
@@ -217,7 +217,7 @@ _test-platform-up: #_# On the test server, set up the k8s cluster and UDS platfo
 
 .PHONY: _test-terraform-apply
 _test-terraform-apply: #_# Use Terraform to apply the test server changes
-	${ALL_THE_DOCKER_ARGS} \
+	${BUILD_HARNESS_RUN} \
 		bash -c 'cd test/iac && terraform init && terraform apply --auto-approve'
 
 .PHONY: _test-uds-deploy-bundle
@@ -369,5 +369,5 @@ _test-platform-down: #_# On the test server, tear down the UDS platform and k8s 
 # Runs destroy again if the first one fails to complete.
 .PHONY: _test-infra-down
 _test-infra-down: #_# Use Terraform to bring down the test server
-	${ALL_THE_DOCKER_ARGS} \
+	${BUILD_HARNESS_RUN} \
 		bash -c 'cd test/iac && terraform init && terraform destroy --auto-approve || terraform destroy -auto-approve'
