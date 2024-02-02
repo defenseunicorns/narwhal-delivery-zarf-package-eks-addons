@@ -1,3 +1,0 @@
-# additional helm values to override the defaults at deploy time
-extraEnv:
-  whatever: "extraEnvVar"

@@ -13,14 +13,15 @@
 # .tfstate files
 *.tfstate
 *.tfstate.*
+*.terraform.lock.hcl
 
 # Crash log files
 crash.log
 crash.*.log
 
 # Exclude all .tfvars files, which are likely to contain sensitive data, such as
-# password, private keys, and other secrets. These should not be part of version 
-# control as they are data points which are potentially sensitive and subject 
+# password, private keys, and other secrets. These should not be part of version
+# control as they are data points which are potentially sensitive and subject
 # to change depending on the environment.
 *.tfvars
 *.tfvars.json
@@ -42,5 +43,14 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+build/
+
 #zarf
 zarf-package*.tar.zst
+#uds
+uds-bundle*.tar.zst
+
+zarf-sbom
+
+*demo.yaml
+uds-config.yaml

@@ -30,7 +30,8 @@
       "release-type": "simple",
       "separate-pull-requests": false,
       "skip-github-release": false,
-      "versioning": "default"
+      "versioning": "default",
+      "release-as": "0.0.1"
     }
   }
 }

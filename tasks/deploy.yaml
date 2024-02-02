@@ -1,0 +1,31 @@
+includes:
+  - setup: ./tasks/setup.yaml
+
+variables:
+  - name: VERSION
+    description: "The version of the package to deploy"
+    # x-release-please-start-version
+    default: "0.0.1"
+    # x-release-please-end-version
+  - name: UDS_FLAVOR
+    default: ""
+    description: "no special flavor of tags for the uds bundle"
+
+tasks:
+  - name: dev-up
+    actions:
+      - task: setup:k3d-istio-bundle
+      - task: deploy-bundle
+
+  - name: deploy-bundle
+    actions:
+      - description: "Deploy the uds bundle"
+        cmd: |
+          uds deploy "oci://${UDS_EKS_ADDONS_REPO}:${UDS_EKS_ADDONS_VERSION}" --confirm
+
+  - name: deploy-single-package-from-bundle
+    actions:
+      - description: "Deploy single package from uds bundle"
+        cmd: |
+          PACKAGE=${PACKAGE:-${UDS_PACKAGE_COMPONENT:-${ZARF_PACKAGE_NAME}}} # if PACKAGE is not set, use UDS_PACKAGE_COMPONENT, if that is not set, use ZARF_PACKAGE_NAME
+          uds deploy "oci://${UDS_EKS_ADDONS_REPO}:${UDS_EKS_ADDONS_VERSION}" --confirm --package ${PACKAGE}

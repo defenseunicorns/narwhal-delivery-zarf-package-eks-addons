@@ -1,0 +1,72 @@
+kind: ZarfPackageConfig
+metadata:
+  name: cluster-autoscaler
+  description: Zarf package of cluster-autoscaler
+  version: "###ZARF_PKG_TMPL_PACKAGE_VERSION######ZARF_PKG_TMPL_PACKAGE_TAG_SUFFIX###"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+constants:
+  - name: IMAGE_VERSION
+    value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  - name: IMAGE_REGISTRY_PATH
+    value: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
+
+variables:
+  - name: CLUSTER_NAME
+    type: raw
+    prompt: false
+    default: ""
+  - name: NAMESPACE
+    type: raw
+    prompt: false
+    default: "kube-system"
+  - name: CLUSTER_AUTOSCALER_HELM_INPUT_VALUES_PATH
+    type: raw
+    prompt: false
+    default: "cluster_autoscaler_helm_input_values"
+  - name: IAM_ROLE_ARN
+    type: raw
+    prompt: false
+    default: ""
+  - name: SERVICE_ACCOUNT
+    type: raw
+    prompt: false
+    default: ""
+  - name: CLUSTER_AWS_REGION
+    type: raw
+    prompt: false
+    default: ""
+  - name: VALUES_OVERRIDES
+    type: file
+    prompt: false
+    default: "deploy-values-override.yaml"
+
+components:
+  - name: fetch-staged-aws-ssm-vars
+    required: false
+    description: "Fetch staged json object from AWS SSM Parameter Store and extract values for zarf variables"
+    actions:
+      onDeploy:
+        before:
+          # get the cluster name
+          - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
+            setVariables:
+              - name: CLUSTER_NAME
+          - cmd: aws eks describe-cluster --name ${ZARF_VAR_CLUSTER_NAME} --query 'cluster.endpoint' --output text | cut -d . -f3
+            setVariables:
+              - name: CLUSTER_AWS_REGION
+          - cmd: aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES_PATH}" --with-decryption
+            setVariables:
+              - name: CLUSTER_AUTOSCALER_HELM_INPUT_VALUES
+          - cmd: jq -r '.Parameter.Value | fromjson | .iam_role_arn' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
+            setVariables:
+              - name: IAM_ROLE_ARN
+          - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "$ZARF_VAR_CLUSTER_AUTOSCALER_HELM_INPUT_VALUES"
+            setVariables:
+              - name: SERVICE_ACCOUNT
+
+  - name: cluster-autoscaler-chart-deployment
+    required: true
+    import:
+      path: ../templates/chart
+      name: helm-chart-template

@@ -1,0 +1,25 @@
+kind: UDSBundle
+metadata:
+  name: eks-addons
+  description: UDS bundle of eks-addons
+  # x-release-please-start-version
+  version: 0.0.1
+  # x-release-please-end-version
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+packages:
+  - name: aws-node-termination-handler
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/aws-node-termination-handler
+    ref: 0.0.1
+    optional-components:
+      - fetch-staged-aws-ssm-vars
+
+  - name: cluster-autoscaler
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/cluster-autoscaler
+    ref: 0.0.1
+    optional-components:
+      - fetch-staged-aws-ssm-vars
+
+  - name: metrics-server
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/metrics-server
+    ref: 0.0.1
