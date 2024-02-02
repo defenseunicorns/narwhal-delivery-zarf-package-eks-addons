@@ -2,16 +2,16 @@ package:
   create:
     output: ../../build
     set:
-      # x-release-please-start-version
       package_version: 0.0.1
-      # x-release-please-end
       package_tag_suffix: ""
       package_name: cluster-autoscaler
       namespace: kube-system
       chart_repo: https://kubernetes.github.io/autoscaler
+      # we're not using renovate here because the cluster-autoscaler application needs to match the kubernetes cluster version. see https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/README.md#releases
       chart_version: 9.29.1
       image_registry_repo: registry.k8s.io
       image_registry_path: autoscaling/cluster-autoscaler
+      # we're not using renovate here because the cluster-autoscaler application needs to match the kubernetes cluster version. see https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/README.md#releases
       image_version: v1.27.3
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml

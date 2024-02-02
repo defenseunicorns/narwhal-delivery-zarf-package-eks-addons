@@ -7,9 +7,11 @@ package:
       package_name: metrics-server
       namespace: kube-system
       chart_repo: https://kubernetes-sigs.github.io/metrics-server/
+      # renovate datasource=helm depName=metrics-server registryUrl=https://kubernetes-sigs.github.io/metrics-server
       chart_version: 3.10.0
       image_registry_repo: registry1.dso.mil
       image_registry_path: ironbank/opensource/kubernetes-sigs/metrics-server
-      image_version: v0.6.3
+      # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/kubernetes-sigs/metrics-server
+      image_version: v0.6.2
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
