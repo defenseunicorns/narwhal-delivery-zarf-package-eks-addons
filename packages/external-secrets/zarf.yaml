@@ -1,0 +1,26 @@
+kind: ZarfPackageConfig
+metadata:
+  name: external-secrets
+  description: Zarf package of external-secrets
+  version: "###ZARF_PKG_TMPL_PACKAGE_VERSION######ZARF_PKG_TMPL_PACKAGE_TAG_SUFFIX###"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+constants:
+  - name: IMAGE_VERSION
+    value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  - name: IMAGE_REGISTRY_PATH
+    value: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
+
+variables:
+  - name: VALUES_OVERRIDES
+    type: file
+    prompt: false
+    default: "deploy-values-override.yaml"
+
+components:
+  - name: external-secrets-deployment
+    description: "Chart component for external-secrets-deployment"
+    required: true
+    import:
+      path: ../templates/chart
+      name: helm-chart-template
