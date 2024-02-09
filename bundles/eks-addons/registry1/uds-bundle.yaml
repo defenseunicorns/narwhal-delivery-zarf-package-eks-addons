@@ -23,3 +23,7 @@ packages:
   - name: metrics-server
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/metrics-server
     ref: 0.0.1-registry1
+
+  - name: external-secrets
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/external-secrets
+    ref: 0.0.1-registry1
