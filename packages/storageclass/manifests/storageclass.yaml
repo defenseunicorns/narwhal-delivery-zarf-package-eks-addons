@@ -35,3 +35,9 @@ allowedTopologies:
   - key: topology.ebs.csi.aws.com/zone
     values:
     - "us-gov-west-1"
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
