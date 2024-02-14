@@ -1,37 +1,31 @@
 kind: ZarfPackageConfig
 metadata:
-  name: aws-load-balancer-controller
-  description: Zarf package of aws-load-balancer-controller
+  name: storageclass
+  description: Zarf package of EBS and EFS storage classes
   version: "###ZARF_PKG_TMPL_PACKAGE_VERSION######ZARF_PKG_TMPL_PACKAGE_TAG_SUFFIX###"
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
-
-constants:
-  - name: IMAGE_VERSION
-    value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
-  - name: IMAGE_REGISTRY_PATH
-    value: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
 
 variables:
   - name: CLUSTER_NAME
     type: raw
     prompt: false
     default: ""
-  - name: IAM_ROLE_ARN
+  - name: RECLAIM_POLICY
     type: raw
     prompt: false
-    default: ""
-  - name: SERVICE_ACCOUNT
+    default: "Delete"
+  - name: ALLOW_VOLUME_EXPANSION
     type: raw
     prompt: false
-    default: ""
-  - name: CLUSTER_AWS_REGION
+    default: "true"
+  - name: VOLUME_BINDING_MODE
     type: raw
     prompt: false
-    default: ""
-  - name: VALUES_OVERRIDES
-    type: file
+    default: "WaitForFirstConsumer"
+  - name: EFS_FILE_SYSTEM_ID
+    type: raw
     prompt: false
-    default: "deploy-values-override.yaml"
+    default: "123456"
 
 components:
     - name: ebs-storageclass
@@ -58,6 +52,10 @@ components:
       actions:
         onDeploy:
           after:
+            - cmd: |
+                aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/efs_id/${ZARF_VAR_EFS_FILE_SYSTEM_ID}" --with-decryption
+              setVariables:
+                - name: EFS_FILE_SYSTEM_ID
             - wait:
                 cluster:
                   kind: CSIDriver

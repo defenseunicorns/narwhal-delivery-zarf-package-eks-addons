@@ -3,8 +3,8 @@ kind: StorageClass
 metadata:
   name: efs-sc
 provisioner: efs.csi.aws.com
-reclaimPolicy: "Delete"
+reclaimPolicy: "###ZARF_VAR_RECLAIM_POLICY###"
 parameters:
   provisioningMode: efs-ap
   directoryPerms: "700"
-  fileSystemId: 123456
+  fileSystemId: "###ZARF_VAR_EFS_FILE_SYSTEM_ID###"

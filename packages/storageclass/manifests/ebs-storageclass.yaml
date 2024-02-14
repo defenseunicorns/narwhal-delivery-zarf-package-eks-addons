@@ -1,13 +1,13 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: ebs-sc-gp2
+  name: gp2
   annotations:
     storageclass.kubernetes.io/is-default-class: "false"
 provisioner: kubernetes.io/aws-ebs
-reclaimPolicy: Delete
-allowVolumeExpansion: true
-volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: "###ZARF_VAR_RECLAIM_POLICY###"
+allowVolumeExpansion: "###ZARF_VAR_ALLOW_VOLUME_EXPANSION###"
+volumeBindingMode: "###ZARF_VAR_VOLUME_BINDING_MODE###"
 parameters:
   csi.storage.k8s.io/fstype: ext4
   type: gp2
@@ -16,13 +16,13 @@ parameters:
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: ebs-sc-gp3
+  name: gp3
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: ebs.csi.aws.com
-reclaimPolicy: Delete
-allowVolumeExpansion: true
-volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: "###ZARF_VAR_RECLAIM_POLICY###"
+allowVolumeExpansion: "###ZARF_VAR_ALLOW_VOLUME_EXPANSION###"
+volumeBindingMode: "###ZARF_VAR_VOLUME_BINDING_MODE###"
 parameters:
   csi.storage.k8s.io/fstype: ext4
   type: gp3

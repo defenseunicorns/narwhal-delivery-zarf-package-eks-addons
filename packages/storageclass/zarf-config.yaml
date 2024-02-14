@@ -5,21 +5,10 @@ package:
       package_version: 0.0.1
       package_tag_suffix: ""
       package_name: storageclass
-      namespace: storageclass
-     # chart_repo: oci://public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
-      # renovate datasource=docker depName=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler registryUrl=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
-      chart_version: 0.22.0
-      image_registry_repo: public.ecr.aws
-      #image_registry_path: aws-ec2/aws-node-termination-handler
-      # renovate datasource=docker depName=public.ecr.aws/aws-ec2/aws-node-termination-handler
-      image_version: v1.20.0
-      values_file: values/values.yaml
-      overrides_file: values/overrides.yaml
-
   deploy:
     set:
       cluster_name: "test"
-      iam_role_arn: "arn:aws:iam::123456789012:role/test"
-      service_account: "test"
-      sqs_queue_url: "https://sqs.us-east-2.amazonaws.com/123456789012/test"
-      cluster_aws_region: "us-gov-west-1"
+      reclaim_policy: "Delete"
+      allow_volume_expansion: "true"
+      volume_binding_mode: "WaitForFirstConsumer"
+      efs_file_system_id: "123456"
