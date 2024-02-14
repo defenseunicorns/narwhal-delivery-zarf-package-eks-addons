@@ -1,0 +1,52 @@
+kind: ZarfPackageConfig
+metadata:
+  name: aws-load-balancer-controller
+  description: Zarf package of aws-load-balancer-controller
+  version: "###ZARF_PKG_TMPL_PACKAGE_VERSION######ZARF_PKG_TMPL_PACKAGE_TAG_SUFFIX###"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+constants:
+  - name: IMAGE_VERSION
+    value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  - name: IMAGE_REGISTRY_PATH
+    value: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
+
+variables:
+  - name: CLUSTER_NAME
+    type: raw
+    prompt: false
+    default: ""
+  - name: IAM_ROLE_ARN
+    type: raw
+    prompt: false
+    default: ""
+  - name: SERVICE_ACCOUNT
+    type: raw
+    prompt: false
+    default: ""
+  - name: CLUSTER_AWS_REGION
+    type: raw
+    prompt: false
+    default: ""
+  - name: VALUES_OVERRIDES
+    type: file
+    prompt: false
+    default: "deploy-values-override.yaml"
+
+components:
+    - name: storageclass
+      required: true
+      manifests:
+        - name: storageclass
+          namespace: storageclass
+          files:
+            - "manifests/storageclass.yaml"
+      actions:
+        onDeploy:
+          after:
+            - wait:
+                cluster:
+                  kind: deployment
+                  name: aws-ebs-csi-driver
+                  namespace: kube-system
+                  condition: "Ready"
