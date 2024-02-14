@@ -34,19 +34,31 @@ variables:
     default: "deploy-values-override.yaml"
 
 components:
-    - name: storageclass
+    - name: ebs-storageclass
       required: true
       manifests:
-        - name: storageclass
-          namespace: storageclass
+        - name: ebs-storageclass
+          namespace: kube-system
           files:
-            - "manifests/storageclass.yaml"
+            - "manifests/ebs-storageclass.yaml"
       actions:
         onDeploy:
           after:
             - wait:
                 cluster:
-                  kind: deployment
-                  name: aws-ebs-csi-driver
-                  namespace: kube-system
-                  condition: "Ready"
+                  kind: CSIDriver
+                  name: ebs.csi.aws.com
+    - name: efs-storageclass
+      required: true
+      manifests:
+        - name: efs-storageclass
+          namespace: kube-system
+          files:
+            - "manifests/efs-storageclass.yaml"
+      actions:
+        onDeploy:
+          after:
+            - wait:
+                cluster:
+                  kind: CSIDriver
+                  name: efs.csi.aws.com

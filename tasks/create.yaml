@@ -15,6 +15,7 @@ tasks:
       - task: zarf-build-aws-node-termination-handler
       - task: zarf-build-cluster-autoscaler
       - task: zarf-build-metrics-server
+      - task: zarf-build-storageclass
 
   - name: zarf-build-aws-node-termination-handler
     description: "Create aws-node-termination-handler zarf package"
@@ -33,6 +34,12 @@ tasks:
     actions:
       - description: "Create metrics-server zarf package"
         cmd: "cd packages/metrics-server && zarf package create --confirm"
+
+  - name: zarf-build-storageclass
+    description: "Create storageclass zarf package"
+    actions:
+      - description: "Create storageclass zarf package"
+        cmd: "cd packages/storageclass && zarf package create --confirm"
 
   # UDS bundles
   - name: create-eks-addons-uds-bundles
