@@ -49,10 +49,10 @@ tasks:
 
   ## uds bundles
   ### create bundles
-  - name: create-eks-addons-uds-bundle
-    description: "Create eks-addons uds bundle"
+  - name: create-eks-addons-uds-bundles
+    description: "Create eks-addons uds bundles"
     actions:
-      - task: create:create-eks-addons-uds-bundle
+      - task: create:create-eks-addons-uds-bundles
 
   ### deploy bundles
   - name: deploy-single-package-from-bundle

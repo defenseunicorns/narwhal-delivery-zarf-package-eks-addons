@@ -11,13 +11,13 @@ packages:
   - name: aws-node-termination-handler
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/aws-node-termination-handler
     ref: 0.0.1
-    optional-components:
+    optionalComponents:
       - fetch-staged-aws-ssm-vars
 
   - name: cluster-autoscaler
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/cluster-autoscaler
     ref: 0.0.1
-    optional-components:
+    optionalComponents:
       - fetch-staged-aws-ssm-vars
 
   - name: metrics-server
@@ -31,5 +31,5 @@ packages:
   - name: aws-load-balancer-controller
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/aws-load-balancer-controller
     ref: 0.0.1
-    optional-components:
+    optionalComponents:
       - fetch-staged-aws-ssm-vars
