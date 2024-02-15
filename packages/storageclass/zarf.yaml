@@ -22,7 +22,7 @@ variables:
     type: raw
     prompt: false
     default: "WaitForFirstConsumer"
-  - name: EFS_FILE_SYSTEM_ID
+  - name: FILE_SYSTEM_ID_FOR_EFS
     type: raw
     prompt: false
     default: "123456"
@@ -53,9 +53,9 @@ components:
         onDeploy:
           after:
             - cmd: |
-                aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/efs_id/${ZARF_VAR_EFS_FILE_SYSTEM_ID}" --with-decryption
+                aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/StorageClass/efs/fileSystemId" --with-decryption
               setVariables:
-                - name: EFS_FILE_SYSTEM_ID
+                - name: FILE_SYSTEM_ID_FOR_EFS
             - wait:
                 cluster:
                   kind: CSIDriver
