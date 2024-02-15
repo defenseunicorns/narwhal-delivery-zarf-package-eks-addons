@@ -51,7 +51,7 @@ components:
             - "manifests/efs-storageclass.yaml"
       actions:
         onDeploy:
-          after:
+          before:
             - cmd: |
                 aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/StorageClass/efs/fileSystemId" --with-decryption
               setVariables:
