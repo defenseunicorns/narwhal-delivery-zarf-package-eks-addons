@@ -28,27 +28,9 @@ variables:
     default: "123456"
 
 components:
-    - name: ebs-storageclass
-      required: true
-      manifests:
-        - name: ebs-storageclass
-          namespace: kube-system
-          files:
-            - "manifests/ebs-storageclass.yaml"
-      actions:
-        onDeploy:
-          after:
-            - wait:
-                cluster:
-                  kind: CSIDriver
-                  name: ebs.csi.aws.com
-    - name: efs-storageclass
-      required: true
-      manifests:
-        - name: efs-storageclass
-          namespace: kube-system
-          files:
-            - "manifests/efs-storageclass.yaml"
+    - name: fetch-staged-aws-ssm-vars
+      required: false
+      description: "Fetch staged json object from AWS SSM Parameter Store and extract values for zarf variables"
       actions:
         onDeploy:
           before:
@@ -56,7 +38,17 @@ components:
                 aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/StorageClass/efs/fileSystemId" --with-decryption
               setVariables:
                 - name: FILE_SYSTEM_ID_FOR_EFS
-            - wait:
-                cluster:
-                  kind: CSIDriver
-                  name: efs.csi.aws.com
+    - name: ebs-storageclass
+      required: false
+      manifests:
+        - name: ebs-storageclass
+          namespace: kube-system
+          files:
+            - "manifests/ebs-storageclass.yaml"
+    - name: efs-storageclass
+      required: false
+      manifests:
+        - name: efs-storageclass
+          namespace: kube-system
+          files:
+            - "manifests/efs-storageclass.yaml"
