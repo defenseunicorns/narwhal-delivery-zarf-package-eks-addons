@@ -64,7 +64,7 @@ tasks:
         cmd: |
           set -e
           for package in ${PACKAGE_DIR}/zarf-package*${VERSION}*.tar.zst; do
-            zarf package publish ${package} ${TARGET_REPO}
+            uds zarf package publish ${package} ${TARGET_REPO}
           done
           if ${ZARF_PACKAGE_CLEANUP}; then
             rm -f ${PACKAGE_DIR}/zarf-package*${VERSION}*.tar.zst
