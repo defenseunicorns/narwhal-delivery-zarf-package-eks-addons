@@ -41,6 +41,12 @@ tasks:
       - description: "Create aws-load-balancer-controller zarf package"
         cmd: "cd packages/aws-load-balancer-controller && zarf package create --confirm"
 
+  - name: zarf-build-external-secrets
+    description: "Create external-secrets zarf package"
+    actions:
+      - description: "Create external-secrets zarf package"
+        cmd: "cd packages/external-secrets && zarf package create --confirm"
+
   - name: zarf-build-storageclass
     description: "Create storageclass zarf package"
     actions:

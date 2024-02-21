@@ -22,33 +22,37 @@ variables:
     type: raw
     prompt: false
     default: "WaitForFirstConsumer"
-  - name: FILE_SYSTEM_ID_FOR_EFS
+  - name: EFS_FILE_SYSTEM_ID
     type: raw
     prompt: false
     default: "123456"
 
 components:
-    - name: fetch-staged-aws-ssm-vars
-      required: false
-      description: "Fetch staged json object from AWS SSM Parameter Store and extract values for zarf variables"
-      actions:
-        onDeploy:
-          before:
-            - cmd: |
-                aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/StorageClass/efs/fileSystemId" --with-decryption
-              setVariables:
-                - name: FILE_SYSTEM_ID_FOR_EFS
-    - name: ebs-storageclass
-      required: false
-      manifests:
-        - name: ebs-storageclass
-          namespace: kube-system
-          files:
-            - "manifests/ebs-storageclass.yaml"
-    - name: efs-storageclass
-      required: false
-      manifests:
-        - name: efs-storageclass
-          namespace: kube-system
-          files:
-            - "manifests/efs-storageclass.yaml"
+  - name: fetch-staged-aws-ssm-vars
+    required: false
+    description: "Fetch staged json object from AWS SSM Parameter Store and extract values for zarf variables"
+    actions:
+      onDeploy:
+        before:
+          # get the cluster name
+          - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
+            setVariables:
+              - name: CLUSTER_NAME
+          - cmd: |
+              aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/StorageClass/efs/fileSystemId" --with-decryption
+            setVariables:
+              - name: EFS_FILE_SYSTEM_ID
+  - name: ebs-storageclass
+    required: false
+    manifests:
+      - name: ebs-storageclass
+        namespace: kube-system
+        files:
+          - "manifests/ebs-storageclass.yaml"
+  - name: efs-storageclass
+    required: false
+    manifests:
+      - name: efs-storageclass
+        namespace: kube-system
+        files:
+          - "manifests/efs-storageclass.yaml"
