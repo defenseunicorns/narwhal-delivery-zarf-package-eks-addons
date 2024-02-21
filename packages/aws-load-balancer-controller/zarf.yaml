@@ -16,6 +16,10 @@ variables:
     type: raw
     prompt: false
     default: ""
+  - name: AWS_LOAD_BALANCER_CONTROLLER_HELM_INPUT_VALUES_PATH
+    type: raw
+    prompt: false
+    default: "aws_load_balancer_controller_helm_input_values"
   - name: IAM_ROLE_ARN
     type: raw
     prompt: false
@@ -48,13 +52,13 @@ components:
             setVariables:
               - name: CLUSTER_AWS_REGION
           - cmd: |
-              aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES_PATH}" --with-decryption
+              aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/${ZARF_VAR_AWS_LOAD_BALANCER_CONTROLLER_HELM_INPUT_VALUES_PATH}" --with-decryption
             setVariables:
-              - name: AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES
-          - cmd: jq -r '.Parameter.Value | fromjson | .iam_role_arn' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
+              - name: AWS_LOAD_BALANCER_CONTROLLER_HELM_INPUT_VALUES
+          - cmd: jq -r '.Parameter.Value | fromjson | .iam_role_arn' <<< "${ZARF_VAR_AWS_LOAD_BALANCER_CONTROLLER_HELM_INPUT_VALUES}"
             setVariables:
               - name: IAM_ROLE_ARN
-          - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "${ZARF_VAR_AWS_NODE_TERMINATION_HANDLER_HELM_INPUT_VALUES}"
+          - cmd: jq -r '.Parameter.Value | fromjson | .service_account' <<< "${ZARF_VAR_AWS_LOAD_BALANCER_CONTROLLER_HELM_INPUT_VALUES}"
             setVariables:
               - name: SERVICE_ACCOUNT
 

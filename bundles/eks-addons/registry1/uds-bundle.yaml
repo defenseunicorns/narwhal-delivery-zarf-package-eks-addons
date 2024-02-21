@@ -20,10 +20,14 @@ packages:
     optionalComponents:
       - fetch-staged-aws-ssm-vars
 
-  - name: metrics-server
-    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/metrics-server
-    ref: 0.0.1-registry1
+  - name: aws-load-balancer-controller
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/aws-load-balancer-controller
+    ref: 0.0.1
+    optionalComponents:
+      - fetch-staged-aws-ssm-vars
 
   - name: external-secrets
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/external-secrets
     ref: 0.0.1-registry1
+    optionalComponents:
+      - fetch-staged-aws-ssm-vars

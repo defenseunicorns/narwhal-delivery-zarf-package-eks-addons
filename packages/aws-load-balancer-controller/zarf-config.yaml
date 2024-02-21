@@ -5,14 +5,14 @@ package:
       package_version: 0.0.1
       package_tag_suffix: ""
       package_name: aws-load-balancer-controller
-      namespace: aws-load-balancer-controller
-      chart_repo: https://github.com/aws/eks-charts
+      namespace: kube-system
+      chart_repo: https://aws.github.io/eks-charts
       # renovate datasource=helm depName=eks/aws-load-balancer-controller registryUrl=https://aws.github.io/eks-charts
       chart_version: 1.7.1
       image_registry_repo: public.ecr.aws
       image_registry_path: eks/aws-load-balancer-controller
       # renovate datasource=docker depName=public.ecr.aws/eks/aws-load-balancer-controller
-      image_version: v2.7.0
+      image_version: v2.7.1
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
 
