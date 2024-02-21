@@ -32,6 +32,15 @@ tasks:
     actions:
       - task: delete:k3d-delete-cluster
 
+  - name: registry-login
+    actions:
+      - task: setup:registry-login
+        with:
+          registry: ${REGISTRY}
+          registryUsername: ${REGISTRY_USERNAME}
+          registryPassword: ${REGISTRY_PASSWORD}
+          registryRetryInterval: ${REGISTRY_RETRY_INTERVAL}
+
   # Packages and bundles
   ## zarf packages
   ### create packages

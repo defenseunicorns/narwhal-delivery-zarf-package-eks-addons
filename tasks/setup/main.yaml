@@ -1,6 +1,10 @@
 includes:
   - infra: ./infra.yaml
 
+variables:
+  - name: REGISTRY1_TEST_IMAGE
+    default: "registry1.dso.mil/ironbank/opensource/defenseunicorns/zarf/zarf-agent"
+
 tasks:
   - name: k3d-istio-bundle
     actions:
@@ -11,3 +15,30 @@ tasks:
     description: "Main entrypoint for setting up aws IaC"
     actions:
       - task: infra:aws-infra-up
+
+  - name: registry-login
+    inputs:
+      registry:
+        description: "Registry"
+      registryUsername:
+        description: "Registry username"
+      registryPassword:
+        description: "Registry password"
+      registryRetryInterval:
+        default: "5"
+        description: "Registry retry interval"
+    actions:
+      - cmd: |
+          echo ${{ .inputs.registryPassword }} | \
+            uds zarf tools registry login \
+            --username ${{ .inputs.registryUsername }} \
+            --password-stdin ${{ .inputs.registry }} \
+            >/dev/null
+        description: "Authenticate to the registry"
+      - cmd: |
+          if [ ${{ .inputs.registry }} = "registry1.dso.mil" ]; then
+            uds zarf tools registry digest "${REGISTRY1_TEST_IMAGE}" >/dev/null || \
+            (sleep ${{ .inputs.registryRetryInterval }}; exit 1)
+          fi
+        description: "Validate registry connection"
+        maxRetries: 10
