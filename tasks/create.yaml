@@ -21,37 +21,37 @@ tasks:
     description: "Create aws-node-termination-handler zarf package"
     actions:
       - description: run the make target for zarf-build-aws-node-termination-handler
-        cmd: "cd packages/aws-node-termination-handler && zarf package create --confirm"
+        cmd: "cd packages/aws-node-termination-handler && uds zarf package create --confirm"
 
   - name: zarf-build-cluster-autoscaler
     description: "Create cluster-autoscaler zarf package"
     actions:
       - description: run the make target for zarf-build-cluster-autoscaler
-        cmd: "cd packages/cluster-autoscaler && zarf package create --confirm"
+        cmd: "cd packages/cluster-autoscaler && uds zarf package create --confirm"
 
   - name: zarf-build-metrics-server
     description: "Create metrics-server zarf package"
     actions:
       - description: "Create metrics-server zarf package"
-        cmd: "cd packages/metrics-server && zarf package create --confirm"
+        cmd: "cd packages/metrics-server && uds zarf package create --confirm"
 
   - name: zarf-build-aws-load-balancer-controller
     description: "Create aws-load-balancer-controller zarf package"
     actions:
       - description: "Create aws-load-balancer-controller zarf package"
-        cmd: "cd packages/aws-load-balancer-controller && zarf package create --confirm"
+        cmd: "cd packages/aws-load-balancer-controller && uds zarf package create --confirm"
 
   - name: zarf-build-external-secrets
     description: "Create external-secrets zarf package"
     actions:
       - description: "Create external-secrets zarf package"
-        cmd: "cd packages/external-secrets && zarf package create --confirm"
+        cmd: "cd packages/external-secrets && uds zarf package create --confirm"
 
   - name: zarf-build-storageclass
     description: "Create storageclass zarf package"
     actions:
       - description: "Create storageclass zarf package"
-        cmd: "cd packages/storageclass && zarf package create --confirm"
+        cmd: "cd packages/storageclass && uds zarf package create --confirm"
 
   # UDS bundles
   - name: create-eks-addons-uds-bundles
