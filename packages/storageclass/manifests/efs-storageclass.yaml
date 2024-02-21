@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs
+provisioner: efs.csi.aws.com
+reclaimPolicy: "###ZARF_VAR_RECLAIM_POLICY###"
+parameters:
+  provisioningMode: efs-ap
+  directoryPerms: "700"
+  fileSystemId: "###ZARF_VAR_EFS_FILE_SYSTEM_ID###"

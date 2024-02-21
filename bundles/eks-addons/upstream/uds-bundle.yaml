@@ -8,6 +8,12 @@ metadata:
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
 packages:
+  - name: storageclass
+    repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/storageclass
+    ref: 0.0.1
+    optionalComponents:
+      - fetch-staged-aws-ssm-vars
+
   - name: aws-node-termination-handler
     repository: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/aws-node-termination-handler
     ref: 0.0.1

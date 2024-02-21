@@ -1,0 +1,14 @@
+package:
+  create:
+    output: ../../build
+    set:
+      package_version: 0.0.1
+      package_tag_suffix: ""
+      package_name: storageclass
+  deploy:
+    set:
+      cluster_name: "test"
+      reclaim_policy: "Delete"
+      allow_volume_expansion: "true"
+      volume_binding_mode: "WaitForFirstConsumer"
+      efs_file_system_id: "123456"

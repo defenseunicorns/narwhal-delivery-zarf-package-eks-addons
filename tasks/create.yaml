@@ -15,6 +15,7 @@ tasks:
       - task: zarf-build-aws-node-termination-handler
       - task: zarf-build-cluster-autoscaler
       - task: zarf-build-metrics-server
+      - task: zarf-build-storageclass
 
   - name: zarf-build-aws-node-termination-handler
     description: "Create aws-node-termination-handler zarf package"
@@ -39,6 +40,18 @@ tasks:
     actions:
       - description: "Create aws-load-balancer-controller zarf package"
         cmd: "cd packages/aws-load-balancer-controller && zarf package create --confirm"
+
+  - name: zarf-build-external-secrets
+    description: "Create external-secrets zarf package"
+    actions:
+      - description: "Create external-secrets zarf package"
+        cmd: "cd packages/external-secrets && zarf package create --confirm"
+
+  - name: zarf-build-storageclass
+    description: "Create storageclass zarf package"
+    actions:
+      - description: "Create storageclass zarf package"
+        cmd: "cd packages/storageclass && zarf package create --confirm"
 
   # UDS bundles
   - name: create-eks-addons-uds-bundles
