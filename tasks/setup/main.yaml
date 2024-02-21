@@ -1,6 +1,10 @@
 includes:
   - infra: ./infra.yaml
 
+variables:
+  - name: REGISTRY1_TEST_IMAGE
+    default: "registry1.dso.mil/ironbank/opensource/defenseunicorns/zarf/zarf-agent"
+
 tasks:
   - name: k3d-istio-bundle
     actions:
