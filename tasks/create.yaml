@@ -34,6 +34,12 @@ tasks:
       - description: "Create metrics-server zarf package"
         cmd: "cd packages/metrics-server && zarf package create --confirm"
 
+  - name: zarf-build-aws-load-balancer-controller
+    description: "Create aws-load-balancer-controller zarf package"
+    actions:
+      - description: "Create aws-load-balancer-controller zarf package"
+        cmd: "cd packages/aws-load-balancer-controller && zarf package create --confirm"
+
   # UDS bundles
   - name: create-eks-addons-uds-bundles
     description: "Parent task to create different bundle flavors"
