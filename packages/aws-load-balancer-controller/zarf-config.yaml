@@ -1,0 +1,24 @@
+package:
+  create:
+    output: ../../build
+    set:
+      package_version: 0.0.1
+      package_tag_suffix: ""
+      package_name: aws-load-balancer-controller
+      namespace: kube-system
+      chart_repo: https://aws.github.io/eks-charts
+      # renovate datasource=helm depName=eks/aws-load-balancer-controller registryUrl=https://aws.github.io/eks-charts
+      chart_version: 1.7.1
+      image_registry_repo: public.ecr.aws
+      image_registry_path: eks/aws-load-balancer-controller
+      # renovate datasource=docker depName=public.ecr.aws/eks/aws-load-balancer-controller
+      image_version: v2.7.1
+      values_file: values/values.yaml
+      overrides_file: values/overrides.yaml
+
+  deploy:
+    set:
+      cluster_name: "test"
+      iam_role_arn: "arn:aws:iam::123456789012:role/test"
+      service_account: "test"
+      cluster_aws_region: "us-east-2"

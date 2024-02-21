@@ -1,0 +1,9 @@
+image:
+  repository: "###ZARF_REGISTRY###/###ZARF_CONST_IMAGE_REGISTRY_PATH###"
+  tag: "###ZARF_CONST_IMAGE_VERSION###"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  name: "###ZARF_VAR_SERVICE_ACCOUNT###"
+  annotations:
+    eks.amazonaws.com/role-arn: "###ZARF_VAR_IAM_ROLE_ARN###"

@@ -1,0 +1,17 @@
+package:
+  create:
+    output: ../../build
+    set:
+      package_version: 0.0.1
+      package_name: external-secrets
+      package_tag_suffix: ""
+      namespace: external-secrets
+      chart_repo: https://charts.external-secrets.io
+      # renovate datasource=helm depName=external-secrets/external-secrets registryUrl=https://charts.external-secrets.io
+      chart_version: 0.9.12
+      image_registry_repo: ghcr.io
+      image_registry_path: external-secrets/external-secrets
+      # renovate datasource=docker depName=ghcr.io/external-secrets/external-secrets
+      image_version: v0.9.12
+      values_file: values/values.yaml
+      overrides_file: values/overrides.yaml

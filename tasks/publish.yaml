@@ -14,6 +14,13 @@ tasks:
   - name: packages
     description: "Build and publish the zarf packages"
     actions:
+      - description: "Create zarf aws-load-balancer-controller packages"
+        cmd: |
+          set -e
+          export TARGET_REPO=${TARGET_REPO}
+          ZARF_ARCHITECTURE=amd64 uds run -f tasks/create.yaml zarf-build-aws-load-balancer-controller --no-progress
+          ZARF_ARCHITECTURE=arm64 uds run -f tasks/create.yaml zarf-build-aws-load-balancer-controller --no-progress
+
       - description: "Create zarf aws-node-termination-handler packages"
         cmd: |
           set -e
@@ -51,6 +58,9 @@ tasks:
           for package in ${PACKAGE_DIR}/zarf-package*${VERSION}*.tar.zst; do
             zarf package publish ${package} ${TARGET_REPO}
           done
+          if ${ZARF_PACKAGE_CLEANUP}; then
+            rm -f ${PACKAGE_DIR}/zarf-package*${VERSION}*.tar.zst
+          fi
 
   - name: bundles
     description: "Build and publish UDS bundles"

@@ -1,0 +1,26 @@
+name: publish-uds-bundles-and-zarf-packages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-uds-bundles-and-zarf-packages:
+    runs-on: ubuntu-latest
+    name: publish packages
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: environment setup
+        uses: defenseunicorns/uds-core/.github/actions/setup@main
+        with:
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
+          ib_user: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          ib_password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
+
+      - name: publish Zarf Packages
+        run: uds run publish-packages
+
+      - name: publish UDS Bundles
+        run: uds run publish-bundles
