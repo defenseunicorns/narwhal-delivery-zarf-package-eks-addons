@@ -97,5 +97,5 @@ tasks:
           set -e
           pkgPath="ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons/bundles/eks-addons"
           for arch in amd64 arm64; do
-            zarf tools registry copy ${pkgPath}:${VERSION} ${pkgPath}:${arch}
+            uds zarf tools registry copy ${pkgPath}:${VERSION} ${pkgPath}:${arch}
           done
