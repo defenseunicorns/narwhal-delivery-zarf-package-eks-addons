@@ -20,10 +20,20 @@ jobs:
           ib_password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
 
       - name: Login to GHCR
-        run: uds run registry-login --set REGISTRY=ghcr.io --set REGISTRY_USERNAME=dummy --set REGISTRY_PASSWORD=${{ secrets.GITHUB_TOKEN }} --set REGISTRY_RETRY_INTERVAL=90
+        run: |
+          uds run registry-login \
+            --set REGISTRY=ghcr.io \
+            --set REGISTRY_USERNAME=dummy \
+            --set REGISTRY_PASSWORD=${{ secrets.GITHUB_TOKEN }} \
+            --set REGISTRY_RETRY_INTERVAL=90
 
       - name: Login to registry1
-        run: uds run registry-login --set REGISTRY=registry1.dso.mil --set REGISTRY_USERNAME=${{ secrets.IRON_BANK_ROBOT_USERNAME }} --set REGISTRY_PASSWORD=${{ secrets.IRON_BANK_ROBOT_PASSWORD }} --set REGISTRY_RETRY_INTERVAL=90
+        run: |
+          uds run registry-login \
+            --set REGISTRY=registry1.dso.mil \
+            --set REGISTRY_USERNAME=${{ secrets.IRON_BANK_ROBOT_USERNAME }} \
+            --set REGISTRY_PASSWORD=${{ secrets.IRON_BANK_ROBOT_PASSWORD }} \
+            --set REGISTRY_RETRY_INTERVAL=90
 
       - name: publish Zarf Packages
         run: uds run publish-packages

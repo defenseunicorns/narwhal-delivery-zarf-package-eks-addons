@@ -3,6 +3,9 @@ image:
   tag: "###ZARF_CONST_IMAGE_VERSION###"
   pullPolicy: IfNotPresent
 
+imagePullSecrets:
+  - name: private-registry
+
 serviceAccount:
   name: "###ZARF_VAR_SERVICE_ACCOUNT###"
   annotations:

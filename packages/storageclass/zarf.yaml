@@ -33,22 +33,40 @@ components:
     description: "Fetch staged json object from AWS SSM Parameter Store and extract values for zarf variables"
     actions:
       onDeploy:
+        defaults:
+          shell:
+            linux: bash
+            darwin: bash
         before:
           # get the cluster name
           - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
             setVariables:
               - name: CLUSTER_NAME
           - cmd: |
-              aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/StorageClass/efs/fileSystemId" --with-decryption | jq -r '.Parameter.Value'
+              aws ssm get-parameter --name "/${ZARF_VAR_CLUSTER_NAME}/StorageClass/efs/fileSystemId" --with-decryption --output json | jq -r '.Parameter.Value'
             setVariables:
               - name: EFS_FILE_SYSTEM_ID
+
   - name: ebs-storageclass
     required: false
+    actions:
+      onDeploy:
+        defaults:
+          shell:
+            linux: bash
+            darwin: bash
+        before:
+          - cmd: |
+              # check if gp2 storage class exists and annotation of storageclass.kubernetes.io/is-default-class":"true", if so patch it to be false
+              if uds zarf tools kubectl get storageclass gp2 -o jsonpath='{.metadata.annotations.storageclass\.kubernetes\.io/is-default-class}' | grep -q "true"; then
+                uds zarf tools kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+              fi
     manifests:
       - name: ebs-storageclass
         namespace: kube-system
         files:
           - "manifests/ebs-storageclass.yaml"
+
   - name: efs-storageclass
     required: false
     manifests:
