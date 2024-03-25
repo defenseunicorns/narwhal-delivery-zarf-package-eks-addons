@@ -7,7 +7,7 @@ package:
       package_name: aws-node-termination-handler
       namespace: aws-node-termination-handler
       chart_repo: oci://public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
-      # renovate datasource=docker depName=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler registryUrl=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
+      # renovate datasource=docker depName=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
       chart_version: 0.22.0
       image_registry_repo: public.ecr.aws
       image_registry_path: aws-ec2/aws-node-termination-handler
