@@ -12,3 +12,4 @@ parameters:
   csi.storage.k8s.io/fstype: ext4
   type: gp3
   encrypted: "true"
+  ###ZARF_VAR_EBS_EXTRA_PARAMETERS###

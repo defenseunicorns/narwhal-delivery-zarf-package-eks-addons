@@ -26,6 +26,9 @@ variables:
     type: raw
     prompt: false
     default: "123456"
+  - name: EBS_EXTRA_PARAMETERS
+    autoIndent: true
+    default: ""
 
 components:
   - name: fetch-staged-aws-ssm-vars
