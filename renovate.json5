@@ -47,7 +47,7 @@
     {
       "fileMatch": ["zarf-config(-.+)?\\.ya?ml$"],
       "matchStrings": [
-        "datasource=(?<datasource>.+?) depName=(?<depName>.+?)( packageName=(?<packageName>.+))?\\s.+: [\"']?(?<currentValue>.+?)[\"']?\\s"
+        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*? image_version: (?<currentValue>.*)\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}loose{{/if}}"
     },
@@ -58,7 +58,7 @@
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}loose{{/if}}",
       "registryUrlTemplate": "{{#if registryUrl}}{{{registryUrl}}}{{else}}{{/if}}"
-    },
+    }
   ],
   "hostRules": [
     {
