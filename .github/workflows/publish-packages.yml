@@ -1,8 +1,6 @@
 name: release-packages
 
 on:
-  # manual, idk
-  workflow_dispatch:
   # Detect changes to all files in a Pull request relative to the target branch or since the last pushed commit.
   pull_request:
     branches:
