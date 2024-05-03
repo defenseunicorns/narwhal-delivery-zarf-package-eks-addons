@@ -2,7 +2,6 @@ package:
   create:
     output: ../../build
     set:
-      package_version: 0.0.1
       package_tag_suffix: -registry1
       package_name: metrics-server
       namespace: kube-system

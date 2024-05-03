@@ -1,63 +1,36 @@
 # narwhal-delivery-zarf-package-eks-addons
-Handles zarf packaging of multiple add-ons for EKS
 
-## Getting Started
+This repository is used to create zarf packages of multiple add-ons for EKS.
 
-### Required Environment Variables
+The main intention is to be used with our terraform module [terraform-aws-eks](https://github.com/defenseunicorns/terraform-aws-eks). These Zarf packages will consume resources staged in AWS automatically or with Zarf you can override the values using a values.yaml file, providing your own values with a VALUES_OVERRIDES Zarf variable for each package.
 
-- REGISTRY1_USERNAME
-- REGISTRY1_PASSWORD
-- GITHUB_TOKEN
+# Example of how to use the Zarf package with arbitrary overrides using zarf dev
 
-### Building Packages
+The example below will template the output with arbitrary overrides akin to a `helm template` command.
 
-To create the cluster-autoscaler zarf package
-``` shell
-make zarf-build-cluster-autoscaler
+```bash
+# make junk dir
+DEMO=$(mktemp -d)
+
+# adding extra labels with helm chart values overrides
+cat << EOF > $DEMO/cluster-autoscaler-values-overrides-demo.yaml
+podLabels:
+  extraLabel: "whatever"
+awsRegion: "us-gov-west-1"
+EOF
+
+# go to cluster-autoscaler package dir
+pushd packages/cluster-autoscaler
+
+# template helm charts with zarf dev and zarf variables
+# all output
+zarf dev find-images --deploy-set VALUES_OVERRIDES=$DEMO/cluster-autoscaler-values-overrides-demo.yaml --why "kind"
+
+# input var file changes
+zarf dev find-images --deploy-set VALUES_OVERRIDES=$DEMO/cluster-autoscaler-values-overrides-demo.yaml --why "kind" | grep -A 10 -B 10 "us-gov-west-1\|whatever" 
+
+# cleanup
+popd
+rm -rf $DEMO
+unset DEMO
 ```
-
-To create the metrics-server zarf package
-``` shell
-make zarf-build-metrics-server
-```
-
-To create the aws-node-termination-handler zarf package
-``` shell
-make zarf-build-aws-node-termination-handler
-```
-
-To create all the packages in this repo
-``` shell
-make zarf-build-all
-```
-
-### Publishing Packages
-
-To publish the cluster-autoscaler zarf package
-``` shell
-make zarf-publish-cluster-autoscaler
-```
-
-To publish the metrics-server zarf package
-``` shell
-make zarf-publish-metrics-server
-```
-
-To publish the aws-node-termination-handler zarf package
-``` shell
-make zarf-publish-aws-node-termination-handler
-```
-
-To publish all the packages in this repo
-
-``` shell
-make zarf-publish-all
-```
-
-### Build and Publish New Packages at Once
-``` shell
-make zarf-build-and-publish-all
-```
-
-### CI and Workflows
-TBD. Might need to extend workflows in https://github.com/defenseunicorns/delivery-github-actions-workflows .

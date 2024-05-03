@@ -1,130 +1,130 @@
-# source all ur vars here lol?
-variables:
-  - name: ENV_VAR_FILE
-    default: .env
-    type: raw
+# # source all ur vars here lol?
+# variables:
+#   - name: ENV_VAR_FILE
+#     default: .env
+#     type: raw
 
-tasks:
-  ### PRE-FLIGHT VARS ###
-  - name: convenience-vars
-    description: "Set convenience variables"
-    actions:
-      - description: set ZARF_COMMAND variable
-        cmd: |
-          printf "zarf -l debug --no-progress --no-log-file"
-        setVariables:
-          - name: ZARF_COMMAND
-      - description: set REPO variable
-        cmd: |
-          git remote get-url origin
-        setVariables:
-          - name: REPO
-      - description: set BRANCH variable
-        cmd: |
-          git rev-parse --abbrev-ref HEAD
-        setVariables:
-          - name: BRANCH
-      - description: set PRIMARY_DIR variable
-        cmd: |
-          basename $(git rev-parse --show-toplevel)
-        setVariables:
-          - name: PRIMARY_DIR
+# tasks:
+#   ### PRE-FLIGHT VARS ###
+#   - name: convenience-vars
+#     description: "Set convenience variables"
+#     actions:
+#       - description: set ZARF_COMMAND variable
+#         cmd: |
+#           printf "zarf -l debug --no-progress --no-log-file"
+#         setVariables:
+#           - name: ZARF_COMMAND
+#       - description: set REPO variable
+#         cmd: |
+#           git remote get-url origin
+#         setVariables:
+#           - name: REPO
+#       - description: set BRANCH variable
+#         cmd: |
+#           git rev-parse --abbrev-ref HEAD
+#         setVariables:
+#           - name: BRANCH
+#       - description: set PRIMARY_DIR variable
+#         cmd: |
+#           basename $(git rev-parse --show-toplevel)
+#         setVariables:
+#           - name: PRIMARY_DIR
 
-  - name: source-env-vars
-    description: "Similar to source .env file and exporting"
-    actions:
-      - description: set BUILD_HARNESS_REPO
-        cmd: |
-          grep BUILD_HARNESS_REPO ${ENV_VAR_FILE} | cut -d "=" -f 2
-        setVariables:
-          - name: BUILD_HARNESS_REPO
-      - description: set BUILD_HARNESS_VERSION
-        cmd: |
-          grep BUILD_HARNESS_VERSION ${ENV_VAR_FILE} | cut -d "=" -f 2
-        setVariables:
-          - name: BUILD_HARNESS_VERSION
-      - description: set UDS_CLI_REPO
-        cmd: |
-          grep UDS_CLI_REPO ${ENV_VAR_FILE} | cut -d "=" -f 2
-        setVariables:
-          - name: UDS_CLI_REPO
-      - description: set UDS_CLI_VERSION
-        cmd: |
-          grep UDS_CLI_VERSION ${ENV_VAR_FILE} | cut -d "=" -f 2
-        setVariables:
-          - name: UDS_CLI_VERSION
-      - description: set UDS_EKS_ADDONS_REPO
-        cmd: |
-          grep UDS_EKS_ADDONS_REPO ${ENV_VAR_FILE} | cut -d "=" -f 2
-        setVariables:
-          - name: UDS_EKS_ADDONS_REPO
-      - description: set UDS_EKS_ADDONS_VERSION
-        cmd: |
-          grep UDS_EKS_ADDONS_VERSION ${ENV_VAR_FILE} | cut -d "=" -f 2
-        setVariables:
-          - name: UDS_EKS_ADDONS_VERSION
+#   - name: source-env-vars
+#     description: "Similar to source .env file and exporting"
+#     actions:
+#       - description: set BUILD_HARNESS_REPO
+#         cmd: |
+#           grep BUILD_HARNESS_REPO ${ENV_VAR_FILE} | cut -d "=" -f 2
+#         setVariables:
+#           - name: BUILD_HARNESS_REPO
+#       - description: set BUILD_HARNESS_VERSION
+#         cmd: |
+#           grep BUILD_HARNESS_VERSION ${ENV_VAR_FILE} | cut -d "=" -f 2
+#         setVariables:
+#           - name: BUILD_HARNESS_VERSION
+#       - description: set UDS_CLI_REPO
+#         cmd: |
+#           grep UDS_CLI_REPO ${ENV_VAR_FILE} | cut -d "=" -f 2
+#         setVariables:
+#           - name: UDS_CLI_REPO
+#       - description: set UDS_CLI_VERSION
+#         cmd: |
+#           grep UDS_CLI_VERSION ${ENV_VAR_FILE} | cut -d "=" -f 2
+#         setVariables:
+#           - name: UDS_CLI_VERSION
+#       - description: set UDS_EKS_ADDONS_REPO
+#         cmd: |
+#           grep UDS_EKS_ADDONS_REPO ${ENV_VAR_FILE} | cut -d "=" -f 2
+#         setVariables:
+#           - name: UDS_EKS_ADDONS_REPO
+#       - description: set UDS_EKS_ADDONS_VERSION
+#         cmd: |
+#           grep UDS_EKS_ADDONS_VERSION ${ENV_VAR_FILE} | cut -d "=" -f 2
+#         setVariables:
+#           - name: UDS_EKS_ADDONS_VERSION
 
-  - name: set-runner-vars
-    description: "Set variables for the runner, make DRY"
-    actions:
-      - description: set BUILD_HARNESS_RUN
-        cmd: |
-          #dynamically includes your TF_VARs into the docker run command
-          TF_VARS=$(printenv | grep '^TF_VAR_' | awk -F= '{printf "-e %s ", $1}')
-          echo "docker run --rm \
-            --platform=linux/amd64 \
-            --cap-add=NET_ADMIN \
-            --cap-add=NET_RAW \
-            -v "${PWD}:/app" \
-            -v "${PWD}/.cache/pre-commit:/root/.cache/pre-commit" \
-            -v "${PWD}/.cache/tmp:/tmp" \
-            -v "${PWD}/.cache/go:/root/go" \
-            -v "${PWD}/.cache/go-build:/root/.cache/go-build" \
-            -v "${PWD}/.cache/.terraform.d/plugin-cache:/root/.terraform.d/plugin-cache" \
-            -v "${PWD}/.cache/.zarf-cache:/root/.zarf-cache" \
-            -v "${HOME}/.uds-cache:/root/.uds-cache" \
-            --workdir "/app" \
-            -e TF_LOG_PATH \
-            -e TF_LOG \
-            -e GOPATH=/root/go \
-            -e GOCACHE=/root/.cache/go-build \
-            -e TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE=true \
-            -e TF_PLUGIN_CACHE_DIR=/root/.terraform.d/plugin-cache \
-            -e AWS_REGION \
-            -e AWS_DEFAULT_REGION \
-            -e AWS_ACCESS_KEY_ID \
-            -e AWS_SECRET_ACCESS_KEY \
-            -e AWS_SESSION_TOKEN \
-            -e AWS_SECURITY_TOKEN \
-            -e AWS_SESSION_EXPIRATION \
-            ${TF_VARS} \
-            ${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION}"
-        setVariables:
-          - name: BUILD_HARNESS_RUN
+#   - name: set-runner-vars
+#     description: "Set variables for the runner, make DRY"
+#     actions:
+#       - description: set BUILD_HARNESS_RUN
+#         cmd: |
+#           #dynamically includes your TF_VARs into the docker run command
+#           TF_VARS=$(printenv | grep '^TF_VAR_' | awk -F= '{printf "-e %s ", $1}')
+#           echo "docker run --rm \
+#             --platform=linux/amd64 \
+#             --cap-add=NET_ADMIN \
+#             --cap-add=NET_RAW \
+#             -v "${PWD}:/app" \
+#             -v "${PWD}/.cache/pre-commit:/root/.cache/pre-commit" \
+#             -v "${PWD}/.cache/tmp:/tmp" \
+#             -v "${PWD}/.cache/go:/root/go" \
+#             -v "${PWD}/.cache/go-build:/root/.cache/go-build" \
+#             -v "${PWD}/.cache/.terraform.d/plugin-cache:/root/.terraform.d/plugin-cache" \
+#             -v "${PWD}/.cache/.zarf-cache:/root/.zarf-cache" \
+#             -v "${HOME}/.uds-cache:/root/.uds-cache" \
+#             --workdir "/app" \
+#             -e TF_LOG_PATH \
+#             -e TF_LOG \
+#             -e GOPATH=/root/go \
+#             -e GOCACHE=/root/.cache/go-build \
+#             -e TF_PLUGIN_CACHE_MAY_BREAK_DEPENDENCY_LOCK_FILE=true \
+#             -e TF_PLUGIN_CACHE_DIR=/root/.terraform.d/plugin-cache \
+#             -e AWS_REGION \
+#             -e AWS_DEFAULT_REGION \
+#             -e AWS_ACCESS_KEY_ID \
+#             -e AWS_SECRET_ACCESS_KEY \
+#             -e AWS_SESSION_TOKEN \
+#             -e AWS_SECURITY_TOKEN \
+#             -e AWS_SESSION_EXPIRATION \
+#             ${TF_VARS} \
+#             ${BUILD_HARNESS_REPO}:${BUILD_HARNESS_VERSION}"
+#         setVariables:
+#           - name: BUILD_HARNESS_RUN
 
-  ###############################################################################################################
+#   ###############################################################################################################
 
-  - name: set-terraform-outputs
-    description: "Set terraform outputs as environment variables"
-    actions:
-      - description: "Set terraform region output as environment variable"
-        cmd: |
-          ${BUILD_HARNESS_RUN} \
-            bash -c 'cd test/iac && terraform output -raw region'
-        setVariables:
-          - name: REGION
-      - description: "Set terraform server_id output as environment variable"
-        cmd: |
-          ${BUILD_HARNESS_RUN} \
-            bash -c 'cd test/iac && terraform output -raw server_id'
-        setVariables:
-          - name: SERVER_ID
+#   - name: set-terraform-outputs
+#     description: "Set terraform outputs as environment variables"
+#     actions:
+#       - description: "Set terraform region output as environment variable"
+#         cmd: |
+#           ${BUILD_HARNESS_RUN} \
+#             bash -c 'cd test/iac && terraform output -raw region'
+#         setVariables:
+#           - name: REGION
+#       - description: "Set terraform server_id output as environment variable"
+#         cmd: |
+#           ${BUILD_HARNESS_RUN} \
+#             bash -c 'cd test/iac && terraform output -raw server_id'
+#         setVariables:
+#           - name: SERVER_ID
 
-  - name: set-ssm-session-args
-    description: "Set ssm session args as environment variables"
-    actions:
-      - description: "Set ssm session args as environment variables"
-        cmd: |
-          echo "aws ssm start-session --region ${REGION} --target ${SERVER_ID} --document-name AWS-StartInteractiveCommand"
-        setVariables:
-          - name: SSM_SESSION_ARGS
+#   - name: set-ssm-session-args
+#     description: "Set ssm session args as environment variables"
+#     actions:
+#       - description: "Set ssm session args as environment variables"
+#         cmd: |
+#           echo "aws ssm start-session --region ${REGION} --target ${SERVER_ID} --document-name AWS-StartInteractiveCommand"
+#         setVariables:
+#           - name: SSM_SESSION_ARGS
