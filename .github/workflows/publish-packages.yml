@@ -3,10 +3,6 @@ name: release-packages
 on:
   # manual, idk
   workflow_dispatch:
-  # Detect changes to files made since the last pushed commit.
-  push:
-    branches:
-      - refactor/change-release-patterns
   # Detect changes to all files in a Pull request relative to the target branch or since the last pushed commit.
   pull_request:
     branches:
