@@ -17,7 +17,7 @@ jobs:
     name: Get changed files
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
+      matrix: ${{ steps.changed-files.outputs.zarf_all_changed_files }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
             zarf:
               - '**zarf*.yaml'
       - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
+        run: echo '${{ steps.changed-files.outputs.zarf_all_changed_files }}'
 
   matrix-job:
     name: Run Matrix Job
