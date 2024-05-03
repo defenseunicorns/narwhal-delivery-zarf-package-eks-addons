@@ -2,16 +2,14 @@ kind: ZarfPackageConfig
 metadata:
   name: aws-load-balancer-controller
   description: Zarf package of aws-load-balancer-controller
-  version: "###ZARF_PKG_TMPL_PACKAGE_VERSION######ZARF_PKG_TMPL_PACKAGE_TAG_SUFFIX###"
+  version: "###ZARF_PKG_TMPL_IMAGE_VERSION######ZARF_PKG_TMPL_PACKAGE_TAG_SUFFIX###"
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
-constants:
-  - name: IMAGE_VERSION
-    value: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
-  - name: IMAGE_REGISTRY_PATH
-    value: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
-
 variables:
+  - name: IMAGE_VERSION
+    default: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
+  - name: IMAGE_REGISTRY_PATH
+    default: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
   - name: CLUSTER_NAME
     type: raw
     prompt: false

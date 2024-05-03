@@ -1,12 +1,12 @@
-variables:
-  - name: K3D_CLUSTER_NAME
-    description: "The name of the cluster to create"
-    default: "uds"
+# variables:
+#   - name: K3D_CLUSTER_NAME
+#     description: "The name of the cluster to create"
+#     default: "uds"
 
-tasks:
-  - name: k3d-delete-cluster
-    actions:
-      - description: "Delete the K3d cluster"
-        # renovate: datasource=github-tags depName=defenseunicorns/uds-k3d versioning=semver
-        cmd: |
-          k3d cluster delete ${K3D_CLUSTER_NAME} || true
+# tasks:
+#   - name: k3d-delete-cluster
+#     actions:
+#       - description: "Delete the K3d cluster"
+#         # renovate: datasource=github-tags depName=defenseunicorns/uds-k3d versioning=semver
+#         cmd: |
+#           k3d cluster delete ${K3D_CLUSTER_NAME} || true

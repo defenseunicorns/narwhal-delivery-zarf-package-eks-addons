@@ -61,8 +61,8 @@ components:
         before:
           - cmd: |
               # check if gp2 storage class exists and annotation of storageclass.kubernetes.io/is-default-class":"true", if so patch it to be false
-              if uds zarf tools kubectl get storageclass gp2 -o jsonpath='{.metadata.annotations.storageclass\.kubernetes\.io/is-default-class}' | grep -q "true"; then
-                uds zarf tools kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+              if ./uds zarf tools kubectl get storageclass gp2 -o jsonpath='{.metadata.annotations.storageclass\.kubernetes\.io/is-default-class}' | grep -q "true"; then
+                ./uds zarf tools kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
               fi
     manifests:
       - name: ebs-storageclass

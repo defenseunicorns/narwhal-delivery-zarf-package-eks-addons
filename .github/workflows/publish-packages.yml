@@ -1,48 +1,71 @@
-name: publish-uds-bundles-and-zarf-packages
+name: release-packages
 
 on:
-  workflow_dispatch:
+  # trigger on push to main branch when a yaml file under packages directory is changed
+  push:
+    branches:
+      - "main"
+    paths:
+      - "packages/**/*.y?ml"
 
 jobs:
-  publish-uds-bundles-and-zarf-packages:
+  changed-files:
+    name: Get changed files
     runs-on: ubuntu-latest
-    name: publish packages
+    outputs:
+      matrix: ${{ steps.changed-files.outputs.zarf_all_changed_files }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          matrix: true
+          files_yaml: |
+            zarf:
+              - '**.{yaml,yml}'
+              - '**/*.{yaml,yml}'
+          path: packages/ # only look in the packages directory
+          dir_names: true # just give the directory names
+      - name: List all changed files
+        run: echo '${{ steps.changed-files.outputs.zarf_all_changed_files }}'
+
+  publish-packages:
+    name: Run Matrix Job
+    runs-on: ubuntu-latest
+    needs: [changed-files]
+    if: ${{ needs.changed-files.outputs.matrix != '[]' }}
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        zarf-package: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+      max-parallel: 10
+      fail-fast: false
     steps:
-      - uses: actions/checkout@v4
-      - name: environment setup
-        uses: defenseunicorns/uds-core/.github/actions/setup@main
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Environment setup
+        uses: ./.github/actions/setup
         with:
-          gh_token: ${{ secrets.GITHUB_TOKEN }}
-          ib_user: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
-          ib_password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
+          registry1Username: ${{ secrets.IRON_BANK_ROBOT_USERNAME }}
+          registry1Password: ${{ secrets.IRON_BANK_ROBOT_PASSWORD }}
+          ghToken: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to GHCR
+      - name: publish ${{ matrix.zarf-package }} zarf package
         run: |
-          uds run registry-login \
-            --set REGISTRY=ghcr.io \
-            --set REGISTRY_USERNAME=dummy \
-            --set REGISTRY_PASSWORD=${{ secrets.GITHUB_TOKEN }} \
-            --set REGISTRY_RETRY_INTERVAL=90
-
-      - name: Login to registry1
-        run: |
-          uds run registry-login \
-            --set REGISTRY=registry1.dso.mil \
-            --set REGISTRY_USERNAME=${{ secrets.IRON_BANK_ROBOT_USERNAME }} \
-            --set REGISTRY_PASSWORD=${{ secrets.IRON_BANK_ROBOT_PASSWORD }} \
-            --set REGISTRY_RETRY_INTERVAL=90
-
-      - name: publish Zarf Packages
-        run: uds run publish-packages
-
-      - name: publish UDS Bundles
-        run: uds run publish-bundles
+          ZARF_PACKAGE_NAME=${{ matrix.zarf-package }} uds run create-and-publish-single-zarf-package-with-all-architectures
 
       - name: Save logs
         if: always()
         uses: defenseunicorns/uds-core/.github/actions/save-logs@main
         with:
-          suffix: "-eks-addons"
+          suffix: ${{ matrix.zarf-package }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+
+

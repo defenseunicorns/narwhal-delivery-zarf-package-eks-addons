@@ -1,0 +1,41 @@
+name: Setup Environment
+description: UDS Environment Setup
+
+inputs:
+  registry1Username:
+    description: Registry1 Username
+  registry1Password:
+    description: Registry1 Password
+  ghToken:
+    description: GitHub Token
+
+runs:
+  using: composite
+  steps:
+    # - name: Install k3d
+    #   shell: bash
+    #   # renovate: datasource=github-tags depName=k3d-io/k3d versioning=semver
+    #   run: curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.6.3 bash
+
+    - name: Set up Homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+
+    - name: Install UDS CLI
+      shell: bash
+      # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+      run: brew install defenseunicorns/tap/uds@0.10.4
+
+    - name: Iron Bank Login
+      if: ${{ inputs.registry1Username != '' }}
+      env:
+        REGISTRY_USERNAME: ${{ inputs.registry1Username }}
+        REGISTRY_PASSWORD: ${{ inputs.registry1Password }}
+      run: echo "${{ env.REGISTRY_PASSWORD }}" | uds zarf tools registry login -u "${{ env.REGISTRY_USERNAME }}" --password-stdin registry1.dso.mil
+      shell: bash
+
+    - name: GHCR Login
+      if: ${{ inputs.ghToken != '' }}
+      env:
+        GH_TOKEN: ${{ inputs.ghToken }}
+      run: echo "${{ env.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
+      shell: bash

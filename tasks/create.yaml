@@ -5,9 +5,15 @@ variables:
 tasks:
   # Zarf packages
   - name: create-single-zarf-package
-    description: "Create single zarf package zarf-build-${ZARF_PACKAGE_NAME} using nested uds run command"
+    description: "Create single zarf package zarf-build-${ZARF_PACKAGE_NAME} using nested ./uds run command"
     actions:
-      - cmd: "uds run -f tasks/create.yaml zarf-build-${ZARF_PACKAGE_NAME} --no-progress"
+      - cmd: "./uds run -f tasks/create.yaml zarf-build-${ZARF_PACKAGE_NAME} --no-progress"
+
+  - name: create-single-zarf-package-with-all-architectures
+    description: "Create single zarf package zarf-build-${ZARF_PACKAGE_NAME} with all architectures"
+    actions:
+      - cmd: |
+          ./uds run -f tasks/create.yaml create-${ZARF_PACKAGE_NAME}-zarf-package-architectures --no-progress
 
   - name: create-all-zarf-packages
     description: "Create all zarf packages"
@@ -15,76 +21,100 @@ tasks:
       - task: zarf-build-aws-node-termination-handler
       - task: zarf-build-cluster-autoscaler
       - task: zarf-build-metrics-server
+      - task: zarf-build-aws-load-balancer-controller
+      - task: zarf-build-external-secrets
       - task: zarf-build-storageclass
+
+  # AWS Node Termination Handler
+
+  - name: create-aws-node-termination-handler-zarf-package-architectures
+    description: "Create zarf aws-node-termination-handler packages"
+    actions:
+      - cmd: |
+          ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
+          ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
+          ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-aws-node-termination-handler --no-progress
 
   - name: zarf-build-aws-node-termination-handler
     description: "Create aws-node-termination-handler zarf package"
     actions:
       - description: run the make target for zarf-build-aws-node-termination-handler
-        cmd: "cd packages/aws-node-termination-handler && uds zarf package create --confirm"
+        cmd: "cd packages/aws-node-termination-handler && ./uds zarf package create --confirm"
+
+  # Cluster Autoscaler
+
+  - name: create-cluster-autoscaler-zarf-package-architectures
+    description: "Create zarf cluster-autoscaler packages"
+    actions:
+      - cmd: |
+          ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
+          ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
+          ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-cluster-autoscaler --no-progress
+
+  # Metrics Server
+
+  - name: create-metrics-server-zarf-package-architectures
+    description: "Create zarf metrics-server packages"
+    actions:
+      - cmd: |
+          ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
+          ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
+          ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-metrics-server --no-progress
 
   - name: zarf-build-cluster-autoscaler
     description: "Create cluster-autoscaler zarf package"
     actions:
-      - description: run the make target for zarf-build-cluster-autoscaler
-        cmd: "cd packages/cluster-autoscaler && uds zarf package create --confirm"
+      - description: run the task for zarf-build-cluster-autoscaler
+        cmd: "cd packages/cluster-autoscaler && ./uds zarf package create --confirm"
 
   - name: zarf-build-metrics-server
     description: "Create metrics-server zarf package"
     actions:
       - description: "Create metrics-server zarf package"
-        cmd: "cd packages/metrics-server && uds zarf package create --confirm"
+        cmd: "cd packages/metrics-server && ./uds zarf package create --confirm"
+
+  # AWS Load Balancer Controller
+
+  - name: create-aws-load-balancer-controller-zarf-package-architectures
+    description: "Create zarf aws-load-balancer-controller packages"
+    actions:
+      - cmd: |
+          ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-aws-load-balancer-controller --no-progress
+          ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-aws-load-balancer-controller --no-progress
 
   - name: zarf-build-aws-load-balancer-controller
     description: "Create aws-load-balancer-controller zarf package"
     actions:
       - description: "Create aws-load-balancer-controller zarf package"
-        cmd: "cd packages/aws-load-balancer-controller && uds zarf package create --confirm"
+        cmd: "cd packages/aws-load-balancer-controller && ./uds zarf package create --confirm"
+
+  # External Secrets
+
+  - name: create-external-secrets-zarf-package-architectures
+    description: "Create zarf external-secrets packages"
+    actions:
+      - cmd: |
+          ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-external-secrets --no-progress
+          ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-external-secrets --no-progress
+          ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-external-secrets --no-progress
 
   - name: zarf-build-external-secrets
     description: "Create external-secrets zarf package"
     actions:
       - description: "Create external-secrets zarf package"
-        cmd: "cd packages/external-secrets && uds zarf package create --confirm"
+        cmd: "cd packages/external-secrets && ./uds zarf package create --confirm"
+
+  # Storageclass
+
+  - name: create-storageclass-zarf-package-architectures
+    description: "Create zarf storageclass packages"
+    actions:
+      - cmd: |
+          ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-storageclass --no-progress
+          ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-storageclass --no-progress
 
   - name: zarf-build-storageclass
     description: "Create storageclass zarf package"
     actions:
       - description: "Create storageclass zarf package"
-        cmd: "cd packages/storageclass && uds zarf package create --confirm"
-
-  # UDS bundles
-  - name: create-eks-addons-uds-bundles
-    description: "Parent task to create different bundle flavors"
-    actions:
-      - shell:
-          darwin: bash
-          linux: bash
-        cmd: |
-          # Define your directories and their corresponding architectures
-          declare -A directories
-          directories[bundles/eks-addons/registry1]="amd64"
-          directories[bundles/eks-addons/upstream]="amd64 arm64"
-
-          # Loop through the directories
-          for dir in "${!directories[@]}"; do
-              # Get the architectures for this directory
-              archs=${directories[$dir]}
-              # Loop through each architecture
-              for arch in $archs; do
-                  echo "Directory: $dir, Architecture: $arch"
-                  uds create $dir --architecture $arch --confirm
-              done
-          done
-
-  - name: create-eks-addons-upstream-uds-bundle
-    description: "Create eks-addons uds bundle"
-    actions:
-      - description: "Create eks-addons upstream uds bundle"
-        cmd: "uds create bundles/eks-addons/upstream --confirm"
-
-  - name: create-eks-addons-registry1-uds-bundle
-    description: "Create eks-addons registry 1 uds bundle"
-    actions:
-      - description: "Create eks-addons registry 1 uds bundle"
-        cmd: "uds create bundles/eks-addons/registry1 --confirm"
+        cmd: "cd packages/storageclass && ./uds zarf package create --confirm"
