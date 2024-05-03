@@ -30,12 +30,12 @@ runs:
       env:
         REGISTRY_USERNAME: ${{ inputs.registry1Username }}
         REGISTRY_PASSWORD: ${{ inputs.registry1Password }}
-      run: echo "${{ env.REGISTRY_PASSWORD }}" | ./uds zarf tools registry login -u "${{ env.REGISTRY_USERNAME }}" --password-stdin registry1.dso.mil
+      run: echo "${{ env.REGISTRY_PASSWORD }}" | uds zarf tools registry login -u "${{ env.REGISTRY_USERNAME }}" --password-stdin registry1.dso.mil
       shell: bash
 
     - name: GHCR Login
       if: ${{ inputs.ghToken != '' }}
       env:
         GH_TOKEN: ${{ inputs.ghToken }}
-      run: echo "${{ env.GH_TOKEN }}" | ./uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
+      run: echo "${{ env.GH_TOKEN }}" | uds zarf tools registry login -u "dummy" --password-stdin ghcr.io
       shell: bash
