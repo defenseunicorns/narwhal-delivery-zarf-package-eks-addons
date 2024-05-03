@@ -30,14 +30,14 @@ tasks:
     actions:
       - cmd: |
           echo ${{ .inputs.registryPassword }} | \
-            uds zarf tools registry login \
+            ./uds zarf tools registry login \
             --username ${{ .inputs.registryUsername }} \
             --password-stdin ${{ .inputs.registry }} \
             >/dev/null
         description: "Authenticate to the registry"
       - cmd: |
           if [ ${{ .inputs.registry }} = "registry1.dso.mil" ]; then
-            uds zarf tools registry digest "${REGISTRY1_TEST_IMAGE}" >/dev/null || \
+            ./uds zarf tools registry digest "${REGISTRY1_TEST_IMAGE}" >/dev/null || \
             (sleep ${{ .inputs.registryRetryInterval }}; exit 1)
           fi
         description: "Validate registry connection"

@@ -45,7 +45,7 @@ tasks:
   ## zarf packages
   ### create packages
   - name: create-single-zarf-package
-    description: "Create single zarf with nested uds run command, specify the package name with the environment variable ${ZARF_PACKAGE_NAME}"
+    description: "Create single zarf with nested ./uds run command, specify the package name with the environment variable ${ZARF_PACKAGE_NAME}"
     actions:
       - task: set-preflight-env-vars
       - task: create:create-single-zarf-package
@@ -56,25 +56,32 @@ tasks:
       - task: set-preflight-env-vars
       - task: create:create-all-zarf-packages
 
-  ## uds bundles
-  ### create bundles
-  - name: create-eks-addons-uds-bundles
-    description: "Create eks-addons uds bundles"
-    actions:
-      - task: create:create-eks-addons-uds-bundles
-
-  ### deploy bundles
-  - name: deploy-single-package-from-bundle
-    description: Deploy single zarf package from UDS bundle. Use the environment variables ${UDS_BUNDLE} and ${ZARF_PACKAGE_NAME} to specify the bundle and package from the bundle to deploy.
+  - name: create-and-publish-single-zarf-package
+    description: "Create and publish single zarf package, specify the package name with the environment variable ${ZARF_PACKAGE_NAME}"
     actions:
       - task: set-preflight-env-vars
-      - task: deploy:deploy-single-package-from-bundle
+      - task: create:create-single-zarf-package
+      - task: publish:packages
 
-  - name: deploy-bundle
-    description: "Deploy the uds bundle"
-    actions:
-      - task: set-preflight-env-vars
-      - task: deploy:deploy-bundle
+  # ## uds bundles
+  # ### create bundles
+  # - name: create-eks-addons-uds-bundles
+  #   description: "Create eks-addons uds bundles"
+  #   actions:
+  #     - task: create:create-eks-addons-uds-bundles
+
+  # ### deploy bundles
+  # - name: deploy-single-package-from-bundle
+  #   description: Deploy single zarf package from UDS bundle. Use the environment variables ${UDS_BUNDLE} and ${ZARF_PACKAGE_NAME} to specify the bundle and package from the bundle to deploy.
+  #   actions:
+  #     - task: set-preflight-env-vars
+  #     - task: deploy:deploy-single-package-from-bundle
+
+  # - name: deploy-bundle
+  #   description: "Deploy the uds bundle"
+  #   actions:
+  #     - task: set-preflight-env-vars
+  #     - task: deploy:deploy-bundle
 
   ## publish packages and bundles
   - name: publish-packages
@@ -82,13 +89,13 @@ tasks:
     actions:
       - task: publish:packages
 
-  - name: publish-bundles
-    description: "Builds and publish UDS bundles"
-    actions:
-      - task: publish:bundles
+  # - name: publish-bundles
+  #   description: "Builds and publish UDS bundles"
+  #   actions:
+  #     - task: publish:bundles
 
-  - name: test-bundle
-    description: "Test the uds bundle"
-    actions:
-      - task: setup-k3d-cluster
-      - task: deploy-bundle
+  # - name: test-bundle
+  #   description: "Test the uds bundle"
+  #   actions:
+  #     - task: setup-k3d-cluster
+  #     - task: deploy-bundle
