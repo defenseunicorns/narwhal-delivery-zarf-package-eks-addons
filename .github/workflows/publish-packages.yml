@@ -6,7 +6,7 @@ on:
     branches:
       - "main"
     paths:
-      - "packages/**/*.y?ml"
+      - "packages/**/*.y*ml"
 
 jobs:
   changed-files:
@@ -66,6 +66,8 @@ jobs:
         uses: defenseunicorns/uds-core/.github/actions/save-logs@main
         with:
           suffix: ${{ matrix.zarf-package }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+
 
 
 
