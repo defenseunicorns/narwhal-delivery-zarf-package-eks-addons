@@ -1,12 +1,13 @@
 name: release-packages
 
 on:
+  workflow_dispatch:
   # trigger on push to main branch when a yaml file under packages directory is changed
   push:
     branches:
       - "main"
     paths:
-      - "packages/**/*.y?ml"
+      - "packages/**/*.y*ml"
 
 jobs:
   changed-files:
@@ -66,6 +67,9 @@ jobs:
         uses: defenseunicorns/uds-core/.github/actions/save-logs@main
         with:
           suffix: ${{ matrix.zarf-package }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+
+
 
 
 
