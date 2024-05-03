@@ -56,11 +56,11 @@ tasks:
       - task: set-preflight-env-vars
       - task: create:create-all-zarf-packages
 
-  - name: create-and-publish-single-zarf-package
+  - name: create-and-publish-single-zarf-package-with-all-architectures
     description: "Create and publish single zarf package, specify the package name with the environment variable ${ZARF_PACKAGE_NAME}"
     actions:
       - task: set-preflight-env-vars
-      - task: create:create-single-zarf-package
+      - task: create:create-single-zarf-package-with-all-architectures
       - task: publish:packages
 
   # ## uds bundles
