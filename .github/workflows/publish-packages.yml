@@ -1,10 +1,12 @@
 name: release-packages
 
 on:
-  # Detect changes to all files in a Pull request relative to the target branch or since the last pushed commit.
-  pull_request:
+  # trigger on push to main branch when a yaml file under packages directory is changed
+  push:
     branches:
-      - main
+      - "main"
+    paths:
+      - "packages/**/*.y?ml"
 
 jobs:
   changed-files:
@@ -35,6 +37,7 @@ jobs:
     name: Run Matrix Job
     runs-on: ubuntu-latest
     needs: [changed-files]
+    if: ${{ needs.changed-files.outputs.matrix != '[]' }}
     permissions:
       contents: read
       packages: write
@@ -63,3 +66,6 @@ jobs:
         uses: defenseunicorns/uds-core/.github/actions/save-logs@main
         with:
           suffix: ${{ matrix.zarf-package }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+
+
