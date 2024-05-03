@@ -64,7 +64,7 @@ tasks:
   - name: zarf-build-cluster-autoscaler
     description: "Create cluster-autoscaler zarf package"
     actions:
-      - description: run the make target for zarf-build-cluster-autoscaler
+      - description: run the task for zarf-build-cluster-autoscaler
         cmd: "cd packages/cluster-autoscaler && ./uds zarf package create --confirm"
 
   - name: zarf-build-metrics-server

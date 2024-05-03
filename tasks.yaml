@@ -61,7 +61,7 @@ tasks:
     actions:
       - task: set-preflight-env-vars
       - task: create:create-single-zarf-package-with-all-architectures
-      - task: publish:packages
+      - task: publish:publish
 
   # ## uds bundles
   # ### create bundles
