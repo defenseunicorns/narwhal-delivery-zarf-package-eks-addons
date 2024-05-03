@@ -59,7 +59,7 @@ jobs:
 
       - name: publish ${{ matrix.zarf-package }} zarf package
         run: |
-          ZARF_PACKAGE_NAME=${{ matrix.zarf-package }} ./uds run create-and-publish-single-zarf-package-with-all-architectures
+          ZARF_PACKAGE_NAME=${{ matrix.zarf-package }} uds run create-and-publish-single-zarf-package-with-all-architectures
 
       - name: Save logs
         if: always()
