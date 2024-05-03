@@ -30,7 +30,7 @@ jobs:
           matrix: true
           files_yaml: |
             zarf:
-              - '**zarf*.yaml'
+              - **/**zarf*.yaml
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.zarf_all_changed_files }}'
 
