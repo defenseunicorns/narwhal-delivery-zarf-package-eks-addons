@@ -1,6 +1,11 @@
 variables:
   - name: TARGET_REPO
     default: oci://ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons
+  - name: VERSION
+    description: "The version of the packages to build"
+    # x-release-please-start-version
+    default: "0.0.1"
+    # x-release-please-end
   - name: PACKAGE_DIR
     description: "The directory to build the packages in"
     default: "build"

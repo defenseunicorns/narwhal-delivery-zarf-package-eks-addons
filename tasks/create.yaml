@@ -25,6 +25,16 @@ tasks:
       - task: zarf-build-external-secrets
       - task: zarf-build-storageclass
 
+  - name: create-all-zarf-packages-all-architectures
+    description: "Create all zarf packages with all architectures"
+    actions:
+      - task: create-aws-node-termination-handler-zarf-package-architectures
+      - task: create-cluster-autoscaler-zarf-package-architectures
+      - task: create-metrics-server-zarf-package-architectures
+      - task: create-aws-load-balancer-controller-zarf-package-architectures
+      - task: create-external-secrets-zarf-package-architectures
+      - task: create-storageclass-zarf-package-architectures
+
   # AWS Node Termination Handler
 
   - name: create-aws-node-termination-handler-zarf-package-architectures
@@ -39,7 +49,7 @@ tasks:
     description: "Create aws-node-termination-handler zarf package"
     actions:
       - description: run the make target for zarf-build-aws-node-termination-handler
-        cmd: "cd packages/aws-node-termination-handler && ./uds zarf package create --confirm"
+        cmd: "cd packages/aws-node-termination-handler && ./uds zarf package create --retries 10 --confirm"
 
   # Cluster Autoscaler
 
@@ -65,13 +75,13 @@ tasks:
     description: "Create cluster-autoscaler zarf package"
     actions:
       - description: run the task for zarf-build-cluster-autoscaler
-        cmd: "cd packages/cluster-autoscaler && ./uds zarf package create --confirm"
+        cmd: "cd packages/cluster-autoscaler && ./uds zarf package create --retries 10 --confirm"
 
   - name: zarf-build-metrics-server
     description: "Create metrics-server zarf package"
     actions:
       - description: "Create metrics-server zarf package"
-        cmd: "cd packages/metrics-server && ./uds zarf package create --confirm"
+        cmd: "cd packages/metrics-server && ./uds zarf package create --retries 10 --confirm"
 
   # AWS Load Balancer Controller
 
@@ -86,7 +96,7 @@ tasks:
     description: "Create aws-load-balancer-controller zarf package"
     actions:
       - description: "Create aws-load-balancer-controller zarf package"
-        cmd: "cd packages/aws-load-balancer-controller && ./uds zarf package create --confirm"
+        cmd: "cd packages/aws-load-balancer-controller && ./uds zarf package create --retries 10 --confirm"
 
   # External Secrets
 
@@ -102,7 +112,7 @@ tasks:
     description: "Create external-secrets zarf package"
     actions:
       - description: "Create external-secrets zarf package"
-        cmd: "cd packages/external-secrets && ./uds zarf package create --confirm"
+        cmd: "cd packages/external-secrets && ./uds zarf package create --retries 10 --confirm"
 
   # Storageclass
 
@@ -117,4 +127,4 @@ tasks:
     description: "Create storageclass zarf package"
     actions:
       - description: "Create storageclass zarf package"
-        cmd: "cd packages/storageclass && ./uds zarf package create --confirm"
+        cmd: "cd packages/storageclass && ./uds zarf package create --retries 10 --confirm"
