@@ -59,3 +59,9 @@ tasks:
     actions:
       - task: create:create-single-zarf-package-with-all-architectures
       - task: publish:publish
+
+  - name: create-and-publish-all-zarf-packages-all-architectures
+    description: "Create and publish all zarf packages"
+    actions:
+      - task: create:create-all-zarf-packages-all-architectures
+      - task: publish:publish

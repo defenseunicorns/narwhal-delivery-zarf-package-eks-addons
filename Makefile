@@ -146,7 +146,7 @@ endif
 	${BUILD_HARNESS_RUN} \
 		bash -c 'zarf tools registry login registry1.dso.mil -u ${REGISTRY1_USERNAME} -p ${REGISTRY1_PASSWORD} \
 			&& cd packages/$(PACKAGE_NAME) \
-			&& zarf package create --confirm'
+			&& zarf package create --retries 10 --confirm'
 
 .PHONY: zarf-build-all
 zarf-build-all: ## Build all Zarf Packages
