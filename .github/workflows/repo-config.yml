@@ -15,3 +15,5 @@ jobs:
       branch: main
       checks: |-
         checks: []
+      require_code_owner_reviews: false
+      required_approving_review_count: 0
