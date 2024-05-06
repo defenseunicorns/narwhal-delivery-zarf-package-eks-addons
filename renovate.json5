@@ -19,6 +19,8 @@
   "pre-commit": {
     "enabled": true
   },
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
   "regexManagers": [
     // Custom regex manager for the .env file that follows the pattern documented here: https://docs.renovatebot.com/modules/manager/regex/#advanced-capture
     {
