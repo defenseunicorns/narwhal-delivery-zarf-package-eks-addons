@@ -20,6 +20,8 @@
   "pre-commit": {
     "enabled": true
   },
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
   "automerge": true,
   "forkProcessing": "enabled",
   "packageRules": [
