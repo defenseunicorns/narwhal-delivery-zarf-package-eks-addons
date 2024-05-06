@@ -14,22 +14,13 @@
     // Apply crowd-sourced workarounds for known problems with packages. See https://docs.renovatebot.com/presets-workarounds/#workaroundsall
     "workarounds:all"
   ],
-  // If we don't specify a timezone then Renovate will use UTC
-  "timezone": "America/New_York",
-  // fires between 4 am and 5 am EST on mondays
-  "schedule": ["after 4am and before 11am on Monday"],
-  // Using a value of "conflicted" means that Renovate will only rebase PRs if they are in a conflicted state. See https://docs.renovatebot.com/configuration-options/#rebasewhen
-  "rebaseWhen": "auto",
   // Labels to set in Pull Request. See https://docs.renovatebot.com/configuration-options/#labels
   "labels": ["renovate"],
-  // Rate limit PRs to maximum x created per hour. 0 means no limit. See https://docs.renovatebot.com/configuration-options/#prhourlylimit
-  "prHourlyLimit": 1,
-  // Limit to a maximum of x concurrent branches/PRs. 0 means no limit. See https://docs.renovatebot.com/configuration-options/#prconcurrentlimit
-  "prConcurrentLimit": 1,
   // Enable updates to the pre-commit-config.yaml file. See https://docs.renovatebot.com/modules/manager/pre-commit/
   "pre-commit": {
     "enabled": true
   },
+  "automerge": true,
   "forkProcessing": "enabled",
   "packageRules": [
     {
