@@ -8,11 +8,11 @@ package:
       namespace: kube-system
       chart_repo: https://kubernetes.github.io/autoscaler
       # we're not using renovate here because the cluster-autoscaler application needs to match the kubernetes cluster version. see https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/README.md#releases
-      chart_version: 9.35.0
+      chart_version: 9.34.0
       image_registry_repo: registry.k8s.io
       image_registry_path: autoscaling/cluster-autoscaler
       # we're not using renovate here because the cluster-autoscaler application needs to match the kubernetes cluster version. see https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/README.md#releases
-      image_version: v1.29.0
+      image_version: v1.28.0
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
 
