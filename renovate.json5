@@ -73,6 +73,7 @@
     }
   ],
   "forkProcessing":"enabled",
+  "onboardingConfigFileName": "renovate.json5",
   "packageRules": [
     {
       "matchPackageNames": ["k8s.io/client-go"],
