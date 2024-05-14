@@ -12,7 +12,7 @@ package:
       image_registry_repo: public.ecr.aws
       image_registry_path: aws-ec2/aws-node-termination-handler
       # renovate datasource=docker depName=public.ecr.aws/aws-ec2/aws-node-termination-handler
-      image_version: v1.21.0
+      image_version: v1.22.0
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
 
