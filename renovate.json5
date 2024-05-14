@@ -25,6 +25,7 @@
   "automerge": true,
   "ignoreTests": true,
   "forkProcessing": "enabled",
+  "recreateWhen": "always", //https://docs.renovatebot.com/configuration-options/#recreatewhen - allows renovate to recreate PRs with the same name and automerge
   "packageRules": [
     {
       "matchPackageNames": ["k8s.io/client-go"],
