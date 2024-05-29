@@ -91,6 +91,7 @@ tasks:
       - cmd: |
           ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-aws-load-balancer-controller --no-progress
           ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-aws-load-balancer-controller --no-progress
+          ZARF_CONFIG=./zarf-config-registry1.yaml ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-aws-load-balancer-controller --no-progress
 
   - name: zarf-build-aws-load-balancer-controller
     description: "Create aws-load-balancer-controller zarf package"

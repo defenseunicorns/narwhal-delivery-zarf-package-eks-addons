@@ -1,20 +1,73 @@
 variables:
   - name: TARGET_REPO
-    default: oci://ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons
+    default: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons
   - name: PACKAGE_DIR
     description: "The directory to build the packages in"
     default: "build"
+  - name: ZARF_PACKAGE_CLEANUP
+    description: "Whether to cleanup the packages after publishing"
+    default: "false"
 
 tasks:
-  - name: publish
-    description: "Publish the zarf packages in the PACKAGE_DIR to the TARGET_REPO"
+  # - name: publish
+  #   description: "Publish the zarf packages in the PACKAGE_DIR to the TARGET_REPO"
+  #   actions:
+  #     - description: publish the packages
+  #       cmd: |
+  #         set -exo pipefail
+  #         PACKAGES=$(find build -type f -name "zarf-package-*.tar.zst" | tr '\n' ' ')
+  #         for package in ${PACKAGES}; do
+  #           ./uds zarf package publish ${package} ${TARGET_REPO}
+
+  #           if ${ZARF_PACKAGE_CLEANUP}; then
+  #             rm -f ${package}
+  #           fi
+  #         done
+  #       shell:
+  #         linux: bash
+  #         darwin: bash
+
+  - name: publish-and-retag-upstream
+    description: "Publish the zarf packages in the PACKAGE_DIR to the TARGET_REPO, retagging the upstream images"
     actions:
       - description: publish the packages
         cmd: |
-          set -e
-          for package in ${PACKAGE_DIR}/zarf-package*.tar.zst; do
-            ./uds zarf package publish ${package} ${TARGET_REPO}
+          set -exo pipefail
+          PACKAGES=$(find build -type f -name "zarf-package-*.tar.zst" | tr '\n' ' ')
+
+          for package in ${PACKAGES}; do
+              ./uds zarf package publish ${package} oci://${TARGET_REPO}
+
+              # Check if the package is under 'build/upstream'
+              if [[ "$package" == *"build/upstream"* ]]; then
+                  # extract package version from the package metadata
+                  PACKAGE_METADATA=$(./uds zarf package inspect ${package} --no-color 2>&1 | sed -n '/^kind: ZarfPackageConfig/,${p}')
+                  PACKAGE_VERSION=$(./uds zarf tools yq '.metadata.version' <<< "${PACKAGE_METADATA}")
+                  PACKAGE_NAME=$(./uds zarf tools yq '.metadata.name' <<< "${PACKAGE_METADATA}")
+
+                  # retag the upstream image
+                  ./uds zarf tools registry copy ${TARGET_REPO}/${PACKAGE_NAME}:${PACKAGE_VERSION}-upstream ${TARGET_REPO}/${PACKAGE_NAME}:${PACKAGE_VERSION}
+                  ./uds zarf tools registry copy ${TARGET_REPO}/${PACKAGE_NAME}:${PACKAGE_VERSION}-upstream ${TARGET_REPO}/${PACKAGE_NAME}:latest
+                  ./uds zarf tools registry copy ${TARGET_REPO}/${PACKAGE_NAME}:${PACKAGE_VERSION}-upstream ${TARGET_REPO}/${PACKAGE_NAME}:latest-upstream
+              fi
+
+              # Check if the package is under 'build/registry1'
+              if [[ "$package" == *"build/registry1"* ]]; then
+                  # extract package version from the package metadata
+                  PACKAGE_METADATA=$(./uds zarf package inspect ${package} --no-color 2>&1 | sed -n '/^kind: ZarfPackageConfig/,${p}')
+                  PACKAGE_VERSION=$(./uds zarf tools yq '.metadata.version' <<< "${PACKAGE_METADATA}")
+                  PACKAGE_NAME=$(./uds zarf tools yq '.metadata.name' <<< "${PACKAGE_METADATA}")
+
+                  # retag the latest registry1 image
+                  ./uds zarf tools registry copy ${TARGET_REPO}/${PACKAGE_NAME}:${PACKAGE_VERSION}-registry1 ${TARGET_REPO}/${PACKAGE_NAME}:latest-registry1
+              fi
+
+              # cleanup
+              if $ZARF_PACKAGE_CLEANUP; then
+                  rm -f ${package}
+                  echo "Deleted $package ${package}"
+              fi
           done
-          if ${ZARF_PACKAGE_CLEANUP}; then
-            rm -f ${PACKAGE_DIR}/zarf-package*.tar.zst
-          fi
+        shell:
+          linux: bash
+          darwin: bash

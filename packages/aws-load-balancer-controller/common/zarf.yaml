@@ -1,0 +1,16 @@
+kind: ZarfPackageConfig
+metadata:
+  name: aws-load-balancer-controller-common
+  description: "Common configuration for the AWS Load Balancer Controller"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+components:
+  - name: aws-load-balancer-controller
+    required: true
+    charts:
+      - name: aws-load-balancer-controller
+        namespace: kube-system
+        url: https://aws.github.io/eks-charts
+        version: 1.8.0
+        valuesFiles:
+          - ../values/values.yaml
