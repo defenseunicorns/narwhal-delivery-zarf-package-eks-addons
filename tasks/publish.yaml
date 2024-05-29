@@ -33,7 +33,7 @@ tasks:
       - description: publish the packages
         cmd: |
           set -exo pipefail
-          PACKAGES=$(find build -type f -name "zarf-package-*.tar.zst" | tr '\n' ' ')
+          PACKAGES=$(find build -type f -name "zarf-package-*.tar.zst")
 
           for package in ${PACKAGES}; do
               ./uds zarf package publish ${package} oci://${TARGET_REPO}
