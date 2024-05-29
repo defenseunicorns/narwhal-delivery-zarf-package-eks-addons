@@ -6,6 +6,8 @@ metadata:
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
 variables:
+  - name: IMAGE_REGISTRY_PATH
+    prompt: false
   - name: CLUSTER_NAME
     type: raw
     prompt: false
@@ -70,6 +72,7 @@ components:
     charts:
       - name: aws-load-balancer-controller
         valuesFiles:
+          - values/upstream-values.yaml
           - values/overrides.yaml
     images:
       - public.ecr.aws/eks/aws-load-balancer-controller:v2.8.0
@@ -84,6 +87,7 @@ components:
     charts:
       - name: aws-load-balancer-controller
         valuesFiles:
+          - values/registry1-values.yaml
           - values/overrides.yaml
     images:
       - registry1.dso.mil/ironbank/opensource/kubernetes-sigs/aws-load-balancer-controller

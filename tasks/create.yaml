@@ -1,6 +1,6 @@
 variables:
   - name: TARGET_REPO
-    default: oci://ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons
+    default: ghcr.io/defenseunicorns/packages/narwhal-delivery-zarf-package-eks-addons
 
 tasks:
   # Zarf packages
@@ -48,7 +48,7 @@ tasks:
   - name: zarf-build-aws-node-termination-handler
     description: "Create aws-node-termination-handler zarf package"
     actions:
-      - description: run the make target for zarf-build-aws-node-termination-handler
+      - description: "Create aws-node-termination-handler zarf package"
         cmd: "cd packages/aws-node-termination-handler && ./uds zarf package create --retries 10 --confirm"
 
   # Cluster Autoscaler
