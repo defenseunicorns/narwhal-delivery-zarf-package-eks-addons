@@ -2,8 +2,7 @@ package:
   create:
     output: ../../build
     set:
-      package_version: 0.0.2
-      package_tag_suffix: -registry1
+      package_tag_suffix: ""
       package_name: cluster-autoscaler
       namespace: kube-system
       chart_repo: https://kubernetes.github.io/autoscaler

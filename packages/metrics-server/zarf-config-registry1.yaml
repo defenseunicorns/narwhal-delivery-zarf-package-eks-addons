@@ -2,7 +2,7 @@ package:
   create:
     output: ../../build
     set:
-      package_tag_suffix: -registry1
+      package_tag_suffix: ""
       package_name: metrics-server
       namespace: kube-system
       chart_repo: https://kubernetes-sigs.github.io/metrics-server/
