@@ -1,9 +1,9 @@
 package:
   create:
     output: ../../build
+    flavor: registry1
     set:
-      package_version: 0.0.1
-      package_tag_suffix: -registry1
+      package_tag_suffix: ""
       package_name: aws-node-termination-handler
       namespace: aws-node-termination-handler
       chart_repo: oci://public.ecr.aws/aws-ec2/helm/aws-node-termination-handler

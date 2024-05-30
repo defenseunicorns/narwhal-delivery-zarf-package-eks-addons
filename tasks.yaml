@@ -54,14 +54,19 @@ tasks:
     actions:
       - task: create:create-all-zarf-packages
 
+  - name: create-single-zarf-package-with-all-architectures
+    description: "Create single zarf package with all architectures, specify the package name with the environment variable ${ZARF_PACKAGE_NAME}"
+    actions:
+      - task: create:create-single-zarf-package-with-all-architectures
+
   - name: create-and-publish-single-zarf-package-with-all-architectures
     description: "Create and publish single zarf package, specify the package name with the environment variable ${ZARF_PACKAGE_NAME}"
     actions:
       - task: create:create-single-zarf-package-with-all-architectures
-      - task: publish:publish
+      - task: publish:publish-and-retag-upstream
 
   - name: create-and-publish-all-zarf-packages-all-architectures
     description: "Create and publish all zarf packages"
     actions:
       - task: create:create-all-zarf-packages-all-architectures
-      - task: publish:publish
+      - task: publish:publish-and-retag-upstream

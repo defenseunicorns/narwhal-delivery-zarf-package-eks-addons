@@ -2,16 +2,15 @@ package:
   create:
     output: ../../build
     set:
-      package_version: 0.0.2
-      package_tag_suffix: -registry1
+      package_tag_suffix: ""
       package_name: cluster-autoscaler
       namespace: kube-system
       chart_repo: https://kubernetes.github.io/autoscaler
-      # we're not using renovate here because the cluster-autoscaler application needs to match the kubernetes cluster version. see https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/README.md#releases
+      # renovate datasource=helm depName=cluster-autoscaler registryUrl=https://kubernetes.github.io/autoscaler
       chart_version: 9.35.0
       image_registry_repo: registry1.dso.mil
       image_registry_path: ironbank/opensource/kubernetes/autoscaler
-      # we're not using renovate here because the cluster-autoscaler application needs to match the kubernetes cluster version. see https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/README.md#releases
+      # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/kubernetes/autoscaler
       image_version: v1.29.0
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml

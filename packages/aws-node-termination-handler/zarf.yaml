@@ -6,10 +6,6 @@ metadata:
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
 variables:
-  - name: IMAGE_VERSION
-    default: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
-  - name: IMAGE_REGISTRY_PATH
-    default: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
   - name: CLUSTER_NAME
     type: raw
     prompt: false
@@ -71,9 +67,32 @@ components:
             setVariables:
               - name: SQS_QUEUE_URL
 
-  - name: aws-node-termination-handler-chart-deployment
+  - name: aws-node-termination-handler
     description: "Chart component for aws-node-termination-handler"
     required: true
+    only:
+      flavor: upstream
     import:
-      path: ../templates/chart
-      name: helm-chart-template
+      path: common
+    charts:
+      - name: aws-node-termination-handler
+        valuesFiles:
+          - values/upstream-values.yaml
+          - values/overrides.yaml
+    images:
+      - public.ecr.aws/aws-ec2/aws-node-termination-handler:v1.22.0
+
+  - name: aws-node-termination-handler
+    description: "Chart component for aws-node-termination-handler"
+    required: true
+    only:
+      flavor: registry1
+    import:
+      path: common
+    charts:
+      - name: aws-node-termination-handler
+        valuesFiles:
+          - values/registry1-values.yaml
+          - values/overrides.yaml
+    images:
+      - registry1.dso.mil/ironbank/opensource/aws/aws-node-termination-handler:v1.13.3

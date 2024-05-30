@@ -1,0 +1,16 @@
+kind: ZarfPackageConfig
+metadata:
+  name: aws-node-termination-handler
+  description: "Common configuration for aws-node-termination-handler"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+components:
+  - name: aws-node-termination-handler
+    required: true
+    charts:
+      - name: aws-node-termination-handler
+        namespace: aws-node-termination-handler
+        url: oci://public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
+        version: 0.24.0
+        valuesFiles:
+          - ../values/values.yaml
