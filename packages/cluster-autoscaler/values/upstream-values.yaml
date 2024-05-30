@@ -1,9 +1,8 @@
 # ZARF_REGISTRY is used here to avoid yolo mode and pointing to localhost without mutating the deployment with zarf, this pattern is required when deploying into kube-system w/ zarf
 image:
-  repository: "###ZARF_REGISTRY###/eks/aws-load-balancer-controller"
-  # renovate datasource=docker depName=public.ecr.aws/eks/aws-load-balancer-controller
-  tag: v2.8.0
+  repository: "###ZARF_REGISTRY###/autoscaling/cluster-autoscaler"
+  # renovate datasource=docker depName=registry.k8s.io/autoscaling/cluster-autoscaler
+  tag: v1.29.0
   pullPolicy: IfNotPresent
-
-imagePullSecrets:
-  - name: private-registry
+  pullSecrets:
+    - private-registry

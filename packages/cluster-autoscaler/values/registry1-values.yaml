@@ -1,0 +1,8 @@
+# ZARF_REGISTRY is used here to avoid yolo mode and pointing to localhost without mutating the deployment with zarf, this pattern is required when deploying into kube-system w/ zarf
+image:
+  repository: "###ZARF_REGISTRY###/ironbank/opensource/kubernetes/autoscaler"
+  # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/kubernetes/autoscaler
+  tag: v1.29.0
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    - private-registry

@@ -1,7 +1,7 @@
 kind: ZarfPackageConfig
 metadata:
   name: aws-node-termination-handler
-  description: "Common configuration for the AWS Node Termination Handler"
+  description: "Common configuration for aws-node-termination-handler"
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
 components:
