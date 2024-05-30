@@ -6,19 +6,38 @@ metadata:
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
 variables:
-  - name: IMAGE_VERSION
-    default: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
-  - name: IMAGE_REGISTRY_PATH
-    default: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
   - name: VALUES_OVERRIDES
     type: file
     prompt: false
     default: "deploy-values-override.yaml"
 
 components:
-  - name: metrics-server-chart-deployment
-    description: "Deploy metrics-server helm chart"
+  - name: metrics-server
+    description: "Chart component for metrics-server"
     required: true
+    only:
+      flavor: upstream
     import:
-      path: ../templates/chart
-      name: helm-chart-template
+      path: common
+    charts:
+      - name: metrics-server
+        valuesFiles:
+          - values/upstream-values.yaml
+          - values/overrides.yaml
+    images:
+      - registry.k8s.io/metrics-server/metrics-server:v0.7.1
+
+  - name: metrics-server
+    description: "Chart component for metrics-server"
+    required: true
+    only:
+      flavor: registry1
+    import:
+      path: common
+    charts:
+      - name: metrics-server
+        valuesFiles:
+          - values/registry1-values.yaml
+          - values/overrides.yaml
+    images:
+      - registry1.dso.mil/ironbank/opensource/kubernetes-sigs/metrics-server:v0.7.1
