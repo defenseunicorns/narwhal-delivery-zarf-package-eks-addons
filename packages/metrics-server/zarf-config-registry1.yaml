@@ -2,8 +2,8 @@ package:
   create:
     output: ../../build
     set:
-      package_tag_suffix: ""
       package_name: metrics-server
+      package_tag_suffix: ""
       namespace: kube-system
       chart_repo: https://kubernetes-sigs.github.io/metrics-server/
       # renovate datasource=helm depName=metrics-server registryUrl=https://kubernetes-sigs.github.io/metrics-server

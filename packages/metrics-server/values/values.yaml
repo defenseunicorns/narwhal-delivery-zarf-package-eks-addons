@@ -1,7 +1,0 @@
-image:
-  repository: "###ZARF_REGISTRY###/###ZARF_VAR_IMAGE_REGISTRY_PATH###"
-  tag: "###ZARF_VAR_IMAGE_VERSION###"
-  pullPolicy: IfNotPresent
-
-imagePullSecrets:
-  - name: private-registry
