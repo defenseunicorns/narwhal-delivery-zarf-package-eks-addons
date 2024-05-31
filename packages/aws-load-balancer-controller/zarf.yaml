@@ -6,8 +6,6 @@ metadata:
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
 variables:
-  - name: IMAGE_REGISTRY_PATH
-    prompt: false
   - name: CLUSTER_NAME
     type: raw
     prompt: false
