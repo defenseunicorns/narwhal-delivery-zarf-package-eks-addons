@@ -1,6 +1,7 @@
 package:
   create:
     output: ../../build/registry1
+    flavor: registry1
     set:
       package_tag_suffix: ""
       # renovate datasource=helm depName=cluster-autoscaler registryUrl=https://kubernetes.github.io/autoscaler

@@ -1,6 +1,7 @@
 package:
   create:
     output: ../../build/upstream
+    flavor: upstream
     set:
       package_name: external-secrets
       package_tag_suffix: ""
