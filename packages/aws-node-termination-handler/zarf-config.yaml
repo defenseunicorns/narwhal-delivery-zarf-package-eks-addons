@@ -1,6 +1,6 @@
 package:
   create:
-    output: ../../build
+    output: ../../build/upstream
     flavor: upstream
     set:
       package_tag_suffix: ""

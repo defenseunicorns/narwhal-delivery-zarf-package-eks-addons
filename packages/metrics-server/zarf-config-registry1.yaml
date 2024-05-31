@@ -1,6 +1,7 @@
 package:
   create:
-    output: ../../build
+    output: ../../build/registry1
+    flavor: registry1
     set:
       package_name: metrics-server
       package_tag_suffix: ""
