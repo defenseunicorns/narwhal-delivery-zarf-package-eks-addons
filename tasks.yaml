@@ -50,7 +50,7 @@ tasks:
       - task: create:create-single-zarf-package
 
   - name: create-all-zarf-packages
-    description: "Create all zarf packages"
+    description: "Create all zarf packages - you need to specify ZARF_ARCHITECTURE and ZARF_CONFIG environment variables"
     actions:
       - task: create:create-all-zarf-packages
 
@@ -69,4 +69,4 @@ tasks:
     description: "Create and publish all zarf packages"
     actions:
       - task: create:create-all-zarf-packages-all-architectures
-      - task: publish:publish-and-retag-upstream
+      # - task: publish:publish-and-retag-upstream
