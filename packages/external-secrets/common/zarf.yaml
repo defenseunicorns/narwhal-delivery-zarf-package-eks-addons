@@ -1,0 +1,16 @@
+kind: ZarfPackageConfig
+metadata:
+  name: external-secrets
+  description: "Common configuration for external-secrets"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+components:
+  - name: external-secrets
+    required: true
+    charts:
+      - name: external-secrets
+        namespace: external-secrets
+        url: https://charts.external-secrets.io
+        version: 0.9.18
+        valuesFiles:
+          - ../values/values.yaml

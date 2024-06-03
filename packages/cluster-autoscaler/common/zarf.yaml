@@ -1,0 +1,16 @@
+kind: ZarfPackageConfig
+metadata:
+  name: cluster-autoscaler
+  description: "Common configuration for cluster-autoscaler"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+components:
+  - name: cluster-autoscaler
+    required: true
+    charts:
+      - name: cluster-autoscaler
+        namespace: kube-system
+        url: https://kubernetes.github.io/autoscaler
+        version: 9.37.0
+        valuesFiles:
+          - ../values/values.yaml

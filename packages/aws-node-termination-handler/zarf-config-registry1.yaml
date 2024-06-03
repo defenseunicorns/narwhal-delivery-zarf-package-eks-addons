@@ -1,20 +1,13 @@
 package:
   create:
-    output: ../../build
+    output: ../../build/registry1
+    flavor: registry1
     set:
-      package_version: 0.0.1
-      package_tag_suffix: -registry1
-      package_name: aws-node-termination-handler
-      namespace: aws-node-termination-handler
-      chart_repo: oci://public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
+      package_tag_suffix: ""
       # renovate datasource=docker depName=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
       chart_version: 0.24.0
-      image_registry_repo: registry1.dso.mil
-      image_registry_path: ironbank/opensource/aws/aws-node-termination-handler
       # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/aws/aws-node-termination-handler
       image_version: v1.13.3
-      values_file: values/values.yaml
-      overrides_file: values/overrides.yaml
 
   deploy:
     set:

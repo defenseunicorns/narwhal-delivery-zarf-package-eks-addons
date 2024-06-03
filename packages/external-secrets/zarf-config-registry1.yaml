@@ -1,10 +1,10 @@
 package:
   create:
-    output: ../../build
+    output: ../../build/registry1
+    flavor: registry1
     set:
-      package_version: 0.0.1
       package_name: external-secrets
-      package_tag_suffix: -registry1
+      package_tag_suffix: ""
       namespace: external-secrets
       chart_repo: https://charts.external-secrets.io
       # renovate datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io

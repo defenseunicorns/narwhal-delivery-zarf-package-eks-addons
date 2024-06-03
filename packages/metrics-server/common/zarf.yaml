@@ -1,0 +1,14 @@
+kind: ZarfPackageConfig
+metadata:
+  name: metrics-server
+  description: "Common configuration for metrics-server"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+components:
+  - name: metrics-server
+    required: true
+    charts:
+      - name: metrics-server
+        namespace: kube-system
+        url: https://kubernetes-sigs.github.io/metrics-server/
+        version: 3.12.1

@@ -6,10 +6,6 @@ metadata:
   source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
 
 variables:
-  - name: IMAGE_VERSION
-    default: "###ZARF_PKG_TMPL_IMAGE_VERSION###"
-  - name: IMAGE_REGISTRY_PATH
-    default: "###ZARF_PKG_TMPL_IMAGE_REGISTRY_PATH###"
   - name: CLUSTER_NAME
     type: raw
     prompt: false
@@ -57,9 +53,32 @@ components:
             setVariables:
               - name: SERVICE_ACCOUNT
 
-  - name: external-secrets-deployment
-    description: "Chart component for external-secrets-deployment"
+  - name: external-secrets
+    description: "Chart component for external-secrets"
     required: true
+    only:
+      flavor: upstream
     import:
-      path: ../templates/chart
-      name: helm-chart-template
+      path: common
+    charts:
+      - name: external-secrets
+        valuesFiles:
+          - values/upstream-values.yaml
+          - values/overrides.yaml
+    images:
+      - ghcr.io/external-secrets/external-secrets:v0.9.18
+
+  - name: external-secrets
+    description: "Chart component for external-secrets"
+    required: true
+    only:
+      flavor: registry1
+    import:
+      path: common
+    charts:
+      - name: external-secrets
+        valuesFiles:
+          - values/registry1-values.yaml
+          - values/overrides.yaml
+    images:
+      - registry1.dso.mil/ironbank/opensource/external-secrets/external-secrets:v0.9.18
