@@ -1,6 +1,6 @@
 package:
   create:
-    output: ../../build/upstream
+    output: ../../build
     set:
       package_version: 0.0.1
       package_tag_suffix: ""
