@@ -31,6 +31,7 @@ jobs:
               - '**/*.{yaml,yml}'
           path: packages/ # only look in the packages directory
           dir_names: true # just give the directory names
+          dir_names_max_depth: 1 # only look at the first level of directories
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.zarf_all_changed_files }}'
 
