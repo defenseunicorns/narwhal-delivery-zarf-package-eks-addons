@@ -7,4 +7,4 @@ package:
       # renovate datasource=helm depName=metrics-server registryUrl=https://kubernetes-sigs.github.io/metrics-server
       chart_version: 3.12.1
       # renovate datasource=docker depName=registry.k8s.io/metrics-server/metrics-server
-      image_version: v0.7.1
+      image_version: v0.7.2
