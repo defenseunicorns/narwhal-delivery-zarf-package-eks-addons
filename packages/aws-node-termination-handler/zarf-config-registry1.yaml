@@ -12,7 +12,7 @@ package:
       image_registry_repo: registry1.dso.mil
       image_registry_path: ironbank/opensource/aws/aws-node-termination-handler
       # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/aws/aws-node-termination-handler
-      image_version: v1.13.3
+      image_version: v1.22.1
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
 
