@@ -7,7 +7,7 @@ package:
       # renovate datasource=docker depName=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
       chart_version: 0.24.1
       # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/aws/aws-node-termination-handler
-      image_version: v1.13.3
+      image_version: v1.22.1
 
   deploy:
     set:
