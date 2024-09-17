@@ -75,7 +75,7 @@ components:
           - values/upstream-values.yaml
           - values/overrides.yaml
     images:
-      - public.ecr.aws/eks/aws-load-balancer-controller:v2.8.2
+      - public.ecr.aws/eks/aws-load-balancer-controller:v2.8.3
 
   - name: aws-load-balancer-controller
     description: "Chart component for aws-load-balancer-controller-deployment"
