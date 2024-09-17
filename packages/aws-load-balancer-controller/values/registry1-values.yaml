@@ -2,7 +2,7 @@
 image:
   repository: "###ZARF_REGISTRY###/ironbank/kubernetes-sigs/aws-load-balancer-controller"
   # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/kubernetes-sigs/aws-load-balancer-controller
-  tag: v2.8.2
+  tag: v2.8.3
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
