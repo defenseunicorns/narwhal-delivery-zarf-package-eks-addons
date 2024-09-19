@@ -24,6 +24,7 @@ tasks:
       - task: zarf-build-aws-load-balancer-controller
       - task: zarf-build-external-secrets
       - task: zarf-build-storageclass
+      - task: zarf-build-karpenter
 
   - name: create-all-zarf-packages-all-architectures
     description: "Create all zarf packages with all architectures"
@@ -34,6 +35,7 @@ tasks:
       - task: create-aws-load-balancer-controller-zarf-package-architectures
       - task: create-external-secrets-zarf-package-architectures
       - task: create-storageclass-zarf-package-architectures
+      - task: create-karpenter-zarf-package-architectures
 
   # AWS Node Termination Handler
 
@@ -129,3 +131,9 @@ tasks:
     actions:
       - description: "Create storageclass zarf package"
         cmd: "cd packages/storageclass && ./uds zarf package create --retries 10 --confirm"
+  - name: create-karpenter-zarf-package-architectures
+    description: "create zarf karpenter packages"
+    actions:
+      - cmd: |
+          ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-karpenter --no-progress
+          ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-karpenter --no-progress

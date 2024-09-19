@@ -1,0 +1,22 @@
+kind: ZarfPackageConfig
+metadata:
+  name: karpenter
+  description: "Common configuration for karpenter"
+  source: https://github.com/defenseunicorns/narwhal-delivery-zarf-package-eks-addons
+
+components:
+  - name: karpenter
+    required: true
+    charts:
+      - name: karpenter
+        namespace: karpenter
+        url: oci://public.ecr.aws/karpenter/karpenter
+        version: v1.0.2
+        valuesFiles:
+          - ../values/values.yaml
+      - name: karpenter-crds
+        namespace: karpenter
+        url: oci://public.ecr.aws/karpenter/karpenter-crd
+        version: 1.0.2
+        valuesFiles:
+          - ../values/crd-values.yaml
