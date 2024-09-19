@@ -1,0 +1,17 @@
+package:
+  create:
+    output: ../../build/upstream
+    flavor: upstream
+    set:
+      package_name: karpenter
+      package_tag_suffix: ""
+      namespace: karpenter
+      chart_repo: https://charts.karpenter.io
+      # renovate datasource=helm depName=karpenter registryUrl=https://charts.karpenter.io
+      chart_version: 0.10.3
+      image_registry_repo: ghcr.io
+      image_registry_path: karpenter/karpenter
+      # renovate datasource=docker depName=ghcr.io/karpenter/karpenter versioning=semver-coerced
+      image_version: v0.10.3
+      values_file: values/values.yaml
+      overrides_file: values/overrides.yaml

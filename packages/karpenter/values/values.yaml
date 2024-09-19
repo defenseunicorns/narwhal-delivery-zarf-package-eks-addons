@@ -19,21 +19,3 @@ controller:
 
 replicas: 1
 
-
-
-#   name: "###ZARF_VAR_SERVICE_ACCOUNT###"
-#   annotations:
-#     eks.amazonaws.com/role-arn: "###ZARF_VAR_IAM_ROLE_ARN###"
-
-# region: "###ZARF_VAR_CLUSTER_AWS_REGION###"
-
-# clusterName: "###ZARF_VAR_CLUSTER_NAME###"
-
-
-# helm upgrade --install --namespace karpenter --create-namespace \
-#   karpenter oci://public.ecr.aws/karpenter/karpenter \
-#   --version 1.0.0 \
-#   --set "serviceAccount.annotations.eks\.amazonaws\.com/role-arn=${KARPENTER_IAM_ROLE_ARN}" \
-#   --set settings.clusterName=${CLUSTER_NAME} \
-#   --set settings.interruptionQueue=${CLUSTER_NAME} \
-#   --wait

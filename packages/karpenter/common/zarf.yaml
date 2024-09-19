@@ -11,12 +11,27 @@ components:
       - name: karpenter
         namespace: karpenter
         url: oci://public.ecr.aws/karpenter/karpenter
-        version: v1.0.2
-        valuesFiles:
-          - ../values/values.yaml
-      - name: karpenter-crds
-        namespace: karpenter
-        url: oci://public.ecr.aws/karpenter/karpenter-crd
         version: 1.0.2
         valuesFiles:
-          - ../values/crd-values.yaml
+          - ../values/values.yaml
+#       - name: karpenter-crds
+#         namespace: karpenter
+#         url: oci://public.ecr.aws/karpenter/karpenter-crd
+#         version: 1.0.2
+#         valuesFiles:
+#           - ../values/crd-values.yaml
+# actions:
+#   onDeploy:
+#     after:
+#       - wait:
+#         cluster:
+#           kind: deployment
+#           name: karpenter
+#           namespace: karpenter
+#           condition: available
+#       - wait:
+#         cluster:
+#           kind: deployment
+#           name: karpenter-crds
+#           namespace: karpenter
+#           condition: available

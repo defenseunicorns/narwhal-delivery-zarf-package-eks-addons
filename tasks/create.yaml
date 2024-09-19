@@ -131,9 +131,16 @@ tasks:
     actions:
       - description: "Create storageclass zarf package"
         cmd: "cd packages/storageclass && ./uds zarf package create --retries 10 --confirm"
+
   - name: create-karpenter-zarf-package-architectures
     description: "create zarf karpenter packages"
     actions:
       - cmd: |
           ZARF_ARCHITECTURE=amd64 ./uds run -f tasks/create.yaml zarf-build-karpenter --no-progress
           ZARF_ARCHITECTURE=arm64 ./uds run -f tasks/create.yaml zarf-build-karpenter --no-progress
+
+  - name: zarf-build-karpenter
+    description: "Create karpenter zarf package"
+    actions:
+      - description: "Create karpenter zarf package"
+        cmd: "cd packages/karpenter && ./uds zarf package create --retries 10 --confirm"
