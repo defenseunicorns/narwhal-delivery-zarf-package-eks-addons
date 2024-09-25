@@ -11,6 +11,6 @@ components:
       - name: external-secrets
         namespace: external-secrets
         url: https://charts.external-secrets.io
-        version: 0.10.3
+        version: 0.10.4
         valuesFiles:
           - ../values/values.yaml
