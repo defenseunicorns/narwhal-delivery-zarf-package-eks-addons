@@ -4,6 +4,13 @@ This repository is used to create zarf packages of multiple add-ons for EKS.
 
 The main intention is to be used with our terraform module [terraform-aws-eks](https://github.com/defenseunicorns/terraform-aws-eks). These Zarf packages will consume resources staged in AWS automatically or with Zarf you can override the values using a values.yaml file, providing your own values with a VALUES_OVERRIDES Zarf variable for each package.
 
+# Utility Dependencies
+
+ - [Zarf](https://github.com/zarf-dev/zarf)
+ - [UDS-cli](https://github.com/defenseunicorns/uds-cli)
+ - [jq](https://stedolan.github.io/jq/)
+ - [aws-cli](https://aws.amazon.com/cli/)
+
 # Example of how to use the Zarf package with arbitrary overrides using zarf dev
 
 The example below will template the output with arbitrary overrides akin to a `helm template` command.
