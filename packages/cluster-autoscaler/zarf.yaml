@@ -47,7 +47,7 @@ components:
             darwin: bash
         before:
           # get the cluster name
-          - cmd: kubectl config current-context | awk -F'[:/]' '{print $NF}'
+          - cmd: uds zarf tools kubectl config current-context | awk -F'[:/]' '{print $NF}'
             setVariables:
               - name: CLUSTER_NAME
           - cmd: aws eks describe-cluster --name ${ZARF_VAR_CLUSTER_NAME} --query 'cluster.endpoint' --output text | cut -d . -f3
