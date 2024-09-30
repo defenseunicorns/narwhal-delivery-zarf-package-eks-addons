@@ -11,6 +11,6 @@ components:
       - name: cluster-autoscaler
         namespace: kube-system
         url: https://kubernetes.github.io/autoscaler
-        version: 9.41.0
+        version: 9.42.0
         valuesFiles:
           - ../values/values.yaml
