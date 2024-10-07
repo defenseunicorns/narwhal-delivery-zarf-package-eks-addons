@@ -8,7 +8,7 @@ package:
       namespace: kube-system
       chart_repo: https://kubernetes-sigs.github.io/metrics-server/
       # renovate datasource=helm depName=metrics-server registryUrl=https://kubernetes-sigs.github.io/metrics-server
-      chart_version: 3.12.1
+      chart_version: 3.12.2
       image_registry_repo: registry1.dso.mil
       image_registry_path: ironbank/opensource/kubernetes-sigs/metrics-server
       # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/kubernetes-sigs/metrics-server
