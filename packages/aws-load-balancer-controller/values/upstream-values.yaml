@@ -2,7 +2,7 @@
 image:
   repository: "###ZARF_REGISTRY###/eks/aws-load-balancer-controller"
   # renovate datasource=docker depName=public.ecr.aws/eks/aws-load-balancer-controller
-  tag: v2.9.0
+  tag: v2.9.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets:

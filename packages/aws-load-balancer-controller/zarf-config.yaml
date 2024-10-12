@@ -8,11 +8,11 @@ package:
       namespace: kube-system
       chart_repo: https://aws.github.io/eks-charts
       # renovate datasource=helm depName=aws-load-balancer-controller registryUrl=https://aws.github.io/eks-charts
-      chart_version: 1.9.0
+      chart_version: 1.9.1
       image_registry_repo: public.ecr.aws
       image_registry_path: eks/aws-load-balancer-controller
       # renovate datasource=docker depName=public.ecr.aws/eks/aws-load-balancer-controller
-      image_version: v2.9.0
+      image_version: v2.9.1
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
 
