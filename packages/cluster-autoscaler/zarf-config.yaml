@@ -11,7 +11,7 @@ package:
       image_registry_repo: registry.k8s.io
       image_registry_path: autoscaling/cluster-autoscaler
       # renovate datasource=docker depName=registry.k8s.io/autoscaling/cluster-autoscaler
-      image_version: v1.31.0
+      image_version: v1.31.1
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
 
