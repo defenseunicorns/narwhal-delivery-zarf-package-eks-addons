@@ -81,4 +81,4 @@ components:
           - values/registry1-values.yaml
           - values/overrides.yaml
     images:
-      - registry1.dso.mil/ironbank/opensource/external-secrets/external-secrets:v0.10.5
+      - registry1.dso.mil/ironbank/opensource/external-secrets/external-secrets:v0.10.6
