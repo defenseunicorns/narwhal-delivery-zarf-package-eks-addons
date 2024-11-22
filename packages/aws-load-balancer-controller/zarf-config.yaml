@@ -7,7 +7,7 @@ package:
       # renovate datasource=helm depName=aws-load-balancer-controller registryUrl=https://aws.github.io/eks-charts
       chart_version: 1.10.0
       # renovate datasource=docker depName=public.ecr.aws/eks/aws-load-balancer-controller
-      image_version: v2.10.0
+      image_version: v2.10.1
 
   deploy:
     set:
