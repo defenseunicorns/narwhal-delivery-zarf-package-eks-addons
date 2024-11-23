@@ -66,7 +66,7 @@ components:
           - values/upstream-values.yaml
           - values/overrides.yaml
     images:
-      - ghcr.io/external-secrets/external-secrets:v0.10.6
+      - ghcr.io/external-secrets/external-secrets:v0.10.7
 
   - name: external-secrets
     description: "Chart component for external-secrets"
