@@ -1,13 +1,13 @@
 image:
   repository: ghcr.io/external-secrets/external-secrets
-  tag: v0.10.6
+  tag: v0.10.7
 
 webhook:
   image:
     repository: ghcr.io/external-secrets/external-secrets
-    tag: v0.10.6
+    tag: v0.10.7
 
 certController:
   image:
     repository: ghcr.io/external-secrets/external-secrets
-    tag: v0.10.6
+    tag: v0.10.7
