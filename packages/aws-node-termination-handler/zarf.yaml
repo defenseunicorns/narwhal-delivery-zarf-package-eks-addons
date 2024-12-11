@@ -95,4 +95,4 @@ components:
           - values/registry1-values.yaml
           - values/overrides.yaml
     images:
-      - registry1.dso.mil/ironbank/opensource/aws/aws-node-termination-handler:v1.22.1
+      - registry1.dso.mil/ironbank/opensource/aws/aws-node-termination-handler:v1.23.0
