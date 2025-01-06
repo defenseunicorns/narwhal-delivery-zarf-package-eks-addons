@@ -5,7 +5,7 @@ package:
     set:
       package_tag_suffix: ""
       # renovate datasource=helm depName=cluster-autoscaler registryUrl=https://kubernetes.github.io/autoscaler
-      chart_version: 9.44.0
+      chart_version: 9.45.0
       # renovate datasource=docker depName=registry.k8s.io/autoscaling/cluster-autoscaler
       image_version: v1.32.0
 
