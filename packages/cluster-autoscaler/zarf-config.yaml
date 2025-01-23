@@ -7,7 +7,7 @@ package:
       namespace: kube-system
       chart_repo: https://kubernetes.github.io/autoscaler
       # renovate datasource=helm depName=cluster-autoscaler registryUrl=https://kubernetes.github.io/autoscaler
-      chart_version: 9.45.1
+      chart_version: 9.46.0
       image_registry_repo: registry.k8s.io
       image_registry_path: autoscaling/cluster-autoscaler
       # renovate datasource=docker depName=registry.k8s.io/autoscaling/cluster-autoscaler
