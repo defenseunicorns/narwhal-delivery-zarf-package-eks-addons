@@ -80,7 +80,7 @@ components:
           - values/upstream-values.yaml
           - values/overrides.yaml
     images:
-      - public.ecr.aws/aws-ec2/aws-node-termination-handler:v1.23.1
+      - public.ecr.aws/aws-ec2/aws-node-termination-handler:v1.24.0
 
   - name: aws-node-termination-handler
     description: "Chart component for aws-node-termination-handler"
