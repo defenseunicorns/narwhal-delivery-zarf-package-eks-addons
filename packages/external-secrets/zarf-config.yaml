@@ -11,6 +11,6 @@ package:
       image_registry_repo: ghcr.io
       image_registry_path: external-secrets/external-secrets
       # renovate datasource=docker depName=ghcr.io/external-secrets/external-secrets versioning=semver-coerced
-      image_version: v0.14.1
+      image_version: v0.14.2
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
