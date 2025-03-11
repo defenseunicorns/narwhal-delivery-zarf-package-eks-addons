@@ -1,13 +1,13 @@
 image:
   repository: registry1.dso.mil/ironbank/opensource/external-secrets/external-secrets
-  tag: v0.14.3
+  tag: v0.14.4
 
 webhook:
   image:
     repository: registry1.dso.mil/ironbank/opensource/external-secrets/external-secrets
-    tag: v0.14.3
+    tag: v0.14.4
 
 certController:
   image:
     repository: registry1.dso.mil/ironbank/opensource/external-secrets/external-secrets
-    tag: v0.14.3
+    tag: v0.14.4
