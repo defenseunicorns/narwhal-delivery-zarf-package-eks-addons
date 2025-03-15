@@ -10,42 +10,25 @@ on:
       - "packages/**/*.y*ml"
 
 jobs:
-  changed-files:
-    name: Get changed files
+  list-packages:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.changed-files.outputs.zarf_all_changed_files }}
+      packages: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-        with:
-          fetch-depth: 0
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@48d8f15b2aaa3d255ca5af3eba4870f807ce6b3c # v45
-        with:
-          matrix: true
-          files_yaml: |
-            zarf:
-              - '**.{yaml,yml}'
-              - '**/*.{yaml,yml}'
-          path: packages/ # only look in the packages directory
-          dir_names: true # just give the directory names
-          dir_names_max_depth: 1 # only look at the first level of directories
-      - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.zarf_all_changed_files }}'
+      - id: collect-packages
+        run: echo "::set-output name=matrix::$(ls packages | jq -R -s -c 'split("\n")[:-1]')"
 
   publish-packages:
-    name: Run Matrix Job
+    name: Build Zarf Packages
     runs-on: ubuntu-latest
-    needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.matrix != '[]' }}
     permissions:
       contents: read
       packages: write
     strategy:
       matrix:
-        zarf-package: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+        zarf-package: ${{ fromJSON(needs.list-packages.outputs.packages) }}
       max-parallel: 10
       fail-fast: false
     steps:
