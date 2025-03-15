@@ -10,15 +10,6 @@ on:
       - "packages/**/*.y*ml"
 
 jobs:
-  list-packages:
-    runs-on: ubuntu-latest
-    outputs:
-      packages: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - id: collect-packages
-        run: echo "::set-output name=matrix::$(ls packages | jq -R -s -c 'split("\n")[:-1]')"
 
   publish-packages:
     name: Build Zarf Packages
@@ -28,7 +19,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        zarf-package: ${{ fromJSON(needs.list-packages.outputs.packages) }}
+        zarf-package: ["aws-load-balancer-controller","aws-node-termination-handler","cluster-autoscaler","external-secrets","metrics-server","storageclass"]
       max-parallel: 10
       fail-fast: false
     steps:
