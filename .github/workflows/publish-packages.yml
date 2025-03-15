@@ -8,6 +8,8 @@ on:
       - "main"
     paths:
       - "packages/**/*.y*ml"
+  schedule:
+    - cron: "0 0 * * 0"
 
 jobs:
 
