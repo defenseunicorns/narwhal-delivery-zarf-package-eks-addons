@@ -8,44 +8,19 @@ on:
       - "main"
     paths:
       - "packages/**/*.y*ml"
+  schedule:
+    - cron: "0 0 * * 0"
 
 jobs:
-  changed-files:
-    name: Get changed files
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.changed-files.outputs.zarf_all_changed_files }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-        with:
-          fetch-depth: 0
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@2f7c5bfce28377bc069a65ba478de0a74aa0ca32 # v46
-        with:
-          matrix: true
-          files_yaml: |
-            zarf:
-              - '**.{yaml,yml}'
-              - '**/*.{yaml,yml}'
-          path: packages/ # only look in the packages directory
-          dir_names: true # just give the directory names
-          dir_names_max_depth: 1 # only look at the first level of directories
-      - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.zarf_all_changed_files }}'
-
   publish-packages:
-    name: Run Matrix Job
+    name: Build Zarf Packages
     runs-on: ubuntu-latest
-    needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.matrix != '[]' }}
     permissions:
       contents: read
       packages: write
     strategy:
       matrix:
-        zarf-package: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+        zarf-package: ["aws-load-balancer-controller","aws-node-termination-handler","cluster-autoscaler","external-secrets","metrics-server","storageclass"]
       max-parallel: 10
       fail-fast: false
     steps:
