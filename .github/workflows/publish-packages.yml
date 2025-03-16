@@ -12,7 +12,6 @@ on:
     - cron: "0 0 * * 0"
 
 jobs:
-
   publish-packages:
     name: Build Zarf Packages
     runs-on: ubuntu-latest
