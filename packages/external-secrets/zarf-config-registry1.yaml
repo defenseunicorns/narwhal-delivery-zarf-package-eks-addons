@@ -11,6 +11,6 @@ package:
       image_registry_repo: registry1.dso.mil
       image_registry_path: ironbank/opensource/external-secrets/external-secrets
       # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/external-secrets/external-secrets
-      image_version: v0.15.0
+      image_version: v0.15.1
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
