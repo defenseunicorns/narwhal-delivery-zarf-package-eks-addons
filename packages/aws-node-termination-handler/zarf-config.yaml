@@ -5,7 +5,7 @@ package:
     set:
       package_tag_suffix: ""
       # renovate datasource=docker depName=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
-      chart_version: 0.27.0
+      chart_version: 0.27.1
       # renovate datasource=docker depName=public.ecr.aws/aws-ec2/aws-node-termination-handler
       image_version: v1.25.1
 
