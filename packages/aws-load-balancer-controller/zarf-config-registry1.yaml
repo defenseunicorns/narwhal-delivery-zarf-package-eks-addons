@@ -8,7 +8,7 @@ package:
       namespace: kube-system
       chart_repo: https://aws.github.io/eks-charts
       # renovate datasource=helm depName=aws-load-balancer-controller registryUrl=https://aws.github.io/eks-charts
-      chart_version: 1.12.0
+      chart_version: 1.13.0
       image_registry_repo: public.ecr.aws
       image_registry_path: eks/aws-load-balancer-controller
       # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/kubernetes-sigs/aws-load-balancer-controller
