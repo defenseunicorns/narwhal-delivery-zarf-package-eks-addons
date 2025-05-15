@@ -11,6 +11,6 @@ components:
       - name: aws-load-balancer-controller
         namespace: kube-system
         url: https://aws.github.io/eks-charts
-        version: 1.13.0
+        version: 1.13.1
         valuesFiles:
           - ../values/values.yaml
