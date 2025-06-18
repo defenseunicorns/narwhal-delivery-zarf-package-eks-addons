@@ -7,7 +7,7 @@ package:
       namespace: external-secrets
       chart_repo: https://charts.external-secrets.io
       # renovate datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io
-      chart_version: 0.17.0
+      chart_version: 0.18.0
       image_registry_repo: registry1.dso.mil
       image_registry_path: ironbank/opensource/external-secrets/external-secrets
       # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/external-secrets/external-secrets
