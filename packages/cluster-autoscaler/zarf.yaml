@@ -76,7 +76,7 @@ components:
           - values/upstream-values.yaml
           - values/overrides.yaml
     images:
-      - registry.k8s.io/autoscaling/cluster-autoscaler:v1.32.1
+      - registry.k8s.io/autoscaling/cluster-autoscaler:v1.33.0
 
   - name: cluster-autoscaler
     description: "Chart component for cluster-autoscaler"
