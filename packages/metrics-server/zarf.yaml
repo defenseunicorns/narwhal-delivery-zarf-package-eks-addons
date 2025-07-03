@@ -25,7 +25,7 @@ components:
           - values/upstream-values.yaml
           - values/overrides.yaml
     images:
-      - registry.k8s.io/metrics-server/metrics-server:v0.7.2
+      - registry.k8s.io/metrics-server/metrics-server:v0.8.0
 
   - name: metrics-server
     description: "Chart component for metrics-server"

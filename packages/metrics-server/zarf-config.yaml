@@ -12,6 +12,6 @@ package:
       image_registry_repo: registry.k8s.io
       image_registry_path: metrics-server/metrics-server
       # renovate datasource=docker depName=registry.k8s.io/metrics-server/metrics-server
-      image_version: v0.7.2
+      image_version: v0.8.0
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
