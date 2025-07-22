@@ -5,6 +5,6 @@ package:
     set:
       package_tag_suffix: ""
       # renovate datasource=helm depName=metrics-server registryUrl=https://kubernetes-sigs.github.io/metrics-server
-      chart_version: 3.12.2
+      chart_version: 3.13.0
       # renovate datasource=docker depName=registry.k8s.io/metrics-server/metrics-server
       image_version: v0.8.0
