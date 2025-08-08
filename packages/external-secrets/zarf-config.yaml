@@ -8,10 +8,10 @@ package:
       namespace: external-secrets
       chart_repo: https://charts.external-secrets.io
       # renovate datasource=helm depName=external-secrets registryUrl=https://charts.external-secrets.io
-      chart_version: 0.19.0
+      chart_version: 0.19.1
       image_registry_repo: ghcr.io
       image_registry_path: external-secrets/external-secrets
       # renovate datasource=docker depName=ghcr.io/external-secrets/external-secrets versioning=semver-coerced
-      image_version: v0.19.0
+      image_version: v0.19.1
       values_file: values/values.yaml
       overrides_file: values/overrides.yaml
