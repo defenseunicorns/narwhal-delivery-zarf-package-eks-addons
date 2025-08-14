@@ -1,0 +1,21 @@
+# https://github.com/aws/karpenter-provider-aws/tree/main/charts/karpenter
+# https://github.com/aws/karpenter-provider-aws/blob/main/charts/karpenter/values.yaml
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: "###ZARF_VAR_IAM_ROLE_ARN###"
+
+settings:
+  clusterName: "###ZARF_VAR_CLUSTER_NAME###"
+  interruptionQueue: "###ZARF_VAR_CLUSTER_NAME###"
+
+controller:
+  resources:
+    requests:
+      cpu: 1
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 1Gi
+
+replicas: 1
+
