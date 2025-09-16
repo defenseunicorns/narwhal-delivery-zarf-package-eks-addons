@@ -91,4 +91,4 @@ components:
           - values/registry1-values.yaml
           - values/overrides.yaml
     images:
-      - registry1.dso.mil/ironbank/opensource/kubernetes/autoscaler:v1.33.0
+      - registry1.dso.mil/ironbank/opensource/kubernetes/autoscaler:v1.33.1
