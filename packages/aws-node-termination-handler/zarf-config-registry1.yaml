@@ -8,7 +8,7 @@ package:
       namespace: aws-node-termination-handler
       chart_repo: oci://public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
       # renovate datasource=docker depName=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
-      chart_version: 0.27.2
+      chart_version: 0.27.3
       image_registry_repo: registry1.dso.mil
       image_registry_path: ironbank/opensource/aws/aws-node-termination-handler
       # renovate datasource=docker depName=registry1.dso.mil/ironbank/opensource/aws/aws-node-termination-handler
